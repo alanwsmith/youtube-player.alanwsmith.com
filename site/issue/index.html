@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="/favicons/site.webmanifest" />
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="/favicons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#000000" />
+
+    <title>Web Component Section Styling Issue</title>
+    <meta property="og:title" content="Web Component Section Styling Issue" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yt-player.alanwsmith.com/issue/" />
+    <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
+    <meta property="og:description" content="Page to troubeshoot a styling problme with a web component in a section tag" />
+    <meta name="description" content="Page to troubeshoot a styling problme with a web component in a section tag" />
+
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="issue-styles.css" />
+    <script type="module" src="/scripts/yt-player.js"></script>
+  </head>
+ 
+  <body>
+    <header>
+    </header>
+
+    <main class="flow"> 
+      <hgroup>
+        <h1>Web Component Section Styling Issue</h1>
+      </hgroup>
+      <h2>Introduction</h2>
+      <p>
+        This page is to troubleshoot an issue I'm having
+        styling a YouTube player web component. Here's an example that 
+        has the correct styles. The <code>&lt;yt-player&gt;</code> element is
+        inside the <code>&lt;main&gt;</code> element tag. 
+      </p>
+
+      <yt-player video="_YUzQa_1RCE">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </yt-player>
+
+      <section>
+        <h2>The Problem</h2>
+        <p>The problem happens when <code>&lt;yt-player&gt;</code> is moved inside a
+          <code>&lt;section&gt;</code> tag. The styles get all messed up. 
+          Here's what it looks like:
+        </p>
+        <yt-player video="_YUzQa_1RCE">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </yt-player>
+      </section>
+      
+      <h2>Notes</h2>
+      <ul>
+        <li>
+          I'm seeing the problem on Firefox, Chrome, and Safari on my M1 mac
+        </li>
+        <li>
+          It's doing the same thing across all browsers which makes me think
+          there's something I'm missing about the section element. I don't
+          see anything in 
+          <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section">the section element docs on MDN</a>
+          that seems like it matters
+        </li>
+        <li>
+          This page has the section element inside the main element. 
+          The same thing happens if the section is directly inside
+          the body element
+        </li>
+      </ul>
+
+      <h2>Source Code</h2>
+      <p><a href="" target="_blank">Here's the HTML source code for the page</a></p>
+      <p><a href="" target="_blank">And the CSS source code</a></p>
+
+      <h2>Any Ideas?</h2>
+      <p>I'm at a loss. If you've got ideas, I'm all ears</p>
+    </main>
+
+    <footer>
+      <div>
+        made by <a href="https://www.alanwsmith.com">alan w smith</a>
+      </div>
+      <div>
+        <a href="https://links.alanwsmith.com">other sites</a>
+      </div>
+    </footer>
+  </body>
+</html>

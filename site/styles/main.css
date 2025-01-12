@@ -1,0 +1,196 @@
+:root {
+  --background-color: #112;
+  --primary-color: #ddd;
+  --secondary-color: blue;
+  --accent-color-1: green;
+  --accent-color-2: purple;
+  --accent-color-3: goldenrod;
+  --reverse-color: #eee;
+
+  --xxsmall-margin: 0.1rem;
+  --xsmall-margin: 0.3rem;
+  --small-margin: 0.4rem;
+  --medium-margin: 0.6rem;
+  --large-margin: 1.2rem;
+  --xlarge-margin: 2.1em;
+  --xxlarge-margin: 3.2em;
+  --xxxlarge-margin: 3.2em;
+
+  --xxsmall-padding: 0.1rem;
+  --xsmall-padding: 0.3rem;
+  --small-padding: 0.4rem;
+  --medium-padding: 0.6rem;
+  --large-padding: 1.2rem;
+  --xlarge-padding: 2.1em;
+  --xxlarge-padding: 3.2em;
+  --xxxlarge-padding: 3.2em;
+
+  --xxsmall-border-radius: 0.1rem;
+  --xsmall-border-radius: 0.2rem;
+  --small-border-radius: 0.3rem;
+  --medium-border-radius: 0.4rem;
+  --large-border-radius: 0.5rem;
+  --xlarge-border-radius: 0.6rem;
+  --xxlarge-border-radius: 0.7rem;
+  --xxxlarge-border-radius: 0.9rem;
+
+  --xxsmall-font-size: clamp(0.68rem, calc(0.67rem + 0.03vw), 0.70rem);
+  --xsmall-font-size: clamp(0.78rem, calc(0.77rem + 0.03vw), 0.80rem);
+  --small-font-size: clamp(0.94rem, calc(0.92rem + 0.11vw), 1.00rem);
+  --medium-font-size: clamp(1.13rem, calc(1.08rem + 0.22vw), 1.25rem);
+  --large-font-size: clamp(1.35rem, calc(1.28rem + 0.37vw), 1.56rem);
+  --xlarge-font-size: clamp(1.62rem, calc(1.50rem + 0.58vw), 1.95rem);
+  --xxlarge-font-size: clamp(1.94rem, calc(1.77rem + 0.87vw), 2.44rem);
+  --xxxlarge-font-size: clamp(2.33rem, calc(2.08rem + 1.25vw), 3.05rem);
+
+  --xxsmall-width: min(8rem, 96%);
+  --xsmall-width: min(12rem, 96%);
+  --small-width: min(24rem, 96%);
+  --medium-width: min(34rem, 96%);
+  --large-width: min(46rem, 96%);
+  --xlarge-width: min(58rem, 96%);
+  --xxlarge-width: min(72rem, 96%);
+  --xxxlarge-width: min(86rem, 96%);
+}
+
+/*
+* TODO: Get color-scheme going
+@media (prefers-color-scheme: dark) {
+  :root {
+  }
+}
+*/
+
+*, 
+*::before, 
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+::marker {
+  color: var(--accent-color-1);
+}
+
+/*
+* TODO: Get color-scheme going
+html {
+  color-scheme: light dark;
+}
+*/
+
+
+body {
+  background-color: var(--background-color);
+  color: var(--primary-color);
+  display: grid;
+  font-family: Avenir, Montserrat, Corbel, 'URW Gothic', source-sans-pro, sans-serif;
+  font-weight: normal;
+  font-size: var(--medium-font-size);
+  grid-template-rows: auto 1fr auto;
+  line-height: 1.5; 
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+a {
+  color: var(--accent-color-1);
+  text-decoration: none;
+}
+
+a:hover, a:focus {
+  color: var(--accent-color-2);
+}
+
+.blue {
+  color: blue;
+}
+
+
+.flow > :where(:not(:first-child)) {
+  margin-top: var(--flow-space, 1.0em);
+}
+
+footer {
+  margin-top: var(--xlarge-margin);
+  margin-bottom: var(--large-margin);
+  font-size: var(--small-font-size);
+  text-align: center;
+}
+
+.green {
+  color: green;
+}
+
+h1, h2, h3, h4 {
+  line-height: 1.1;
+  color: var(--secondary-color);
+  text-wrap: balance;
+  font-weight: 900;
+}
+
+h1 {
+  font-size: var(--xxxlarge-font-size);
+  margin-top: 1.0em;
+}
+
+h2 {
+  font-size: var(--xxlarge-font-size);
+  --flow-space: 1.3em;
+}
+
+h3 {
+  font-size: var(--xlarge-font-size);
+  --flow-space: 1.0em;
+}
+
+h3 {
+  font-size: var(--large-font-size);
+  --flow-space: 1.0em;
+}
+
+h4 {
+  font-size: var(--medium-font-size);
+  --flow-space: 1.0em;
+}
+
+header {
+  margin-block: var(--medium-margin);
+  margin-inline: auto;
+  width: var(--large-width);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+main {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr;
+  margin-inline: auto;
+  padding-bottom: var(--xlarge-padding);
+  width: var(--large-width);
+}
+
+/* uncomment to center horizontally
+main {
+  justify-items: center;
+}
+*/
+
+.red {
+  color: red;
+}
+
+section {
+  --flow-space: 1.3em;
+}
+
+ul > :where(:not(:first-child)) {
+  margin-top: 1em;
+}

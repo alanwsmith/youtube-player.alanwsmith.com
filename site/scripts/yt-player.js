@@ -17,8 +17,8 @@ class YouTubePlayer extends HTMLElement {
     this.append(videoPlaceholderEl);
     this.player = await new Promise(resolve => {
         let player = new YT.Player(videoPlaceholderEl, {
-            width: "320",
-            height: "195",
+            width: "640",
+            height: "320",
             videoId: this.videoId,
             playerVars: {
               "playsinline": 1,
