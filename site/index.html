@@ -1,6 +1,97 @@
 <!DOCTYPE html>
-<html>
-  <body>TKTKTK</body>
+<html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="/favicons/site.webmanifest" />
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+    <link rel="shortcut icon" href="/favicons/favicon.ico" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#000000" />
+
+    <title>Alan's YouTube Player Web Component</title>
+    <meta property="og:title" content="Alan's YouTube Player Web Component" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yt-player.alanwsmith.com/" />
+    <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
+    <meta property="og:description" content="My YouTube player web component" />
+    <meta name="description" content="My YouTube player web component" />
+
+    <link rel="stylesheet" href="/styles/main.css" />
+    <link rel="stylesheet" href="/styles/yt-player.css" />
+    <script type="module" src="/scripts/yt-player.js"></script>
+  </head>
+ 
+  <body>
+    <header>
+    </header>
+
+    <main class="flow"> 
+      <hgroup>
+        <h1>Alan's YouTube Player Web Component</h1>
+      </hgroup>
+      <h2>Introduction</h2>
+      <p>
+        This is the web component I'm building to
+        embed YouTube videos on my sites. It's 
+        main purpose is to add buttons to 
+        control the video and set the playback 
+        speed.
+      </p>
+      <h2>Work In Progress</h2>
+      <p>
+        I'm still working on the component. Specifically, 
+        I'm troubleshooting an issue where styles get messed
+        up if the custom element is inside a section element. 
+      </p>
+      <p>
+        <a href="/issue/">Details on the issue are here</a>
+      </p>
+          
+      <h2>Current Progress Example</h2>
+      <yt-player video="_YUzQa_1RCE">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </yt-player>
+
+      <h2>Notes</h2>
+      <ul>
+        <li>
+          Use a custom <code>&lt;yt-player video="YouTubeId"&gt;</code> tag to 
+          do the embed
+        </li>
+        <li>
+          Provide a <code>start</code> attribute to set the starting time
+        </li>
+        <li>
+          Provides a Play/Pause button
+        </li>
+        <li>
+          Provides a Stop button
+        </li>
+        <li>
+          TODO: Provide speed adjustment buttons
+        </li>
+        <li>
+          TODO: Style via parent page CSS
+        </li>
+      </ul>
+      <h2>References</h2>
+      <ul>
+        <li><a href="https://developers.google.com/youtube/iframe_api_reference">YouTube IFrame Player API Docs</a></li>
+        <li><a href="https://github.com/paulirish/lite-youtube-embed">Paul Irish's Lite YouTube Embed</a></li>
+      </ul>
+    </main>
+
+    <footer>
+      <div>
+        made by <a href="https://www.alanwsmith.com">alan w smith</a>
+      </div>
+      <div>
+        <a href="https://links.alanwsmith.com">other sites</a>
+      </div>
+    </footer>
+  </body>
 </html>
-
-

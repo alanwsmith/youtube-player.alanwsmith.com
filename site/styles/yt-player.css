@@ -1,0 +1,16 @@
+.yt-play-button {
+  width: 7ch;
+}
+
+yt-player {
+  border: 1px solid #eee;
+}
+
+.yt-speed-button {
+  width: 5ch;
+}
+
+.yt-stop-button {
+  width: 6ch;
+}
+
