@@ -9,22 +9,33 @@
 
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
+    this.dataset.state = "loading";
+    this.videoId = this.getAttribute("video");
+    this.buildStructure();
     this.init();
   }
 
-  async init() {
-    this.dataset.state = "loading";
-    this.videoId = this.getAttribute("video");
-    this.startAt = this.getAttribute("start-at") !== null ? parseInt(this.getAttribute("start-at"), 10) : 0;
-    this.loadApi();
-    await this.apiLoader;
+  buildStructure() {
     this.videoWrapper = document.createElement("div");
     this.videoWrapper.classList.add("yt-video-wrapper");
     this.appendChild(this.videoWrapper);
-    const videoEl = document.createElement('div')
-    this.videoWrapper.appendChild(videoEl);
+    this.videoEl = document.createElement('div')
+    this.videoWrapper.appendChild(this.videoEl);
+    this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg")`;
+    this.videoWrapper.style.backgroundSize = "cover";
+    this.videoWrapper.style.backgroundPosition = "center";
+    this.videoWrapper.style.backgroundRepeat= "no-repeat";
+    this.buttonWrapper = document.createElement("div");
+    this.buttonWrapper.classList.add("yt-button-wrapper");
+    this.appendChild(this.buttonWrapper);
+  }
+
+  async init() {
+    this.startAt = this.getAttribute("start-at") !== null ? parseInt(this.getAttribute("start-at"), 10) : 0;
+    this.loadApi();
+    await this.apiLoader;
     this.player = await new Promise(resolve => {
-        let player = new YT.Player(videoEl, {
+        let player = new YT.Player(this.videoEl, {
             width: "640",
             height: "390",
             videoId: this.videoId,
@@ -42,8 +53,12 @@ class YouTubePlayer extends HTMLElement {
             }
         });
     }).then((value) => {return value});
-    this.addButtons(this.player);
     // TODO: Figure out how to handle errors here. 
+    this.addButtons(this.player);
+    this.videoWrapper.addEventListener("click", () => {
+      this.player.playVideo();
+    });
+
   }
 
   onPlayerStateChange(event) {
@@ -65,14 +80,14 @@ class YouTubePlayer extends HTMLElement {
       this.dataset.state = "paused";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PLAYING) {
+      console.log(this.player.g);
+      this.player.g.style.visibility = "visible";
       this.dataset.state = "playing";
       this.playButton.innerHTML = "pause";
     }
   }
 
   addButtons(player) {
-    this.buttonWrapper = document.createElement("div");
-    this.buttonWrapper.classList.add("yt-button-wrapper");
     this.playButton = document.createElement("button");
     this.playButton.innerHTML = "play";
     this.playButton.classList.add("yt-button");
@@ -87,11 +102,9 @@ class YouTubePlayer extends HTMLElement {
     this.stopButton.addEventListener("click", (event) => {
       this.doStop.call(this, event, this.player)
     });
-
     this.buttonWrapper.appendChild(this.playButton);
     this.buttonWrapper.appendChild(this.stopButton);
     this.addSpeedButtons(player);
-
     this.muteButton = document.createElement("button");
     if (player.isMuted() === true) {
       this.muteButton.innerHTML = "unmute";
@@ -104,7 +117,6 @@ class YouTubePlayer extends HTMLElement {
       this.doMuteUnmute.call(this, event, this.player)
     });
     this.buttonWrapper.appendChild(this.muteButton);
-    this.appendChild(this.buttonWrapper);
   }
 
   addSpeedButtons(player) {

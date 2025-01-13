@@ -4,7 +4,7 @@
   border-radius: 0.4rem;
   color: inherit;
   cursor: pointer;
-  font: inherit;
+  font-size: 1rem;
   outline: inherit;
   padding: 0;
 }
@@ -15,6 +15,7 @@
   gap: 0.5rem;
   justify-content: center;
   padding-block: 0.6rem;
+  min-height: 3rem;
 }
 
 .yt-mute-button {
@@ -72,9 +73,10 @@ yt-player[data-state=unstarted] {
 }
 
 .yt-video-wrapper {
-  position: relative;
-  padding-bottom: 56.25%;
+  border-radius: 0.6rem;
   height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
 }
 
 .yt-video-wrapper iframe {
@@ -84,4 +86,5 @@ yt-player[data-state=unstarted] {
   left: 0;
   width: 100%;
   height: 100%;
+  visibility: hidden;
 }
