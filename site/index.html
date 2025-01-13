@@ -11,16 +11,14 @@
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
     <meta name="theme-color" content="#000000" />
-
     <title>Alan's YouTube Player Web Component</title>
-    <meta property="og:site_name" content="Alan's YouTube Player Web Component" />
+    <meta property="og:site_name" content="yt-player.alanwsmith.com" />
     <meta property="og:title" content="Alan's YouTube Player Web Component" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yt-player.alanwsmith.com/" />
     <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
     <meta property="og:description" content="My YouTube player web component" />
     <meta name="description" content="My YouTube player web component" />
-
     <link rel="stylesheet" href="/styles/main.css" />
     <link rel="stylesheet" href="/styles/yt-player.css" />
     <script type="module" src="/scripts/yt-player.js"></script>
@@ -40,24 +38,38 @@
         my sites. The first version is coming along nicely:
       </p>
 
-      <yt-player video="NoMqvniiEkk" start-at="52">
+      <yt-player video="REPPgPcw4hk">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </yt-player>
 
       <h2>Features</h2>
       <ul>
         <li>
-          Use a custom <code>&lt;yt-player video="YouTubeId"&gt;</code> tag to 
-          do the embed
+          <p>
+            Videos are embedded using a custom <code>yt-player</code> element. It has
+            one required <code>video</code> attribute which is the YouTube ID of the 
+            video to play. For example:
+          </p>
+          <pre><code>&lt;yt-player video="REPPgPcw4hk"&gt;
+  &lt;noscript&gt;
+    JavaScript is not available to load the video player
+  &lt;/noscript&gt;
+&lt;/yt-player&gt;
+          </pre></code>
         </li>
         <li>
-          Provide a <code>start</code> attribute to set the starting time
+          <p>
+            An optional <code>start</code> attribute can be used to set
+            start the video some number of seconds in. (It has to be full seconds,
+            and may not be exactly what's used because of the way
+            some video encoding works)
+          </p>
         </li>
         <li>
-          Provides a Play/Pause button
+          Provide a Play/Pause button
         </li>
         <li>
-          Provides a Stop button
+          Provide a Stop button
         </li>
         <li>
           Allow multiple videos on a single page
@@ -66,10 +78,10 @@
           Provide speed adjustment buttons
         </li>
         <li>
-          Style via parent page CSS
+          Allow styling from via parent page's CSS
         </li>
         <li>
-          Provide responsive styling example
+          Provide structure for responsive design 
         </li>
         <li>
           Provide a mute/unmute button
@@ -86,6 +98,13 @@
           that can be used to adjust styling when videos are playing
           (e.g. dim the rest of the content). Note that this
           can be tricky if there are multiple videos on the page. 
+        </li>
+        <li>
+          TODO: Save playhead location when stopping the player or reloading
+          the page. 
+        <li>
+          TODO: Set up the speed buttons so they start playing
+          at the specific speed if the video isn't already going
         </li>
         <li>
           TODO: Send focus to video player so keyboard commands work
