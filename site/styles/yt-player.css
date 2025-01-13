@@ -1,11 +1,82 @@
+.yt-button {
+  background: none;
+  border: 1px solid #333;
+  border-radius: 0.4rem;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1rem;
+  outline: inherit;
+  padding: 0;
+}
+
+.yt-button-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-block: 0.6rem;
+  min-height: 3rem;
+}
+
+.yt-logo {
+  cursor: pointer;
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  bottom: 1rem;
+  left: 1rem;
+  background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  visibility: hidden;
+}
+
+.yt-mute-button {
+  width: 8ch;
+}
+
 .yt-play-button {
   width: 7ch;
 }
 
 yt-player {
   display: block;
-  border: 1px solid #eee;
 }
+
+/*
+* selectors based on player state
+yt-player[data-state=buffering] {
+  border: 1px solid green;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=cued] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=ended] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=paused] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=playing] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=unstarted] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+*/
 
 .yt-speed-button {
   width: 5ch;
@@ -14,4 +85,22 @@ yt-player {
 .yt-stop-button {
   width: 6ch;
 }
+
+.yt-video-wrapper {
+  border-radius: 0.6rem;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+.yt-video-wrapper iframe {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
 

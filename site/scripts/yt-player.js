@@ -2,27 +2,49 @@
 // video isn't available and send a better message
 // than the youtube default one. or maybe play 
 // a different video all together 
+//
+// TODO: Get available playback rates dynamically, maybe...
+//
+// ref: https://developers.google.com/youtube/iframe_api_reference
 
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
+    this.dataset.state = "loading";
+    this.videoId = this.getAttribute("video");
+    this.buildStructure();
     this.init();
   }
 
+  buildStructure() {
+    this.videoWrapper = document.createElement("div");
+    this.videoWrapper.classList.add("yt-video-wrapper");
+    this.appendChild(this.videoWrapper);
+    this.videoEl = document.createElement('div')
+    this.videoWrapper.appendChild(this.videoEl);
+    this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg")`;
+    this.videoWrapper.style.backgroundSize = "cover";
+    this.videoWrapper.style.backgroundPosition = "center";
+    this.videoWrapper.style.backgroundRepeat= "no-repeat";
+    this.buttonWrapper = document.createElement("div");
+    this.buttonWrapper.classList.add("yt-button-wrapper");
+    this.appendChild(this.buttonWrapper);
+    this.ytLogo = document.createElement("div");
+    this.ytLogo.classList.add("yt-logo");
+    this.videoWrapper.appendChild(this.ytLogo);
+  }
+
   async init() {
-    this.videoId = this.getAttribute("video");
-    this.startSeconds = this.getAttribute("start") !== null ? parseInt(this.getAttribute("start"), 10) : 0;
+    this.startAt = this.getAttribute("start-at") !== null ? parseInt(this.getAttribute("start-at"), 10) : 0;
     this.loadApi();
     await this.apiLoader;
-    const videoPlaceholderEl = document.createElement('div')
-    this.append(videoPlaceholderEl);
     this.player = await new Promise(resolve => {
-        let player = new YT.Player(videoPlaceholderEl, {
+        let player = new YT.Player(this.videoEl, {
             width: "640",
-            height: "320",
+            height: "390",
             videoId: this.videoId,
             playerVars: {
               "playsinline": 1,
-              "start": this.startSeconds
+              "start": this.startAt
             },
             events: {
                 "onReady": event => {
@@ -34,8 +56,12 @@ class YouTubePlayer extends HTMLElement {
             }
         });
     }).then((value) => {return value});
-    this.addButtons(this.player);
     // TODO: Figure out how to handle errors here. 
+    this.addButtons(this.player);
+    this.videoWrapper.addEventListener("click", () => {
+      this.player.playVideo();
+    });
+
   }
 
   onPlayerStateChange(event) {
@@ -45,43 +71,69 @@ class YouTubePlayer extends HTMLElement {
     // little delay)
     const playerState = event.target.getPlayerState();
     if (playerState == -1) {
-      // unstarted
+      this.dataset.state = "unstarted";
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      // buffering 
+      this.dataset.state = "buffering";
     } else if (playerState == YT.PlayerState.CUED) {
-      // cued
+      this.dataset.state = "cued";
     } else if (playerState == YT.PlayerState.ENDED) {
-      this.playButton.innerHTML = "Play";
+      this.player.g.style.visibility = "hidden";
+      this.ytLogo.style.visibility = "visible";
+      this.dataset.state = "ended";
+      this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PAUSED) {
-      this.playButton.innerHTML = "Play";
+      this.dataset.state = "paused";
+      this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PLAYING) {
-      this.playButton.innerHTML = "Pause";
+      console.log(this.player.g);
+      this.player.g.style.visibility = "visible";
+      this.ytLogo.style.visibility = "hidden";
+      this.dataset.state = "playing";
+      this.playButton.innerHTML = "pause";
     }
   }
 
   addButtons(player) {
-    this.buttonWrapper = document.createElement("div");
-    this.buttonWrapper.classList.add("yt-button-wrapper");
     this.playButton = document.createElement("button");
-    this.playButton.innerHTML = "Play";
+    this.playButton.innerHTML = "play";
+    this.playButton.classList.add("yt-button");
     this.playButton.classList.add("yt-play-button");
     this.playButton.addEventListener("click", (event) => {
       this.doPlayPause.call(this, event, this.player)
     });
     this.stopButton = document.createElement("button");
-    this.stopButton.innerHTML = "Stop";
+    this.stopButton.innerHTML = "stop";
+    this.stopButton.classList.add("yt-button");
     this.stopButton.classList.add("yt-stop-button");
     this.stopButton.addEventListener("click", (event) => {
       this.doStop.call(this, event, this.player)
     });
     this.buttonWrapper.appendChild(this.playButton);
     this.buttonWrapper.appendChild(this.stopButton);
-    this.appendChild(this.buttonWrapper);
     this.addSpeedButtons(player);
+    this.muteButton = document.createElement("button");
+    if (player.isMuted() === true) {
+      this.muteButton.innerHTML = "unmute";
+    } else {
+      this.muteButton.innerHTML = "mute";
+    }
+    this.muteButton.classList.add("yt-button");
+    this.muteButton.classList.add("yt-mute-button");
+    this.muteButton.addEventListener("click", (event) => {
+      this.doMuteUnmute.call(this, event, this.player)
+    });
+    this.buttonWrapper.appendChild(this.muteButton);
+    this.ytLogo.style.visibility = "visible";
   }
 
   addSpeedButtons(player) {
     this.speedButtons = []
+    // TODO: remove the strings and just add a
+    // data-speed attribute that can be used
+    // for selecting
+    //
+    // TODO: Add a data-speed to the main
+    // player that can be used for selection too
     const speeds = [
       [1, "1"],
       [1.5, "1-5"],
@@ -89,14 +141,36 @@ class YouTubePlayer extends HTMLElement {
       [2.5, "2-5"],
       [3, "2"],
     ];
-    speeds.forEach((speed, speedIndex) => {
-      this.speedButtons[speedIndex] = document.createElement("button");
-      this.speedButtons[speedIndex].classList.add("yt-speed-button");
-      this.speedButtons[speedIndex].innerHTML = `${speed[0]}x`;
-      this.buttonWrapper.appendChild(this.speedButtons[speedIndex]);
+    speeds.forEach((speed) => {
+      const speedButton = document.createElement("button");
+      speedButton.classList.add("yt-button");
+      speedButton.classList.add("yt-speed-button");
+      speedButton.innerHTML = `${speed[0]}x`;
+      speedButton.dataset.speed = speed[0];
+      speedButton.addEventListener("click", (event) => {
+        this.adjustSpeed.call(this, event, player);
+      });
+      this.speedButtons.push(speedButton);
+    });
+    this.speedButtons.forEach((speedButton) => {
+      this.buttonWrapper.appendChild(speedButton);
     });
   }
 
+  adjustSpeed(event, player) {
+    const speed = parseFloat(event.target.dataset.speed);
+    player.setPlaybackRate(speed);
+  }
+
+  doMuteUnmute(event, player) {
+    if (player.isMuted() === true) {
+      player.unMute();
+      this.muteButton.innerHTML = "mute";
+    } else {
+      player.mute();
+      this.muteButton.innerHTML = "unmute";
+    }
+  }
 
   doPlayPause(event, player) {
     const buttonEl = event.target;
@@ -111,12 +185,12 @@ class YouTubePlayer extends HTMLElement {
       playerState == YT.PlayerState.CUED
     ) {
       player.playVideo();
-      this.playButton.innerHTML = "Pause";
+      this.playButton.innerHTML = "pause";
       // TODO: Figure out how to shift focus to
       // the player so keyboard controls work
     } else {
       player.pauseVideo();
-      this.playButton.innerHTML = "Play";
+      this.playButton.innerHTML = "play";
       // TODO: adjust this so it doesn't flash
       // play when clicking to different parts
       // of the video
@@ -124,7 +198,9 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doStop(event, player) {
-    this.playButton.innerHTML = "Play";
+    this.playButton.innerHTML = "play";
+    this.player.g.style.visibility = "hidden";
+    this.ytLogo.style.visibility = "visible";
     player.stopVideo();
   }
 
