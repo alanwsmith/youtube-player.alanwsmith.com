@@ -14,7 +14,7 @@ class YouTubePlayer extends HTMLElement {
 
   async init() {
     this.videoId = this.getAttribute("video");
-    this.startSeconds = this.getAttribute("start") !== null ? parseInt(this.getAttribute("start"), 10) : 0;
+    this.startAt = this.getAttribute("start-at") !== null ? parseInt(this.getAttribute("start-at"), 10) : 0;
     this.loadApi();
     await this.apiLoader;
     this.videoWrapper = document.createElement("div");
@@ -29,7 +29,7 @@ class YouTubePlayer extends HTMLElement {
             videoId: this.videoId,
             playerVars: {
               "playsinline": 1,
-              "start": this.startSeconds
+              "start": this.startAt
             },
             events: {
                 "onReady": event => {
