@@ -28,6 +28,9 @@ class YouTubePlayer extends HTMLElement {
     this.buttonWrapper = document.createElement("div");
     this.buttonWrapper.classList.add("yt-button-wrapper");
     this.appendChild(this.buttonWrapper);
+    this.ytLogo = document.createElement("div");
+    this.ytLogo.classList.add("yt-logo");
+    this.videoWrapper.appendChild(this.ytLogo);
   }
 
   async init() {
@@ -82,6 +85,7 @@ class YouTubePlayer extends HTMLElement {
     } else if (playerState == YT.PlayerState.PLAYING) {
       console.log(this.player.g);
       this.player.g.style.visibility = "visible";
+      this.ytLogo.style.visibility = "hidden";
       this.dataset.state = "playing";
       this.playButton.innerHTML = "pause";
     }
@@ -117,6 +121,7 @@ class YouTubePlayer extends HTMLElement {
       this.doMuteUnmute.call(this, event, this.player)
     });
     this.buttonWrapper.appendChild(this.muteButton);
+    this.ytLogo.style.visibility = "visible";
   }
 
   addSpeedButtons(player) {
