@@ -77,6 +77,8 @@ class YouTubePlayer extends HTMLElement {
     } else if (playerState == YT.PlayerState.CUED) {
       this.dataset.state = "cued";
     } else if (playerState == YT.PlayerState.ENDED) {
+      this.player.g.style.visibility = "hidden";
+      this.ytLogo.style.visibility = "visible";
       this.dataset.state = "ended";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PAUSED) {
@@ -126,6 +128,12 @@ class YouTubePlayer extends HTMLElement {
 
   addSpeedButtons(player) {
     this.speedButtons = []
+    // TODO: remove the strings and just add a
+    // data-speed attribute that can be used
+    // for selecting
+    //
+    // TODO: Add a data-speed to the main
+    // player that can be used for selection too
     const speeds = [
       [1, "1"],
       [1.5, "1-5"],
@@ -191,6 +199,8 @@ class YouTubePlayer extends HTMLElement {
 
   doStop(event, player) {
     this.playButton.innerHTML = "play";
+    this.player.g.style.visibility = "hidden";
+    this.ytLogo.style.visibility = "visible";
     player.stopVideo();
   }
 
