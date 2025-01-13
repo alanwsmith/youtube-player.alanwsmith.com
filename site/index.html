@@ -36,21 +36,14 @@
       </hgroup>
       <h2>Introduction</h2>
       <p>
-        This is the web component I use to  
-        embed YouTube videos on my sites. It's 
-        main purpose is to add buttons to 
-        control the video and set the playback 
-        speed.
-      </p>
-      <h2>Work In Progress</h2>
-      <p>
-        The first version of this component is still under
-        development. You can track the progress in the
-        Features section below.
+        This is the web component I use to embed videos on 
+        my sites. It's main purpose is to add buttons to 
+        control the video and set the playback speed.
       </p>
 
-      <h2>Current Progress Examples</h2>
-      <yt-player video="NoMqvniiEkk" start-at="53">
+      <h2>Version 1</h2>
+      <p>This is the first version of the component</p>
+      <yt-player video="NoMqvniiEkk" start-at="52">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </yt-player>
 
@@ -92,6 +85,12 @@
           Show an image instead of the video to start with
         </li>
         <li>
+          Provide a data-yt-state attribute to body element
+          that can be used to adjust styling when videos are playing
+          (e.g. dim the rest of the content). Note that this
+          can be tricky if there are multiple videos on the page. 
+        </li>
+        <li>
           TODO: Send focus to video player so keyboard commands work
         </li>
         <li>
@@ -102,8 +101,14 @@
           auto play the video
         </li>
         <li>
+          MAYBE: Add volume slider
+        </li>
+        <li>
           MAYBE: Allow other scripts on the page to control the player
           (this might already work, needs testing)
+        </li>
+        <li>
+          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
         </li>
       </ul>
       <h2>Notes</h2>

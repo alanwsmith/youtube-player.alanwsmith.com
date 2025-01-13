@@ -1,3 +1,12 @@
+body {
+  transition: all 2.3s ease-out;
+}
+
+body[data-yt-state=playing] {
+  --background-color: black;
+  --primary-color: #444;
+}
+
 .yt-button {
   background: none;
   border: 1px solid #333;
@@ -88,6 +97,7 @@ yt-player[data-state=unstarted] {
 
 .yt-video-wrapper {
   border-radius: 0.6rem;
+  cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
