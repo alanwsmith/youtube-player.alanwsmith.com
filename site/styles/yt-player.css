@@ -29,6 +29,40 @@ yt-player {
   display: block;
 }
 
+/*
+* selectors based on player state
+yt-player[data-state=buffering] {
+  border: 1px solid green;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=cued] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=ended] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=paused] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=playing] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+yt-player[data-state=unstarted] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+*/
+
 .yt-speed-button {
   width: 5ch;
 }

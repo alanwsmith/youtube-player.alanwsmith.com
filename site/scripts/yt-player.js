@@ -13,6 +13,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   async init() {
+    this.dataset.state = "loading";
     this.videoId = this.getAttribute("video");
     this.startAt = this.getAttribute("start-at") !== null ? parseInt(this.getAttribute("start-at"), 10) : 0;
     this.loadApi();
@@ -52,16 +53,19 @@ class YouTubePlayer extends HTMLElement {
     // little delay)
     const playerState = event.target.getPlayerState();
     if (playerState == -1) {
-      // unstarted
+      this.dataset.state = "unstarted";
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      // buffering 
+      this.dataset.state = "buffering";
     } else if (playerState == YT.PlayerState.CUED) {
-      // cued
+      this.dataset.state = "cued";
     } else if (playerState == YT.PlayerState.ENDED) {
+      this.dataset.state = "ended";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PAUSED) {
+      this.dataset.state = "paused";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PLAYING) {
+      this.dataset.state = "playing";
       this.playButton.innerHTML = "pause";
     }
   }
