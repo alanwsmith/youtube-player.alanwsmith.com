@@ -17,12 +17,15 @@ class YouTubePlayer extends HTMLElement {
     this.startSeconds = this.getAttribute("start") !== null ? parseInt(this.getAttribute("start"), 10) : 0;
     this.loadApi();
     await this.apiLoader;
-    const videoPlaceholderEl = document.createElement('div')
-    this.append(videoPlaceholderEl);
+    this.videoWrapper = document.createElement("div");
+    this.videoWrapper.classList.add("yt-video-wrapper");
+    this.appendChild(this.videoWrapper);
+    const videoEl = document.createElement('div')
+    this.videoWrapper.appendChild(videoEl);
     this.player = await new Promise(resolve => {
-        let player = new YT.Player(videoPlaceholderEl, {
+        let player = new YT.Player(videoEl, {
             width: "640",
-            height: "320",
+            height: "390",
             videoId: this.videoId,
             playerVars: {
               "playsinline": 1,
@@ -68,12 +71,14 @@ class YouTubePlayer extends HTMLElement {
     this.buttonWrapper.classList.add("yt-button-wrapper");
     this.playButton = document.createElement("button");
     this.playButton.innerHTML = "Play";
+    this.playButton.classList.add("yt-button");
     this.playButton.classList.add("yt-play-button");
     this.playButton.addEventListener("click", (event) => {
       this.doPlayPause.call(this, event, this.player)
     });
     this.stopButton = document.createElement("button");
     this.stopButton.innerHTML = "Stop";
+    this.stopButton.classList.add("yt-button");
     this.stopButton.classList.add("yt-stop-button");
     this.stopButton.addEventListener("click", (event) => {
       this.doStop.call(this, event, this.player)
@@ -95,6 +100,7 @@ class YouTubePlayer extends HTMLElement {
     ];
     speeds.forEach((speed) => {
       const speedButton = document.createElement("button");
+      speedButton.classList.add("yt-button");
       speedButton.classList.add("yt-speed-button");
       speedButton.innerHTML = `${speed[0]}x`;
       speedButton.dataset.speed = speed[0];

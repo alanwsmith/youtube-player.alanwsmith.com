@@ -1,10 +1,28 @@
+.yt-button {
+  background: none;
+  border: 1px solid #333;
+  border-radius: 0.4rem;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  outline: inherit;
+  padding: 0;
+}
+
+.yt-button-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  padding-block: 0.6rem;
+}
+
 .yt-play-button {
   width: 7ch;
 }
 
 yt-player {
   display: block;
-  border: 1px solid #eee;
 }
 
 .yt-speed-button {
@@ -15,3 +33,17 @@ yt-player {
   width: 6ch;
 }
 
+.yt-video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+}
+
+.yt-video-wrapper iframe {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
