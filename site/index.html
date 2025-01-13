@@ -13,6 +13,7 @@
     <meta name="theme-color" content="#000000" />
 
     <title>Alan's YouTube Player Web Component</title>
+    <meta property="og:site_name" content="Alan's YouTube Player Web Component" />
     <meta property="og:title" content="Alan's YouTube Player Web Component" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yt-player.alanwsmith.com/" />
@@ -43,20 +44,21 @@
       </p>
       <h2>Work In Progress</h2>
       <p>
-        I'm still working on the component. Specifically, 
-        I'm troubleshooting an issue where styles get messed
-        up if the custom element is inside a section element. 
+        The first version of this component is still under
+        development. You can track the progress in the
+        Features section below.
       </p>
-      <p>
-        <a href="/issue/">Details on the issue are here</a>
-      </p>
-          
-      <h2>Current Progress Example</h2>
+
+      <h2>Current Progress Examples</h2>
       <yt-player video="_YUzQa_1RCE">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </yt-player>
+      <yt-player video="JSkn4zaUh78" start="5">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </yt-player>
 
-      <h2>Notes</h2>
+
+      <h2>Features</h2>
       <ul>
         <li>
           Use a custom <code>&lt;yt-player video="YouTubeId"&gt;</code> tag to 
@@ -72,12 +74,32 @@
           Provides a Stop button
         </li>
         <li>
+          Allow multiple videos on a single page
+        </li>
+        <li>
           TODO: Provide speed adjustment buttons
         </li>
         <li>
           TODO: Style via parent page CSS
         </li>
+        <li>
+          TODO: Provide responsive styling example
+        </li>
+        <li>
+          TODO: Allow other scripts on the page to control the player
+          (this might already work, needs testing)
+        </li>
       </ul>
+
+      <h2>Notes</h2>
+      <ul>
+        <li>
+          I'd like to be able to add a closed caption button
+          but I'm not sure how to do that yet or if it's even 
+          possible through the api. TBD on that
+        </li>
+      </ul>
+
       <h2>References</h2>
       <ul>
         <li><a href="https://developers.google.com/youtube/iframe_api_reference">YouTube IFrame Player API Docs</a></li>
