@@ -58,11 +58,11 @@ class YouTubePlayer extends HTMLElement {
     } else if (playerState == YT.PlayerState.CUED) {
       // cued
     } else if (playerState == YT.PlayerState.ENDED) {
-      this.playButton.innerHTML = "Play";
+      this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PAUSED) {
-      this.playButton.innerHTML = "Play";
+      this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PLAYING) {
-      this.playButton.innerHTML = "Pause";
+      this.playButton.innerHTML = "pause";
     }
   }
 
@@ -70,23 +70,37 @@ class YouTubePlayer extends HTMLElement {
     this.buttonWrapper = document.createElement("div");
     this.buttonWrapper.classList.add("yt-button-wrapper");
     this.playButton = document.createElement("button");
-    this.playButton.innerHTML = "Play";
+    this.playButton.innerHTML = "play";
     this.playButton.classList.add("yt-button");
     this.playButton.classList.add("yt-play-button");
     this.playButton.addEventListener("click", (event) => {
       this.doPlayPause.call(this, event, this.player)
     });
     this.stopButton = document.createElement("button");
-    this.stopButton.innerHTML = "Stop";
+    this.stopButton.innerHTML = "stop";
     this.stopButton.classList.add("yt-button");
     this.stopButton.classList.add("yt-stop-button");
     this.stopButton.addEventListener("click", (event) => {
       this.doStop.call(this, event, this.player)
     });
+
     this.buttonWrapper.appendChild(this.playButton);
     this.buttonWrapper.appendChild(this.stopButton);
-    this.appendChild(this.buttonWrapper);
     this.addSpeedButtons(player);
+
+    this.muteButton = document.createElement("button");
+    if (player.isMuted() === true) {
+      this.muteButton.innerHTML = "unmute";
+    } else {
+      this.muteButton.innerHTML = "mute";
+    }
+    this.muteButton.classList.add("yt-button");
+    this.muteButton.classList.add("yt-mute-button");
+    this.muteButton.addEventListener("click", (event) => {
+      this.doMuteUnmute.call(this, event, this.player)
+    });
+    this.buttonWrapper.appendChild(this.muteButton);
+    this.appendChild(this.buttonWrapper);
   }
 
   addSpeedButtons(player) {
@@ -119,6 +133,15 @@ class YouTubePlayer extends HTMLElement {
     player.setPlaybackRate(speed);
   }
 
+  doMuteUnmute(event, player) {
+    if (player.isMuted() === true) {
+      player.unMute();
+      this.muteButton.innerHTML = "mute";
+    } else {
+      player.mute();
+      this.muteButton.innerHTML = "unmute";
+    }
+  }
 
   doPlayPause(event, player) {
     const buttonEl = event.target;
@@ -133,12 +156,12 @@ class YouTubePlayer extends HTMLElement {
       playerState == YT.PlayerState.CUED
     ) {
       player.playVideo();
-      this.playButton.innerHTML = "Pause";
+      this.playButton.innerHTML = "pause";
       // TODO: Figure out how to shift focus to
       // the player so keyboard controls work
     } else {
       player.pauseVideo();
-      this.playButton.innerHTML = "Play";
+      this.playButton.innerHTML = "play";
       // TODO: adjust this so it doesn't flash
       // play when clicking to different parts
       // of the video
@@ -146,7 +169,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doStop(event, player) {
-    this.playButton.innerHTML = "Play";
+    this.playButton.innerHTML = "play";
     player.stopVideo();
   }
 

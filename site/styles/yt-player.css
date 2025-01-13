@@ -17,6 +17,10 @@
   padding-block: 0.6rem;
 }
 
+.yt-mute-button {
+  width: 8ch;
+}
+
 .yt-play-button {
   width: 7ch;
 }
