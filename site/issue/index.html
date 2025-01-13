@@ -12,13 +12,14 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
     <meta name="theme-color" content="#000000" />
 
-    <title>Web Component Section Styling Issue</title>
-    <meta property="og:title" content="Web Component Section Styling Issue" />
-    <meta property="og:type" content="website" />
+    <title>Web Component Styling Issue</title>
+    <meta property="og:site_name" content="Web Component Styling Issue" />
+    <meta property="og:title" content="Web Component Styling Issue" />
+    <meta property="og:type" content="article" />
     <meta property="og:url" content="https://yt-player.alanwsmith.com/issue/" />
     <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
-    <meta property="og:description" content="Page to troubeshoot a styling problme with a web component in a section tag" />
-    <meta name="description" content="Page to troubeshoot a styling problme with a web component in a section tag" />
+    <meta property="og:description" content="Page to troubeshoot a styling problem with a web component in a section tag" />
+    <meta name="description" content="Page to troubeshoot a styling problem with a web component in a section tag" />
 
     <link rel="stylesheet" href="/styles/main.css" />
     <link rel="stylesheet" href="issue-styles.css" />
@@ -31,66 +32,47 @@
 
     <main class="flow"> 
       <hgroup>
-        <h1>Web Component Section Styling Issue</h1>
+        <h1>Web Component Styling Issue</h1>
       </hgroup>
-      <h2>Introduction</h2>
+      <h2>It's Fixed!</h2>
       <p>
-        This page is to troubleshoot an issue I'm having
-        styling a YouTube player web component. Here's an example that 
-        has the correct styles. The <code>&lt;yt-player&gt;</code> element is
-        inside the <code>&lt;main&gt;</code> element tag. 
+        This page was originally made to troubleshoot an 
+        issue I was having with a web component. It's solved now.
+      </p>
+      <p>
+        The original issue was with the styling of the component. 
+        Everything works fine when the component 
+        is directly inside the <code>main</code> element of the page.
+        The problem occurred when moving the custom element for the component 
+        one level down (e.g. into a <code>section</code> or <code>div</code> tag).
+      </p>
+      <p>
+        You can see the issue here:
       </p>
 
-      <yt-player video="_YUzQa_1RCE">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </yt-player>
-
-      <section>
-        <h2>The Problem</h2>
-        <p>The problem happens when <code>&lt;yt-player&gt;</code> is moved inside a
-          <code>&lt;section&gt;</code> tag. The styles get all messed up. 
-          Here's what it looks like:
-        </p>
+      <div>
         <yt-player video="_YUzQa_1RCE">
           <noscript>No JavaScript available to load YouTube player</noscript>
         </yt-player>
-      </section>
-      
-      <h2>Notes</h2>
-      <ul>
-        <li>
-          I'm seeing the problem on Firefox, Chrome, and Safari on my M1 mac
-        </li>
-        <li>
-          It's doing the same thing across all browsers which makes me think
-          there's something I'm missing about the section element. I don't
-          see anything in 
-          <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/section">the section element docs on MDN</a>
-          that seems like it matters
-        </li>
-        <li>
-          This page has the section element inside the main element. 
-          The same thing happens if the section is directly inside
-          the body element
-        </li>
-        <li>
-          If I change the &lt;section&gt; element to a &lt;div&gt; the issue
-          still happens. So, maybe it's a nesting level thing?
-        </li>
-        <li>
-          This example has a <code>class="flow"</code> attribute on 
-          the <code>main</code> element tag that adds some spacing
-          between elements. I've removed that and the issue still 
-          occurs
-        </li>
-      </ul>
+      </div>
 
-      <h2>Source Code</h2>
-      <p><a href="https://raw.githubusercontent.com/alanwsmith/yt-player.alanwsmith.com/refs/heads/main/site/issue/index.html" target="_blank">Here's the HTML source code for the page</a></p>
-      <p><a href="https://raw.githubusercontent.com/alanwsmith/yt-player.alanwsmith.com/refs/heads/main/site/issue/issue-styles.css" target="_blank">And the CSS source code</a></p>
+      <p>The blue background and red border should surround the video.</p>
 
-      <h2>Any Ideas?</h2>
-      <p>I'm at a loss. If you've got ideas, I'm all ears</p>
+      <h2>The Solution</h2>
+      <p>The fix turned out to be explicitly setting the custom element to 
+        display as a block with:</p>
+      <blockquote>display: block</blockquote>
+      <p>The main stylesheet for this component has been updated with the fix.
+      (I'm leaving the busted one here as a reference example)</p>
+      <p>
+        I expect the reason it originally worked in my <code>main</code>
+        element was because of some style applied there. I'm not really
+        worried about it. It's working now.
+      </p>
+      <p>
+        Anyway, <a href="/">here's the link back to the main page</a>.
+      </p>
+
     </main>
 
     <footer>
