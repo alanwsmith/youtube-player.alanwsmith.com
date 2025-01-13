@@ -2,6 +2,10 @@
 // video isn't available and send a better message
 // than the youtube default one. or maybe play 
 // a different video all together 
+//
+// TODO: Get available playback rates dynamically, maybe...
+//
+// ref: https://developers.google.com/youtube/iframe_api_reference
 
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
@@ -89,12 +93,24 @@ class YouTubePlayer extends HTMLElement {
       [2.5, "2-5"],
       [3, "2"],
     ];
-    speeds.forEach((speed, speedIndex) => {
-      this.speedButtons[speedIndex] = document.createElement("button");
-      this.speedButtons[speedIndex].classList.add("yt-speed-button");
-      this.speedButtons[speedIndex].innerHTML = `${speed[0]}x`;
-      this.buttonWrapper.appendChild(this.speedButtons[speedIndex]);
+    speeds.forEach((speed) => {
+      const speedButton = document.createElement("button");
+      speedButton.classList.add("yt-speed-button");
+      speedButton.innerHTML = `${speed[0]}x`;
+      speedButton.dataset.speed = speed[0];
+      speedButton.addEventListener("click", (event) => {
+        this.adjustSpeed.call(this, event, player);
+      });
+      this.speedButtons.push(speedButton);
     });
+    this.speedButtons.forEach((speedButton) => {
+      this.buttonWrapper.appendChild(speedButton);
+    });
+  }
+
+  adjustSpeed(event, player) {
+    const speed = parseFloat(event.target.dataset.speed);
+    player.setPlaybackRate(speed);
   }
 
 
