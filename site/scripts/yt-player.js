@@ -72,23 +72,29 @@ class YouTubePlayer extends HTMLElement {
     const playerState = event.target.getPlayerState();
     if (playerState == -1) {
       this.dataset.state = "unstarted";
+      document.body.dataset.ytState = "unstated";
     } else if (playerState == YT.PlayerState.BUFFERING) {
       this.dataset.state = "buffering";
+      document.body.dataset.ytState = "buffering";
     } else if (playerState == YT.PlayerState.CUED) {
       this.dataset.state = "cued";
+      document.body.dataset.ytState = "cued";
     } else if (playerState == YT.PlayerState.ENDED) {
       this.player.g.style.visibility = "hidden";
       this.ytLogo.style.visibility = "visible";
       this.dataset.state = "ended";
+      document.body.dataset.ytState = "ended";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PAUSED) {
       this.dataset.state = "paused";
+      document.body.dataset.ytState = "paused";
       this.playButton.innerHTML = "play";
     } else if (playerState == YT.PlayerState.PLAYING) {
       console.log(this.player.g);
       this.player.g.style.visibility = "visible";
       this.ytLogo.style.visibility = "hidden";
       this.dataset.state = "playing";
+      document.body.dataset.ytState = "playing";
       this.playButton.innerHTML = "pause";
     }
   }
