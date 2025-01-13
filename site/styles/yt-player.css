@@ -88,6 +88,7 @@ yt-player[data-state=unstarted] {
 
 .yt-video-wrapper {
   border-radius: 0.6rem;
+  cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
