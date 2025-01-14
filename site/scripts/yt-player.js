@@ -233,6 +233,11 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
+  handleVideoWrapperClick(event) {
+    this.ytLogo.style.visibility = "hidden"
+    this.player.playVideo()
+  }
+
   handleYtLogoClick(event) {
     this.ytLogo.style.visibility = "hidden"
     this.player.playVideo()
@@ -273,6 +278,9 @@ class YouTubePlayer extends HTMLElement {
     this.getPlaybackRates()
     this.addPlaybackButtons()
     this.ytLogo.style.visibility = "visible"
+    this.videoWrapper.addEventListener("click", (event) => {
+      this.handleVideoWrapperClick.call(this, event)
+    })
   }
 
   loadApi() {
