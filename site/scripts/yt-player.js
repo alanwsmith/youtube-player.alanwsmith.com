@@ -55,6 +55,17 @@ class YouTubePlayer extends HTMLElement {
   //   this.buttonWrapper.appendChild(this.muteButton)
   //   this.ytLogo.style.visibility = 'visible'
   // }
+  //
+
+  addMuteButton() {
+    this.muteButton = document.createElement("button")
+    this.muteButton.classList.add("yt-mute-button")
+    this.muteButton.innerHTML = "mute"
+    this.muteButton.addEventListener("click", (event) => {
+      this.handleMuteButtonClick.call(this, event)
+    })
+    this.buttonWrapper.appendChild(this.muteButton)
+  } 
 
   //addSpeedButtons(player) {
   //  this.speedButtons = []
@@ -186,6 +197,16 @@ class YouTubePlayer extends HTMLElement {
     })
   }
 
+  handleMuteButtonClick(event) {
+    if (this.player.isMuted() === true) {
+      this.muteButton.innerHTML = "mute"
+      this.player.unMute()
+    } else {
+      this.muteButton.innerHTML = "unmute"
+      this.player.mute()
+    }
+  }
+
   handlePlaybackButtonClick(event) {
     if (this.player.getPlayerState() === 1) {
       if (this.player.getPlaybackRate() === event.target.playbackRate) {
@@ -277,6 +298,7 @@ class YouTubePlayer extends HTMLElement {
     // TODO: Figure out how to handle errors here.
     this.getPlaybackRates()
     this.addPlaybackButtons()
+    this.addMuteButton()
     this.ytLogo.style.visibility = "visible"
     this.videoWrapper.addEventListener("click", (event) => {
       this.handleVideoWrapperClick.call(this, event)
