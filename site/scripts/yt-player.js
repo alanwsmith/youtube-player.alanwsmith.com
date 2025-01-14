@@ -179,13 +179,21 @@ class YouTubePlayer extends HTMLElement {
   }
 
   handlePlaybackButtonClick(event) {
+    const playbackButtonNodes = document.querySelectorAll(".yt-playback-button")
+    const playbackButtonEls = [...playbackButtonNodes]
+    playbackButtonEls.forEach((playbackButton) => {
+      playbackButton.classList.remove("yt-active-rate")
+    })
+
     if (this.player.getPlayerState() === 1) {
       if (this.player.getPlaybackRate() === event.target.playbackRate) {
         this.player.pauseVideo()
       } else {
         this.player.setPlaybackRate(event.target.playbackRate)
+        event.target.classList.add("yt-active-rate")
       }
     } else {
+      event.target.classList.add("yt-active-rate")
       this.player.setPlaybackRate(event.target.playbackRate)
       this.player.playVideo()
     }

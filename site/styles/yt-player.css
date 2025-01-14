@@ -71,11 +71,17 @@ mask-repeat: no-repeat;
   height: 1.2rem;
 }
 
+/*
 .yt-playback-button[data-playback-rate="1"] {
   border: 1px solid red;
   border-radius: 0.4rem;
 }
+*/
 
+.yt-active-rate {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
 
 /*
 * Example of using selectors based on player state
