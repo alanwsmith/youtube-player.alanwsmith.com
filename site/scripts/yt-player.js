@@ -56,9 +56,6 @@ class YouTubePlayer extends HTMLElement {
   //   this.ytLogo.style.visibility = 'visible'
   // }
 
-  addLogoButton() {
-
-  }
 
   //addSpeedButtons(player) {
   //  this.speedButtons = []
