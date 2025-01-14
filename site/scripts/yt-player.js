@@ -18,6 +18,8 @@
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
     this.videoId = this.getAttribute('video')
+    this.fastForwardAmount = 10
+    this.rewindAmount = 12
     this.buildStructure()
     this.init()
   }
@@ -56,6 +58,16 @@ class YouTubePlayer extends HTMLElement {
   //   this.ytLogo.style.visibility = 'visible'
   // }
   //
+
+  addFastForwardButton() {
+    this.fastForwardButton = document.createElement("button")
+    this.fastForwardButton.classList.add("yt-rewind-button")
+    this.fastForwardButton.innerHTML = ">>"
+    this.fastForwardButton.addEventListener("click", (event) => {
+      this.handleFastForwardButtonClick.call(this, event)
+    })
+    this.buttonWrapper.appendChild(this.fastForwardButton)
+  }
 
   addMuteButton() {
     this.muteButton = document.createElement("button")
@@ -140,7 +152,7 @@ class YouTubePlayer extends HTMLElement {
     this.appendChild(this.videoWrapper)
     this.videoEl = document.createElement('div')
     this.videoWrapper.appendChild(this.videoEl)
-    this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg")`
+    this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg")`
     this.videoWrapper.style.backgroundSize = 'cover'
     this.videoWrapper.style.backgroundPosition = 'center'
     this.videoWrapper.style.backgroundRepeat = 'no-repeat'
@@ -207,6 +219,15 @@ class YouTubePlayer extends HTMLElement {
     })
   }
 
+  handleFastForwardButtonClick(event) {
+    this.player.seekTo(
+      Math.min(
+        this.player.getCurrentTime() + this.fastForwardAmount,
+        this.player.getDuration() 
+      )
+    )
+  }
+
   handleMuteButtonClick(event) {
     if (this.player.isMuted() === true) {
       this.muteButton.innerHTML = "mute"
@@ -267,7 +288,7 @@ class YouTubePlayer extends HTMLElement {
   handleRewindButtonClick(event) {
     this.player.seekTo(
       Math.max(
-        0, this.player.getCurrentTime() - 7
+        0, this.player.getCurrentTime() - this.rewindAmount
       )
     )
   }
@@ -317,6 +338,7 @@ class YouTubePlayer extends HTMLElement {
     this.addRewindButton()
     this.getPlaybackRates()
     this.addPlaybackButtons()
+    this.addFastForwardButton()
     this.addMuteButton()
     this.ytLogo.style.visibility = "visible"
     this.videoWrapper.addEventListener("click", (event) => {
