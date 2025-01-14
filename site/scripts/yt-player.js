@@ -9,6 +9,11 @@
 //
 // YouTube iframe API Reference:
 // https://developers.google.com/youtube/iframe_api_reference
+//
+// TODO: Figure out if there's a way to make the
+// text switch from play to pause as soon as the
+// video itself is clicked (right now there's a
+// little delay)
 
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
@@ -16,7 +21,6 @@ class YouTubePlayer extends HTMLElement {
     this.buildStructure()
     this.init()
   }
-
 
   // addButtons(player) {
   //   this.playButton = document.createElement('button')
@@ -51,6 +55,10 @@ class YouTubePlayer extends HTMLElement {
   //   this.buttonWrapper.appendChild(this.muteButton)
   //   this.ytLogo.style.visibility = 'visible'
   // }
+
+  addLogoButton() {
+
+  }
 
   //addSpeedButtons(player) {
   //  this.speedButtons = []
@@ -89,6 +97,7 @@ class YouTubePlayer extends HTMLElement {
       const playbackButton = document.createElement('button')
       playbackButton.classList.add('yt-playback-button')
       playbackButton.playbackRate = playbackRate
+      playbackButton.innerHTML = playbackRate
       playbackButton.addEventListener("click", (event) => {
         this.handlePlaybackButtonClick.call(this, event)
       })
@@ -122,6 +131,9 @@ class YouTubePlayer extends HTMLElement {
     this.buttonWrapper.classList.add('yt-button-wrapper')
     this.appendChild(this.buttonWrapper)
     this.ytLogo = document.createElement('div')
+    this.ytLogo.addEventListener("click", (event) => {
+      this.handleYtLogoClick.call(this, event)
+    })
     this.ytLogo.classList.add('yt-logo')
     this.videoWrapper.appendChild(this.ytLogo)
   }
@@ -179,24 +191,25 @@ class YouTubePlayer extends HTMLElement {
   }
 
   handlePlaybackButtonClick(event) {
-    const playbackButtonNodes = document.querySelectorAll(".yt-playback-button")
-    const playbackButtonEls = [...playbackButtonNodes]
-    playbackButtonEls.forEach((playbackButton) => {
-      playbackButton.classList.remove("yt-active-rate")
-    })
-
     if (this.player.getPlayerState() === 1) {
       if (this.player.getPlaybackRate() === event.target.playbackRate) {
         this.player.pauseVideo()
       } else {
         this.player.setPlaybackRate(event.target.playbackRate)
-        event.target.classList.add("yt-active-rate")
       }
     } else {
-      event.target.classList.add("yt-active-rate")
       this.player.setPlaybackRate(event.target.playbackRate)
       this.player.playVideo()
     }
+  }
+
+  handlePlaybackRateChange(event) {
+    this.updateButtonStyles()
+  }
+
+  handleYtLogoClick(event) {
+    this.ytLogo.style.visibility = "hidden"
+    this.player.playVideo()
   }
 
   async init() {
@@ -222,6 +235,9 @@ class YouTubePlayer extends HTMLElement {
           onStateChange: (event) => {
             this.onPlayerStateChange.call(this, event)
           },
+          onPlaybackRateChange: (event) => {
+            this.handlePlaybackRateChange.call(this, event)
+          }
         },
       })
     }).then((value) => {
@@ -230,7 +246,7 @@ class YouTubePlayer extends HTMLElement {
     // TODO: Figure out how to handle errors here.
     this.getPlaybackRates()
     this.addPlaybackButtons()
-    //console.log(this.playbackRates)
+    this.ytLogo.style.visibility = "visible"
   }
 
   loadApi() {
@@ -253,10 +269,6 @@ class YouTubePlayer extends HTMLElement {
   }
 
   onPlayerStateChange(event) {
-    // TODO: Figure out if there's a way to make the
-    // text switch from play to pause as soon as the
-    // video itself is clicked (right now there's a
-    // little delay)
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
       this.dataset.state = 'unstarted'
@@ -268,23 +280,37 @@ class YouTubePlayer extends HTMLElement {
       this.dataset.state = 'cued'
       document.body.dataset.ytState = 'cued'
     } else if (playerState == YT.PlayerState.ENDED) {
+      this.updateButtonStyles()
       this.player.g.style.visibility = 'hidden'
       this.ytLogo.style.visibility = 'visible'
       this.dataset.state = 'ended'
       document.body.dataset.ytState = 'ended'
-      // this.playButton.innerHTML = 'play'
     } else if (playerState == YT.PlayerState.PAUSED) {
+      this.updateButtonStyles()
       this.dataset.state = 'paused'
       document.body.dataset.ytState = 'paused'
-      // this.playButton.innerHTML = 'play'
     } else if (playerState == YT.PlayerState.PLAYING) {
-      console.log(this.player.g)
+      this.updateButtonStyles()
       this.player.g.style.visibility = 'visible'
       this.ytLogo.style.visibility = 'hidden'
       this.dataset.state = 'playing'
       document.body.dataset.ytState = 'playing'
-      // this.playButton.innerHTML = 'pause'
     }
+  }
+
+  updateButtonStyles() {
+    const playbackButtonNodes = document.querySelectorAll(".yt-playback-button")
+    const playbackButtonEls = [...playbackButtonNodes]
+    playbackButtonEls.forEach((playbackButton) => {
+      if (
+        this.player.getPlaybackRate() === playbackButton.playbackRate
+        && this.player.getPlayerState() === 1
+      ) {
+        playbackButton.classList.add("yt-active-rate")
+      } else {
+        playbackButton.classList.remove("yt-active-rate")
+      }
+    })
   }
 
 }
