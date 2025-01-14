@@ -67,6 +67,16 @@ class YouTubePlayer extends HTMLElement {
     this.buttonWrapper.appendChild(this.muteButton)
   } 
 
+  addRewindButton() {
+    this.rewindButton = document.createElement("button")
+    this.rewindButton.classList.add("yt-rewind-button")
+    this.rewindButton.innerHTML = "<<"
+    this.rewindButton.addEventListener("click", (event) => {
+      this.handleRewindButtonClick.call(this, event)
+    })
+    this.buttonWrapper.appendChild(this.rewindButton)
+  }
+
   //addSpeedButtons(player) {
   //  this.speedButtons = []
   //  // TODO: remove the strings and just add a
@@ -254,6 +264,14 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
+  handleRewindButtonClick(event) {
+    this.player.seekTo(
+      Math.max(
+        0, this.player.getCurrentTime() - 7
+      )
+    )
+  }
+
   handleVideoWrapperClick(event) {
     this.ytLogo.style.visibility = "hidden"
     this.player.playVideo()
@@ -296,6 +314,7 @@ class YouTubePlayer extends HTMLElement {
       return value
     })
     // TODO: Figure out how to handle errors here.
+    this.addRewindButton()
     this.getPlaybackRates()
     this.addPlaybackButtons()
     this.addMuteButton()
