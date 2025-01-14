@@ -56,7 +56,6 @@ class YouTubePlayer extends HTMLElement {
   //   this.ytLogo.style.visibility = 'visible'
   // }
 
-
   //addSpeedButtons(player) {
   //  this.speedButtons = []
   //  // TODO: remove the strings and just add a
@@ -135,47 +134,47 @@ class YouTubePlayer extends HTMLElement {
     this.videoWrapper.appendChild(this.ytLogo)
   }
 
-  doMuteUnmute(event, player) {
-    if (player.isMuted() === true) {
-      player.unMute()
-      this.muteButton.innerHTML = 'mute'
-    } else {
-      player.mute()
-      this.muteButton.innerHTML = 'unmute'
-    }
-  }
+  // doMuteUnmute(event, player) {
+  //   if (player.isMuted() === true) {
+  //     player.unMute()
+  //     this.muteButton.innerHTML = 'mute'
+  //   } else {
+  //     player.mute()
+  //     this.muteButton.innerHTML = 'unmute'
+  //   }
+  // }
 
-  doPlayPause(event, player) {
-    const buttonEl = event.target
-    const playerState = player.getPlayerState()
-    // The docs don't list a YT.PlayerState.UNSTARTED
-    // flag so using the explicit `-1` instead
-    if (
-      playerState == -1 ||
-      playerState == YT.PlayerState.ENDED ||
-      playerState == YT.PlayerState.PAUSED ||
-      playerState == YT.PlayerState.BUFFERING ||
-      playerState == YT.PlayerState.CUED
-    ) {
-      player.playVideo()
-      // this.playButton.innerHTML = 'pause'
-      // TODO: Figure out how to shift focus to
-      // the player so keyboard controls work
-    } else {
-      player.pauseVideo()
-      // this.playButton.innerHTML = 'play'
-      // TODO: adjust this so it doesn't flash
-      // play when clicking to different parts
-      // of the video
-    }
-  }
+  // doPlayPause(event, player) {
+  //   const buttonEl = event.target
+  //   const playerState = player.getPlayerState()
+  //   // The docs don't list a YT.PlayerState.UNSTARTED
+  //   // flag so using the explicit `-1` instead
+  //   if (
+  //     playerState == -1 ||
+  //     playerState == YT.PlayerState.ENDED ||
+  //     playerState == YT.PlayerState.PAUSED ||
+  //     playerState == YT.PlayerState.BUFFERING ||
+  //     playerState == YT.PlayerState.CUED
+  //   ) {
+  //     player.playVideo()
+  //     // this.playButton.innerHTML = 'pause'
+  //     // TODO: Figure out how to shift focus to
+  //     // the player so keyboard controls work
+  //   } else {
+  //     player.pauseVideo()
+  //     // this.playButton.innerHTML = 'play'
+  //     // TODO: adjust this so it doesn't flash
+  //     // play when clicking to different parts
+  //     // of the video
+  //   }
+  // }
 
-  doStop(event, player) {
-    // this.playButton.innerHTML = 'play'
-    this.player.g.style.visibility = 'hidden'
-    this.ytLogo.style.visibility = 'visible'
-    player.stopVideo()
-  }
+  // doStop(event, player) {
+  //   // this.playButton.innerHTML = 'play'
+  //   this.player.g.style.visibility = 'hidden'
+  //   this.ytLogo.style.visibility = 'visible'
+  //   player.stopVideo()
+  // }
 
   getPlaybackRates() {
     this.playbackRates = []
