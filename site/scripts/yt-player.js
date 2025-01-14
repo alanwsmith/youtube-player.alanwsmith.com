@@ -3,86 +3,110 @@
 // than the youtube default one. or maybe play
 // a different video all together
 //
+// TODO: Maybe add an end time
+//
 // TODO: Get available playback rates dynamically, maybe...
 //
-// ref: https://developers.google.com/youtube/iframe_api_reference
+// YouTube iframe API Reference:
+// https://developers.google.com/youtube/iframe_api_reference
 
 class YouTubePlayer extends HTMLElement {
   connectedCallback() {
-    this.dataset.state = 'loading'
     this.videoId = this.getAttribute('video')
     this.buildStructure()
     this.init()
   }
 
-  addButtons(player) {
-    this.playButton = document.createElement('button')
-    this.playButton.innerHTML = 'play'
-    this.playButton.classList.add('yt-button')
-    this.playButton.classList.add('yt-play-button')
-    this.playButton.addEventListener('click', (event) => {
-      this.doPlayPause.call(this, event, this.player)
-    })
-    this.stopButton = document.createElement('button')
-    this.stopButton.innerHTML = 'stop'
-    this.stopButton.classList.add('yt-button')
-    this.stopButton.classList.add('yt-stop-button')
-    this.stopButton.addEventListener('click', (event) => {
-      this.doStop.call(this, event, this.player)
-    })
-    this.buttonWrapper.appendChild(this.playButton)
-    this.buttonWrapper.appendChild(this.stopButton)
-    this.addSpeedButtons(player)
-    this.muteButton = document.createElement('button')
-    if (player.isMuted() === true) {
-      this.muteButton.innerHTML = 'unmute'
-    } else {
-      this.muteButton.innerHTML = 'mute'
-    }
-    this.muteButton.classList.add('yt-button')
-    this.muteButton.classList.add('yt-mute-button')
-    this.muteButton.addEventListener('click', (event) => {
-      this.doMuteUnmute.call(this, event, this.player)
-    })
-    this.buttonWrapper.appendChild(this.muteButton)
-    this.ytLogo.style.visibility = 'visible'
-  }
 
-  addSpeedButtons(player) {
-    this.speedButtons = []
-    // TODO: remove the strings and just add a
-    // data-speed attribute that can be used
-    // for selecting
-    //
-    // TODO: Add a data-speed to the main
-    // player that can be used for selection too
-    const speeds = [
-      [1, '1'],
-      [1.5, '1-5'],
-      [2, '2'],
-      [2.5, '2-5'],
-      [3, '2'],
-    ]
-    speeds.forEach((speed) => {
-      const speedButton = document.createElement('button')
-      speedButton.classList.add('yt-button')
-      speedButton.classList.add('yt-speed-button')
-      speedButton.innerHTML = `${speed[0]}x`
-      speedButton.dataset.speed = speed[0]
-      speedButton.addEventListener('click', (event) => {
-        this.adjustSpeed.call(this, event, player)
+  // addButtons(player) {
+  //   this.playButton = document.createElement('button')
+  //   this.playButton.innerHTML = '&nbsp;'
+  //   this.playButton.classList.add('yt-button')
+  //   this.playButton.classList.add('yt-play-button')
+  //   this.playButton.classList.add('yt-play-icon')
+  //   this.playButton.addEventListener('click', (event) => {
+  //     this.doPlayPause.call(this, event, this.player)
+  //   })
+  //   this.stopButton = document.createElement('button')
+  //   this.stopButton.innerHTML = 'stop'
+  //   this.stopButton.classList.add('yt-button')
+  //   this.stopButton.classList.add('yt-stop-button')
+  //   this.stopButton.addEventListener('click', (event) => {
+  //     this.doStop.call(this, event, this.player)
+  //   })
+  //   this.buttonWrapper.appendChild(this.playButton)
+  //   this.buttonWrapper.appendChild(this.stopButton)
+  //   this.addSpeedButtons(player)
+  //   this.muteButton = document.createElement('button')
+  //   if (player.isMuted() === true) {
+  //     this.muteButton.innerHTML = 'unmute'
+  //   } else {
+  //     this.muteButton.innerHTML = 'mute'
+  //   }
+  //   this.muteButton.classList.add('yt-button')
+  //   this.muteButton.classList.add('yt-mute-button')
+  //   this.muteButton.addEventListener('click', (event) => {
+  //     this.doMuteUnmute.call(this, event, this.player)
+  //   })
+  //   this.buttonWrapper.appendChild(this.muteButton)
+  //   this.ytLogo.style.visibility = 'visible'
+  // }
+
+  //addSpeedButtons(player) {
+  //  this.speedButtons = []
+  //  // TODO: remove the strings and just add a
+  //  // data-speed attribute that can be used
+  //  // for selecting
+  //  //
+  //  // TODO: Add a data-speed to the main
+  //  // player that can be used for selection too
+  //  const speeds = [
+  //    [1, '1'],
+  //    [1.5, '1-5'],
+  //    [2, '2'],
+  //    [2.5, '2-5'],
+  //    [3, '3'],
+  //    [4, '4']
+  //  ]
+  //  speeds.forEach((speed) => {
+  //    const speedButton = document.createElement('button')
+  //    speedButton.classList.add('yt-button')
+  //    speedButton.classList.add('yt-speed-button')
+  //    speedButton.innerHTML = `${speed[0]}x`
+  //    speedButton.dataset.speed = speed[0]
+  //    speedButton.addEventListener('click', (event) => {
+  //      this.adjustSpeed.call(this, event, player)
+  //    })
+  //    this.speedButtons.push(speedButton)
+  //  })
+  //  this.speedButtons.forEach((speedButton) => {
+  //    this.buttonWrapper.appendChild(speedButton)
+  //  })
+  //}
+
+  addPlaybackButtons() {
+    this.playbackRates.forEach((playbackRate) => {
+      const playbackButton = document.createElement('button')
+      playbackButton.classList.add('yt-playback-button')
+      playbackButton.playbackRate = playbackRate
+      playbackButton.addEventListener("click", (event) => {
+        this.handlePlaybackButtonClick.call(this, event)
       })
-      this.speedButtons.push(speedButton)
-    })
-    this.speedButtons.forEach((speedButton) => {
-      this.buttonWrapper.appendChild(speedButton)
+      this.buttonWrapper.appendChild(playbackButton)
     })
   }
 
-  adjustSpeed(event, player) {
-    const speed = parseFloat(event.target.dataset.speed)
-    player.setPlaybackRate(speed)
-  }
+  // adjustSpeed(event, player) {
+  //   const speed = parseFloat(event.target.dataset.speed)
+  //   player.setPlaybackRate(speed)
+  // }
+
+  // applyInit() {
+  //   this.addButtons(this.player)
+  //   this.videoWrapper.addEventListener('click', () => {
+  //     this.player.playVideo()
+  //   })
+  // }
 
   buildStructure() {
     this.videoWrapper = document.createElement('div')
@@ -125,12 +149,12 @@ class YouTubePlayer extends HTMLElement {
       playerState == YT.PlayerState.CUED
     ) {
       player.playVideo()
-      this.playButton.innerHTML = 'pause'
+      // this.playButton.innerHTML = 'pause'
       // TODO: Figure out how to shift focus to
       // the player so keyboard controls work
     } else {
       player.pauseVideo()
-      this.playButton.innerHTML = 'play'
+      // this.playButton.innerHTML = 'play'
       // TODO: adjust this so it doesn't flash
       // play when clicking to different parts
       // of the video
@@ -138,10 +162,33 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doStop(event, player) {
-    this.playButton.innerHTML = 'play'
+    // this.playButton.innerHTML = 'play'
     this.player.g.style.visibility = 'hidden'
     this.ytLogo.style.visibility = 'visible'
     player.stopVideo()
+  }
+
+  getPlaybackRates() {
+    this.playbackRates = []
+    let targetRates = [0.5, 1, 1.5, 2, 3]
+    this.player.getAvailablePlaybackRates().forEach((playbackRate) => {
+      if (targetRates.includes(playbackRate)) {
+        this.playbackRates.push(playbackRate)
+      }
+    })
+  }
+
+  handlePlaybackButtonClick(event) {
+    if (this.player.getPlayerState() === 1) {
+      if (this.player.getPlaybackRate() === event.target.playbackRate) {
+        this.player.pauseVideo()
+      } else {
+        this.player.setPlaybackRate(event.target.playbackRate)
+      }
+    } else {
+      this.player.setPlaybackRate(event.target.playbackRate)
+      this.player.playVideo()
+    }
   }
 
   async init() {
@@ -173,10 +220,9 @@ class YouTubePlayer extends HTMLElement {
       return value
     })
     // TODO: Figure out how to handle errors here.
-    this.addButtons(this.player)
-    this.videoWrapper.addEventListener('click', () => {
-      this.player.playVideo()
-    })
+    this.getPlaybackRates()
+    this.addPlaybackButtons()
+    //console.log(this.playbackRates)
   }
 
   loadApi() {
@@ -186,7 +232,6 @@ class YouTubePlayer extends HTMLElement {
     if (window.YT || (window.YT && window.YT.Player)) {
       return
     }
-
     this.apiLoader = new Promise((res, rej) => {
       var el = document.createElement('script')
       el.src = 'https://www.youtube.com/iframe_api'
@@ -219,20 +264,21 @@ class YouTubePlayer extends HTMLElement {
       this.ytLogo.style.visibility = 'visible'
       this.dataset.state = 'ended'
       document.body.dataset.ytState = 'ended'
-      this.playButton.innerHTML = 'play'
+      // this.playButton.innerHTML = 'play'
     } else if (playerState == YT.PlayerState.PAUSED) {
       this.dataset.state = 'paused'
       document.body.dataset.ytState = 'paused'
-      this.playButton.innerHTML = 'play'
+      // this.playButton.innerHTML = 'play'
     } else if (playerState == YT.PlayerState.PLAYING) {
       console.log(this.player.g)
       this.player.g.style.visibility = 'visible'
       this.ytLogo.style.visibility = 'hidden'
       this.dataset.state = 'playing'
       document.body.dataset.ytState = 'playing'
-      this.playButton.innerHTML = 'pause'
+      // this.playButton.innerHTML = 'pause'
     }
   }
+
 }
 
 customElements.define('yt-player', YouTubePlayer)

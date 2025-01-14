@@ -42,7 +42,7 @@
         <noscript>No JavaScript available to load YouTube player</noscript>
       </yt-player>
 
-      <h2>Features</h2>
+      <h2>Features And TODOs</h2>
       <ul>
         <li>
           <p>
@@ -96,39 +96,65 @@
         <li>
           Provide a data-yt-state attribute to body element
           that can be used to adjust styling when videos are playing
-          (e.g. dim the rest of the content). Note that this
-          can be tricky if there are multiple videos on the page. 
+          (e.g. dim the rest of the content). (Note: I'm punting
+          on issues that will arise if there are multiple players
+          on the page that you try to play at the same time)
         </li>
         <li>
           TODO: Save playhead location when stopping the player or reloading
           the page. 
+        </li>
         <li>
           TODO: Set up the speed buttons so they start playing
           at the specific speed if the video isn't already going
         </li>
         <li>
-          TODO: Send focus to video player so keyboard commands work
-        </li>
-        <li>
           TODO: Provide skip forward and backwards buttons
         </li>
+      </ul>
+      <h2>Someday/Maybe</h2>
+      <ul>
         <li>
-          MAYBE: Provide an autoplay attribute that attempts to 
-          auto play the video
+          PROBABLY: Send focus to video player so keyboard commands work
+        </li>
+        <li>
+          PROBABLY: If there are multiple videos on the page only one
+          plays at a time (i.e. if one is playing and another one
+          gets started it stops the first one).
+        </li>
+        <li>
+          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
         </li>
         <li>
           MAYBE: Add volume slider
+        </li>
+        <li>
+          MAYBE: Set up coordination to allow multiple videos
+          to play at the same time without clobbering each other
+          when updated the body level `data-yt-player-state`
+          attribute
         </li>
         <li>
           MAYBE: Allow other scripts on the page to control the player
           (this might already work, needs testing)
         </li>
         <li>
-          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
+          MAYBE: Provide an autoplay attribute that attempts to 
+          auto play the video
         </li>
       </ul>
       <h2>Notes</h2>
       <ul>
+        <li>
+          The playback rates available for each video are
+          determined on the YouTube side. They are filtered
+          down to include: 0.5x, 1x, 1.5x, 2x, and 3x. This ignores
+          0.25x, 0.75x, 1.25x, and 1.75x. I'm making that trade off
+          to reduce the number of items in the UI. I'm not
+          sure if 3x rates exist. The numbers in the docs are generic
+          and the test videos I've used don't have the rate. 
+          TBD on that.
+        </li>
         <li>
           I'd like to be able to add a closed caption button
           but I'm not sure how to do that yet or if it's even 
