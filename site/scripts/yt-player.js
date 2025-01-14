@@ -93,7 +93,7 @@ class YouTubePlayer extends HTMLElement {
       const playbackButton = document.createElement('button')
       playbackButton.classList.add('yt-playback-button')
       playbackButton.playbackRate = playbackRate
-      playbackButton.innerHTML = playbackRate
+      playbackButton.innerHTML = `${playbackRate}x`
       playbackButton.addEventListener("click", (event) => {
         this.handlePlaybackButtonClick.call(this, event)
       })
@@ -203,6 +203,36 @@ class YouTubePlayer extends HTMLElement {
     this.updateButtonStyles()
   }
 
+  handlePlayerStateChange(event) {
+    const playerState = event.target.getPlayerState()
+    if (playerState == -1) {
+      this.dataset.state = 'unstarted'
+      document.body.dataset.ytState = 'unstated'
+    } else if (playerState == YT.PlayerState.BUFFERING) {
+      this.dataset.state = 'buffering'
+      document.body.dataset.ytState = 'buffering'
+    } else if (playerState == YT.PlayerState.CUED) {
+      this.dataset.state = 'cued'
+      document.body.dataset.ytState = 'cued'
+    } else if (playerState == YT.PlayerState.ENDED) {
+      this.updateButtonStyles()
+      this.player.g.style.visibility = 'hidden'
+      this.ytLogo.style.visibility = 'visible'
+      this.dataset.state = 'ended'
+      document.body.dataset.ytState = 'ended'
+    } else if (playerState == YT.PlayerState.PAUSED) {
+      this.updateButtonStyles()
+      this.dataset.state = 'paused'
+      document.body.dataset.ytState = 'paused'
+    } else if (playerState == YT.PlayerState.PLAYING) {
+      this.updateButtonStyles()
+      this.player.g.style.visibility = 'visible'
+      this.ytLogo.style.visibility = 'hidden'
+      this.dataset.state = 'playing'
+      document.body.dataset.ytState = 'playing'
+    }
+  }
+
   handleYtLogoClick(event) {
     this.ytLogo.style.visibility = "hidden"
     this.player.playVideo()
@@ -229,7 +259,7 @@ class YouTubePlayer extends HTMLElement {
             resolve(player)
           },
           onStateChange: (event) => {
-            this.onPlayerStateChange.call(this, event)
+            this.handlePlayerStateChange.call(this, event)
           },
           onPlaybackRateChange: (event) => {
             this.handlePlaybackRateChange.call(this, event)
@@ -262,36 +292,6 @@ class YouTubePlayer extends HTMLElement {
       el.onerror = rej
       this.append(el)
     })
-  }
-
-  onPlayerStateChange(event) {
-    const playerState = event.target.getPlayerState()
-    if (playerState == -1) {
-      this.dataset.state = 'unstarted'
-      document.body.dataset.ytState = 'unstated'
-    } else if (playerState == YT.PlayerState.BUFFERING) {
-      this.dataset.state = 'buffering'
-      document.body.dataset.ytState = 'buffering'
-    } else if (playerState == YT.PlayerState.CUED) {
-      this.dataset.state = 'cued'
-      document.body.dataset.ytState = 'cued'
-    } else if (playerState == YT.PlayerState.ENDED) {
-      this.updateButtonStyles()
-      this.player.g.style.visibility = 'hidden'
-      this.ytLogo.style.visibility = 'visible'
-      this.dataset.state = 'ended'
-      document.body.dataset.ytState = 'ended'
-    } else if (playerState == YT.PlayerState.PAUSED) {
-      this.updateButtonStyles()
-      this.dataset.state = 'paused'
-      document.body.dataset.ytState = 'paused'
-    } else if (playerState == YT.PlayerState.PLAYING) {
-      this.updateButtonStyles()
-      this.player.g.style.visibility = 'visible'
-      this.ytLogo.style.visibility = 'hidden'
-      this.dataset.state = 'playing'
-      document.body.dataset.ytState = 'playing'
-    }
   }
 
   updateButtonStyles() {
