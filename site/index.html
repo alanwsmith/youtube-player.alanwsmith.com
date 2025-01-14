@@ -11,16 +11,14 @@
     <meta name="msapplication-TileColor" content="#da532c" />
     <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
     <meta name="theme-color" content="#000000" />
-
     <title>Alan's YouTube Player Web Component</title>
-    <meta property="og:site_name" content="Alan's YouTube Player Web Component" />
+    <meta property="og:site_name" content="yt-player.alanwsmith.com" />
     <meta property="og:title" content="Alan's YouTube Player Web Component" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://yt-player.alanwsmith.com/" />
     <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
     <meta property="og:description" content="My YouTube player web component" />
     <meta name="description" content="My YouTube player web component" />
-
     <link rel="stylesheet" href="/styles/main.css" />
     <link rel="stylesheet" href="/styles/yt-player.css" />
     <script type="module" src="/scripts/yt-player.js"></script>
@@ -40,24 +38,38 @@
         my sites. The first version is coming along nicely:
       </p>
 
-      <yt-player video="NoMqvniiEkk" start-at="52">
+      <yt-player video="NoMqvniiEkk" start-at="32">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </yt-player>
 
-      <h2>Features</h2>
+      <h2>Features And TODOs</h2>
       <ul>
         <li>
-          Use a custom <code>&lt;yt-player video="YouTubeId"&gt;</code> tag to 
-          do the embed
+          <p>
+            Videos are embedded using a custom <code>yt-player</code> element. It has
+            one required <code>video</code> attribute which is the YouTube ID of the 
+            video to play. For example:
+          </p>
+          <pre><code>&lt;yt-player video="REPPgPcw4hk"&gt;
+  &lt;noscript&gt;
+    JavaScript is not available to load the video player
+  &lt;/noscript&gt;
+&lt;/yt-player&gt;
+          </pre></code>
         </li>
         <li>
-          Provide a <code>start</code> attribute to set the starting time
+          <p>
+            An optional <code>start</code> attribute can be used to set
+            start the video some number of seconds in. (It has to be full seconds,
+            and may not be exactly what's used because of the way
+            some video encoding works)
+          </p>
         </li>
         <li>
-          Provides a Play/Pause button
+          Provide a Play/Pause button
         </li>
         <li>
-          Provides a Stop button
+          Provide a Stop button
         </li>
         <li>
           Allow multiple videos on a single page
@@ -66,10 +78,10 @@
           Provide speed adjustment buttons
         </li>
         <li>
-          Style via parent page CSS
+          Allow styling from via parent page's CSS
         </li>
         <li>
-          Provide responsive styling example
+          Provide structure for responsive design 
         </li>
         <li>
           Provide a mute/unmute button
@@ -84,32 +96,69 @@
         <li>
           Provide a data-yt-state attribute to body element
           that can be used to adjust styling when videos are playing
-          (e.g. dim the rest of the content). Note that this
-          can be tricky if there are multiple videos on the page. 
+          (e.g. dim the rest of the content). (Note: I'm punting
+          on issues that will arise if there are multiple players
+          on the page that you try to play at the same time)
         </li>
         <li>
-          TODO: Send focus to video player so keyboard commands work
+          TODO: Save playhead location when stopping the player or reloading
+          the page. 
+        </li>
+        <li>
+          TODO: Set up the speed buttons so they start playing
+          at the specific speed if the video isn't already going
         </li>
         <li>
           TODO: Provide skip forward and backwards buttons
         </li>
         <li>
-          MAYBE: Provide an autoplay attribute that attempts to 
-          auto play the video
+          TODO: Fallback to lower res images if the best quality
+          one fails (see note in reference from Paul Irish)
+        </li>
+      </ul>
+      <h2>Someday/Maybe</h2>
+      <ul>
+        <li>
+          PROBABLY: Send focus to video player so keyboard commands work
+        </li>
+        <li>
+          PROBABLY: If there are multiple videos on the page only one
+          plays at a time (i.e. if one is playing and another one
+          gets started it stops the first one).
+        </li>
+        <li>
+          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
         </li>
         <li>
           MAYBE: Add volume slider
+        </li>
+        <li>
+          MAYBE: Set up coordination to allow multiple videos
+          to play at the same time without clobbering each other
+          when updated the body level `data-yt-player-state`
+          attribute
         </li>
         <li>
           MAYBE: Allow other scripts on the page to control the player
           (this might already work, needs testing)
         </li>
         <li>
-          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
+          MAYBE: Provide an autoplay attribute that attempts to 
+          auto play the video
         </li>
       </ul>
       <h2>Notes</h2>
       <ul>
+        <li>
+          The playback rates available for each video are
+          determined on the YouTube side. They are filtered
+          down to include: 0.5x, 1x, 1.5x, 2x, and 3x. This ignores
+          0.25x, 0.75x, 1.25x, and 1.75x. I'm making that trade off
+          to reduce the number of items in the UI. I'm not
+          sure if 3x rates exist. The numbers in the docs are generic
+          and the test videos I've used don't have the rate. 
+          TBD on that.
+        </li>
         <li>
           I'd like to be able to add a closed caption button
           but I'm not sure how to do that yet or if it's even 
@@ -126,6 +175,7 @@
         <li><a href="https://developers.google.com/youtube/iframe_api_reference">YouTube IFrame Player API Docs</a></li>
         <li><a href="https://github.com/paulirish/lite-youtube-embed">Paul Irish's Lite YouTube Embed</a></li>
         <li><a href="https://css-tricks.com/fluid-width-video/">Fluid Width Video from CSS Tricks</a></li>
+        <li><a href="https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md">Lo, the youtube placeholder image! from Paul Irish</a></li>
       </ul>
     </main>
     <footer>

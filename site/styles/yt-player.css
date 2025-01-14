@@ -1,5 +1,5 @@
 body {
-  transition: all 2.3s ease-out;
+  transition: all 1.2s ease-out;
 }
 
 body[data-yt-state=playing] {
@@ -22,7 +22,7 @@ body[data-yt-state=playing] {
   align-items: center;
   display: flex;
   gap: 0.5rem;
-  justify-content: center;
+  justify-content: right;
   padding-block: 0.6rem;
   min-height: 3rem;
 }
@@ -54,7 +54,38 @@ yt-player {
 }
 
 /*
-* selectors based on player state
+.yt-play-icon {
+  background: var(--accent-color-2);
+mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%220.5%22%20style%3D%22--darkreader-inline-color%3A%20var(--darkreader-text-000000%2C%20%23e8e6e3)%3B%22%20data-darkreader-inline-color%3D%22%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%220.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20style%3D%22--darkreader-inline-fill%3A%20%23000000%3B%20--darkreader-inline-stroke%3A%20%23000000%3B%22%20data-darkreader-inline-fill%3D%22%22%20data-darkreader-inline-stroke%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%0A");
+mask-size: contain;
+mask-position: center;
+mask-repeat: no-repeat;
+  margin: 2px;
+  padding: 2px;
+  outline: 1px solid red;
+}
+*/
+
+.yt-playback-button {
+  width: 3rem;
+  height: 1.2rem;
+}
+
+/*
+.yt-playback-button[data-playback-rate="1"] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+*/
+
+.yt-active-rate {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+/*
+* Example of using selectors based on player state
+*
 yt-player[data-state=buffering] {
   border: 1px solid green;
   border-radius: 0.4rem;
