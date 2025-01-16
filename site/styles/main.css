@@ -182,6 +182,13 @@ main {
 }
 */
 
+pre {
+  white-space: pre-wrap; 
+  overflow-wrap: break-word;
+  overflow-x: auto;
+  overscroll-behavior-x: auto;
+}
+
 .red {
   color: red;
 }
