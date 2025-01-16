@@ -12,16 +12,15 @@
     <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
     <meta name="theme-color" content="#000000" />
     <title>Alan's YouTube Player Web Component</title>
-    <meta property="og:site_name" content="yt-player.alanwsmith.com" />
+    <meta property="og:site_name" content="youtube-player.alanwsmith.com" />
     <meta property="og:title" content="Alan's YouTube Player Web Component" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://yt-player.alanwsmith.com/" />
-    <meta property="og:image" content="https://yt-player.alanwsmith.com/images/og-image.jpg" />
+    <meta property="og:url" content="https://youtube-player.alanwsmith.com/" />
+    <meta property="og:image" content="https://youtube-player.alanwsmith.com/images/og-image.jpg" />
     <meta property="og:description" content="My YouTube player web component" />
     <meta name="description" content="My YouTube player web component" />
     <link rel="stylesheet" href="/styles/main.css" />
-    <link rel="stylesheet" href="/styles/yt-player.css" />
-    <script type="module" src="/scripts/yt-player.js"></script>
+    <script type="module" src="/scripts/youtube-player.js"></script>
   </head>
  
   <body>
@@ -38,23 +37,23 @@
         my sites. The first version is coming along nicely:
       </p>
 
-      <yt-player video="NoMqvniiEkk" start-at="32">
+      <youtube-player video="NoMqvniiEkk" start-at="53">
         <noscript>No JavaScript available to load YouTube player</noscript>
-      </yt-player>
+      </youtube-player>
 
       <h2>Features And TODOs</h2>
       <ul>
         <li>
           <p>
-            Videos are embedded using a custom <code>yt-player</code> element. It has
+            Videos are embedded using a custom <code>youtube-player</code> element. It has
             one required <code>video</code> attribute which is the YouTube ID of the 
             video to play. For example:
           </p>
-          <pre><code>&lt;yt-player video="REPPgPcw4hk"&gt;
+          <pre><code>&lt;youtube-player video="REPPgPcw4hk"&gt;
   &lt;noscript&gt;
     JavaScript is not available to load the video player
   &lt;/noscript&gt;
-&lt;/yt-player&gt;
+&lt;/youtube-player&gt;
           </pre></code>
         </li>
         <li>
@@ -135,7 +134,7 @@
         <li>
           MAYBE: Set up coordination to allow multiple videos
           to play at the same time without clobbering each other
-          when updated the body level `data-yt-player-state`
+          when updated the body level `data-youtube-player-state`
           attribute
         </li>
         <li>
@@ -183,8 +182,9 @@
         made by <a href="https://www.alanwsmith.com">alan w smith</a>
       </div>
       <div>
-        <a href="https://github.com/alanwsmith/yt-player.alanwsmith.com">source code</a> ~
-        <a href="https://links.alanwsmith.com">other sites</a>
+        <a href="https://github.com/alanwsmith/youtube-player.alanwsmith.com">source code</a> ~
+        <a href="https://links.alanwsmith.com">other sites</a> ~
+        <a href="https://socials.alanwsmith.com">socials</a>
       </div>
     </footer>
   </body>
