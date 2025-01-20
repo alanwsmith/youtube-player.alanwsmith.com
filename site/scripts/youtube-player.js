@@ -200,13 +200,28 @@ class YouTubePlayer extends HTMLElement {
   border-radius: 0.6rem;
 }
 
+#player {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+
 .wrapper{
   border-radius: 0.6rem;
   cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
-}`
+}
+
+
+`
+
+
     );
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
@@ -552,15 +567,17 @@ class YouTubePlayer extends HTMLElement {
       return value
     })
     // TODO: Figure out how to handle errors here.
-    this.addRewindButton()
-    this.getPlaybackRates()
-    this.addPlaybackButtons()
-    this.addFastForwardButton()
-    this.addMuteButton()
-    this.ytLogo.style.visibility = "visible"
-    this.videoWrapper.addEventListener("click", (event) => {
-      this.handleVideoWrapperClick.call(this, event)
-    })
+
+    // this.addRewindButton()
+    // this.getPlaybackRates()
+    // this.addPlaybackButtons()
+    // this.addFastForwardButton()
+    // this.addMuteButton()
+    // this.ytLogo.style.visibility = "visible"
+    // this.videoWrapper.addEventListener("click", (event) => {
+    //   this.handleVideoWrapperClick.call(this, event)
+    // })
+
   }
 
   loadApi() {
