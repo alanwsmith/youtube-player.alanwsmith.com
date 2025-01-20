@@ -171,6 +171,11 @@ class YouTubePlayer extends HTMLElement {
 
   constructor() {
     super()
+    this.attrs = {
+      "fast-forward-time": 10,
+      "rewind-time": 12,
+      "start-at": 0,
+    }
     this.attachShadow({mode: 'open'})
   }
 
@@ -195,21 +200,13 @@ class YouTubePlayer extends HTMLElement {
   border-radius: 0.6rem;
 }
 
-
-/*
-    this.videoWrapper.style.backgroundSize = 'cover'
-    this.videoWrapper.style.backgroundPosition = 'center'
-    this.videoWrapper.style.backgroundRepeat = 'no-repeat'
-*/
-
 .wrapper{
   border-radius: 0.6rem;
   cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
   position: relative;
-}
-`
+}`
     );
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
@@ -232,11 +229,7 @@ class YouTubePlayer extends HTMLElement {
     this.addContent()
     this.addStyles()
     this.getBackgroundImage()
-    // this.videoId = this.getAttribute('video')
-    // this.fastForwardAmount = 10
-    // this.rewindAmount = 12
-    // this.buildStructure()
-    // this.init()
+    this.init()
   }
 
   getAttributes() {
@@ -531,20 +524,17 @@ class YouTubePlayer extends HTMLElement {
   }
 
   async init() {
-    this.startAt =
-      this.getAttribute('start-at') !== null
-        ? parseInt(this.getAttribute('start-at'), 10)
-        : 0
     this.loadApi()
     await this.apiLoader
+    const videoEl = this.shadowRoot.querySelector("#player")
     this.player = await new Promise((resolve) => {
-      let player = new YT.Player(this.videoEl, {
-        width: '640',
-        height: '390',
-        videoId: this.videoId,
+      let player = new YT.Player(videoEl, {
+        width: '560',
+        height: '315',
+        videoId: this.attrs.video,
         playerVars: {
           playsinline: 1,
-          start: this.startAt,
+          start: this.attrs["start-at"],
         },
         events: {
           onReady: (event) => {
