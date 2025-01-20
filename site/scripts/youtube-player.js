@@ -210,6 +210,9 @@ class YouTubePlayer extends HTMLElement {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
 
+.background {
+  position: relative;
+}
 
 .control-button {
   width: 3rem;
@@ -235,12 +238,22 @@ class YouTubePlayer extends HTMLElement {
   height: 100%;
 }
 
+/*
+.wrapper.paused #player {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30%;
+  height: 30%;
+}
+*/
+
 .background {
   border-radius: 0.6rem;
   cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
-  position: relative;
 }
 
 .play-button {
@@ -266,10 +279,20 @@ class YouTubePlayer extends HTMLElement {
   width: 100%;
 }
 
-
 .wrapper {
-  transition: all 0.6s ease-out;
+  transition: all 0.8s ease-out;
 }
+
+
+/*
+#player {
+  top: 20%;
+  left: 40%;
+  postion: relative;
+  width: 30%;
+}
+*/
+
 
 
 @media (hover: hover) {
