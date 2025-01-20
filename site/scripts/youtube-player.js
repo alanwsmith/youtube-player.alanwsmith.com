@@ -176,6 +176,11 @@ class YouTubePlayer extends HTMLElement {
       "rewind-time": 12,
       "start-at": 0,
     }
+    this.colors = {
+      "base-background": "var(--youtube-player-base-background, #aaa)",
+      "base-foreground": "var(--youtube-player-base-background, black)",
+      "base-border": "var(--youtube-player-base-background, black)",
+    }
     this.attachShadow({mode: 'open'})
   }
 
@@ -183,21 +188,42 @@ class YouTubePlayer extends HTMLElement {
     const template = 
       this.ownerDocument.createElement('template')
     template.innerHTML = `
-<div class="wrapper">
-  <div id="player">player</div>
+<div class="background">
+  <div class="wrapper hidden">
+    <div id="player"></div>
+  </div>
+</div>
+<div class="yt-logo">YTLOGO</div>
+<div class="buttons">
+  <button aria-label="play" class="play-button control-button"></button>
 </div>
 `
     const contents = 
       template.content.cloneNode(true)
     this.shadowRoot.append(contents)
+    this.wrapper = this.shadowRoot.querySelector('.wrapper')
+    // this.playerEl = this.shadowRoot.querySelector('#player')
+    this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
   }
 
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
+
+
+.control-button {
+  width: 3rem;
+  height: 2rem;
+}
+
+.hidden {
+  opacity: 0;
+}
+
 :host {
   display: block;
   border-radius: 0.6rem;
+  position: relative;
 }
 
 #player {
@@ -207,10 +233,9 @@ class YouTubePlayer extends HTMLElement {
   left: 0;
   width: 100%;
   height: 100%;
-  visibility: hidden;
 }
 
-.wrapper{
+.background {
   border-radius: 0.6rem;
   cursor: pointer;
   height: 0;
@@ -218,6 +243,44 @@ class YouTubePlayer extends HTMLElement {
   position: relative;
 }
 
+.play-button {
+  background: ${this.colors["base-background"]};
+  border: 1px solid ${this.colors["base-border"]};
+  border-radius: 0.6rem;
+  margin: 0;
+  position: relative;
+}
+
+.play-button:after {
+  background: ${this.colors["base-foreground"]};
+  content: "";
+  height: 100%;
+  left: 0;
+  margin: 0;
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+
+.wrapper {
+  transition: all 0.6s ease-out;
+}
+
+
+@media (hover: hover) {
+  .play-button:hover {
+    background: var(--button-hover-background-color);
+    border: 1px solid var(--button-hover-border-color);
+  }
+  .play-button:hover:after {
+    background: var(--button-hover-color);
+  }
+}
 
 `
 
@@ -226,11 +289,13 @@ class YouTubePlayer extends HTMLElement {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
+  // TODO: Start with the highest quality and 
+  // keep searching until you find one
   async getBackgroundImage() {
     const backgroundUrl = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
-:host {
+.background {
   background-image: url("${backgroundUrl}");
   background-size: cover;
   background-position: center;
@@ -239,11 +304,20 @@ class YouTubePlayer extends HTMLElement {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
+  addEventListeners() {
+    console.log("asdf")
+    const background = this.shadowRoot.querySelector(".background")
+    background.addEventListener("click", (event) => {
+      this.handleWrapperClick.call(this, event)
+    })
+  }
+
   connectedCallback() {
     this.getAttributes()
     this.addContent()
     this.addStyles()
     this.getBackgroundImage()
+    this.addEventListeners()
     this.init()
   }
 
@@ -381,26 +455,26 @@ class YouTubePlayer extends HTMLElement {
   //   })
   // }
 
-  buildStructure() {
-    this.videoWrapper = document.createElement('div')
-    this.videoWrapper.classList.add('youtube-video-wrapper')
-    this.appendChild(this.videoWrapper)
-    this.videoEl = document.createElement('div')
-    this.videoWrapper.appendChild(this.videoEl)
-    this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg")`
-    this.videoWrapper.style.backgroundSize = 'cover'
-    this.videoWrapper.style.backgroundPosition = 'center'
-    this.videoWrapper.style.backgroundRepeat = 'no-repeat'
-    this.buttonWrapper = document.createElement('div')
-    this.buttonWrapper.classList.add('youtube-button-wrapper')
-    this.appendChild(this.buttonWrapper)
-    this.ytLogo = document.createElement('div')
-    this.ytLogo.addEventListener("click", (event) => {
-      this.handleYtLogoClick.call(this, event)
-    })
-    this.ytLogo.classList.add('youtube-logo')
-    this.videoWrapper.appendChild(this.ytLogo)
-  }
+  // buildStructure() {
+  //   this.videoWrapper = document.createElement('div')
+  //   this.videoWrapper.classList.add('youtube-video-wrapper')
+  //   this.appendChild(this.videoWrapper)
+  //   this.videoEl = document.createElement('div')
+  //   this.videoWrapper.appendChild(this.videoEl)
+  //   this.videoWrapper.style.backgroundImage = `url("https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg")`
+  //   this.videoWrapper.style.backgroundSize = 'cover'
+  //   this.videoWrapper.style.backgroundPosition = 'center'
+  //   this.videoWrapper.style.backgroundRepeat = 'no-repeat'
+  //   this.buttonWrapper = document.createElement('div')
+  //   this.buttonWrapper.classList.add('youtube-button-wrapper')
+  //   this.appendChild(this.buttonWrapper)
+  //   this.ytLogo = document.createElement('div')
+  //   this.ytLogo.addEventListener("click", (event) => {
+  //     this.handleYtLogoClick.call(this, event)
+  //   })
+  //   this.ytLogo.classList.add('youtube-logo')
+  //   this.videoWrapper.appendChild(this.ytLogo)
+  // }
 
   // doMuteUnmute(event, player) {
   //   if (player.isMuted() === true) {
@@ -493,30 +567,36 @@ class YouTubePlayer extends HTMLElement {
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
-      this.dataset.state = 'unstarted'
-      document.body.dataset.youtubeState = 'unstated'
+      // this.dataset.state = 'unstarted'
+      // document.body.dataset.youtubeState = 'unstated'
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      this.dataset.state = 'buffering'
-      document.body.dataset.youtubeState = 'buffering'
+      // this.dataset.state = 'buffering'
+      // document.body.dataset.youtubeState = 'buffering'
     } else if (playerState == YT.PlayerState.CUED) {
-      this.dataset.state = 'cued'
-      document.body.dataset.youtubeState = 'cued'
+      // this.dataset.state = 'cued'
+      // document.body.dataset.youtubeState = 'cued'
     } else if (playerState == YT.PlayerState.ENDED) {
-      this.updateButtonStyles()
-      this.player.g.style.visibility = 'hidden'
-      this.ytLogo.style.visibility = 'visible'
-      this.dataset.state = 'ended'
-      document.body.dataset.youtubeState = 'ended'
+      // TODO: Move the start time back to the origianal
+      // start time.
+      this.wrapper.classList.add("hidden")
+      // this.updateButtonStyles()
+      // this.player.g.style.visibility = 'hidden'
+      // this.ytLogo.style.visibility = 'visible'
+      // this.dataset.state = 'ended'
+      // document.body.dataset.youtubeState = 'ended'
     } else if (playerState == YT.PlayerState.PAUSED) {
-      this.updateButtonStyles()
-      this.dataset.state = 'paused'
-      document.body.dataset.youtubeState = 'paused'
+      this.wrapper.classList.add("hidden")
+      // this.updateButtonStyles()
+      // this.dataset.state = 'paused'
+      // document.body.dataset.youtubeState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
-      this.updateButtonStyles()
-      this.player.g.style.visibility = 'visible'
-      this.ytLogo.style.visibility = 'hidden'
-      this.dataset.state = 'playing'
-      document.body.dataset.youtubeState = 'playing'
+      this.wrapper.classList.remove("hidden")
+
+      //this.updateButtonStyles()
+     // this.player.g.style.visibility = 'visible'
+      //this.ytLogo.style.visibility = 'hidden'
+      //this.dataset.state = 'playing'
+      //document.body.dataset.youtubeState = 'playing'
     }
   }
 
@@ -528,13 +608,14 @@ class YouTubePlayer extends HTMLElement {
     )
   }
 
-  handleVideoWrapperClick(event) {
-    this.ytLogo.style.visibility = "hidden"
+  handleWrapperClick(event) {
+  // handleVideoWrapperClick(event) {
+    // this.ytLogo.style.visibility = "hidden"
     this.player.playVideo()
   }
 
   handleYtLogoClick(event) {
-    this.ytLogo.style.visibility = "hidden"
+    // this.ytLogo.style.visibility = "hidden"
     this.player.playVideo()
   }
 
