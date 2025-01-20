@@ -38,7 +38,7 @@
         my sites. The first version is coming along nicely:
       </p>
 
-      <youtube-player video="NoMqvniiEkk" start-at="53">
+      <youtube-player :video="NoMqvniiEkk" :start-at="53">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
@@ -114,6 +114,17 @@
         <li>
           TODO: Fallback to lower res images if the best quality
           one fails (see note in reference from Paul Irish)
+        </li>
+        <li>
+          TODO: Show the length of the vidoe
+        </li>
+        <li>
+          TODO: Show the video's title
+        </li>
+        <li>
+          TODO: Look at using :not(:defined) to hide
+          the element but set its height 
+          before it's fully loaded
         </li>
       </ul>
       <h2>Someday/Maybe</h2>

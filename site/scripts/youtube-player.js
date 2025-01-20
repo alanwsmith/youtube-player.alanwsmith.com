@@ -17,9 +17,13 @@
 //
 // TODO: Move CSS Into component file directly
 //
+// TODO: Pull title from: https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=q3lX2p_Uy9I&format=json
+//
 
+/*
 const componentStyles = document.createElement('style')
 componentStyles.innerHTML = `
+
 body {
   transition: all 1.2s ease-out;
 }
@@ -75,7 +79,6 @@ youtube-player {
   display: block;
 }
 
-/*
 .youtube-play-icon {
   background: var(--accent-color-2);
 mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%220.5%22%20style%3D%22--darkreader-inline-color%3A%20var(--darkreader-text-000000%2C%20%23e8e6e3)%3B%22%20data-darkreader-inline-color%3D%22%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%220.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20style%3D%22--darkreader-inline-fill%3A%20%23000000%3B%20--darkreader-inline-stroke%3A%20%23000000%3B%22%20data-darkreader-inline-fill%3D%22%22%20data-darkreader-inline-stroke%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%0A");
@@ -86,28 +89,22 @@ mask-repeat: no-repeat;
   padding: 2px;
   outline: 1px solid red;
 }
-*/
 
 .youtube-playback-button {
   width: 3rem;
   height: 1.2rem;
 }
 
-/*
 .youtube-playback-button[data-playback-rate="1"] {
   border: 1px solid red;
   border-radius: 0.4rem;
 }
-*/
 
 .youtube-active-rate {
   border: 1px solid red;
   border-radius: 0.4rem;
 }
 
-/*
-* Example of using selectors based on player state
-*
 youtube-player[data-state=buffering] {
   border: 1px solid green;
   border-radius: 0.4rem;
@@ -138,7 +135,6 @@ youtube-player[data-state=unstarted] {
   border-radius: 0.4rem;
 }
 
-*/
 
 .youtube-speed-button {
   width: 5ch;
@@ -168,14 +164,92 @@ youtube-player[data-state=unstarted] {
 `
 document.head.appendChild(componentStyles)
 
+*/
+
+
 class YouTubePlayer extends HTMLElement {
-  connectedCallback() {
-    this.videoId = this.getAttribute('video')
-    this.fastForwardAmount = 10
-    this.rewindAmount = 12
-    this.buildStructure()
-    this.init()
+
+  constructor() {
+    super()
+    this.attachShadow({mode: 'open'})
   }
+
+  addContent() {
+    const template = 
+      this.ownerDocument.createElement('template')
+    template.innerHTML = `
+<div class="wrapper">
+  <div id="player">player</div>
+</div>
+`
+    const contents = 
+      template.content.cloneNode(true)
+    this.shadowRoot.append(contents)
+  }
+
+  addStyles() {
+    const styles = new CSSStyleSheet();
+    styles.replaceSync(`
+:host {
+  display: block;
+  border-radius: 0.6rem;
+}
+
+
+/*
+    this.videoWrapper.style.backgroundSize = 'cover'
+    this.videoWrapper.style.backgroundPosition = 'center'
+    this.videoWrapper.style.backgroundRepeat = 'no-repeat'
+*/
+
+.wrapper{
+  border-radius: 0.6rem;
+  cursor: pointer;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+`
+    );
+    this.shadowRoot.adoptedStyleSheets.push(styles);
+  }
+
+  async getBackgroundImage() {
+    const backgroundUrl = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
+    const styles = new CSSStyleSheet();
+    styles.replaceSync(`
+:host {
+  background-image: url("${backgroundUrl}");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat
+}`)
+    this.shadowRoot.adoptedStyleSheets.push(styles);
+  }
+
+  connectedCallback() {
+    this.getAttributes()
+    this.addContent()
+    this.addStyles()
+    this.getBackgroundImage()
+    // this.videoId = this.getAttribute('video')
+    // this.fastForwardAmount = 10
+    // this.rewindAmount = 12
+    // this.buildStructure()
+    // this.init()
+  }
+
+  getAttributes() {
+    this.attrs = {}
+    const attrs = this.getAttributeNames()
+    attrs.forEach((attr) => {
+      if (attr.startsWith(':') === true) {
+        this.attrs[attr.substring(1)] = 
+          this.getAttribute(attr)
+      }
+    })
+  }
+
 
   // addButtons(player) {
   //   this.playButton = document.createElement('button')
