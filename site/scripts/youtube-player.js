@@ -181,6 +181,7 @@ class YouTubePlayer extends HTMLElement {
       "base-foreground": "var(--youtube-player-base-background, black)",
       "base-border": "var(--youtube-player-base-background, black)",
     }
+    this.timer = null
     this.attachShadow({mode: 'open'})
   }
 
@@ -280,7 +281,7 @@ class YouTubePlayer extends HTMLElement {
 }
 
 .wrapper {
-  transition: all 0.8s ease-out;
+  transition: all 0.7s ease-in;
 }
 
 
@@ -587,6 +588,10 @@ class YouTubePlayer extends HTMLElement {
     this.updateButtonStyles()
   }
 
+  makeHidden() {
+    this.wrapper.classList.add("hidden")
+  }
+
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
@@ -608,11 +613,13 @@ class YouTubePlayer extends HTMLElement {
       // this.dataset.state = 'ended'
       // document.body.dataset.youtubeState = 'ended'
     } else if (playerState == YT.PlayerState.PAUSED) {
-      this.wrapper.classList.add("hidden")
+      // REMINDER: Can't do hidden here because
+      // the controls go away if you try to scrub 
       // this.updateButtonStyles()
       // this.dataset.state = 'paused'
       // document.body.dataset.youtubeState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
+      clearTimeout(this.timer)
       this.wrapper.classList.remove("hidden")
 
       //this.updateButtonStyles()
