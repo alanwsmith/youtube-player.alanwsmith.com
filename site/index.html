@@ -50,6 +50,30 @@
         </p>
       </div>
 
+      <div class="warning flow">
+        <h2>Temporary Note On Component Use Case</h2>
+        <p>
+          I'm using static variables on the youtube-player class
+          as described in <a href="https://web-component-techniques.alanwsmith.com/pages/inter-component-communication/">
+            Inter-Component Communication</a>. The reason I'm doing
+          this over having a parent component is for ease of use
+          when adding components to the page. Specifically, 
+          you can just drop this anywhere on the page to 
+          add a video:
+        </p>
+        <pre><code>
+&lt;youtube-player :video="REPPgPcw4hk"&gt;&lt;/youtube-player&gt;
+        </code></pre>
+        <p>
+          The static methods on the class act as a type of controller for
+          the players on the page. Starting on player pauses 
+          any others that are playing. 
+        </p>
+
+
+      </div>
+
+
           <!--
       <h2>Introduction</h2>
       <p>
@@ -153,6 +177,13 @@
       </ul>
       <h2>Someday/Maybe</h2>
       <ul>
+        <li>
+          PROBABLY: when first launching the page the videos might
+          be mutted. When the first one is unmutted send a signal to
+          unmute the rest so you don't have to do that manually
+          for each video
+        </li>
+
         <li>
           PROBABLY: Send focus to video player so keyboard commands work
         </li>
