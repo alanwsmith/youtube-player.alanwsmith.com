@@ -11,8 +11,14 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static handlePause(instance) {
+    this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'paused'
+    }
+    for (const uuid in this.instances) {
+      if (uuid !== instance.uuid) {
+        this.instances[uuid].doRemoveFade()
+      }
     }
   }
 
@@ -668,6 +674,18 @@ body[data-youtube-player-state=playing] {
       this.player.pauseVideo()
     }
   }
+
+  doRemoveFade() {
+    const shader = this.shadowRoot.querySelector('.shader')
+    const playerEl = this.shadowRoot.querySelector('#player')
+    if (this.player.getPlayerState() === 2) {
+      playerEl.classList.remove('dark')
+    } else {
+      shader.classList.add('hidden')
+      shader.classList.remove('dark-shader-over-background')
+    }
+  }
+
 
 }
 
