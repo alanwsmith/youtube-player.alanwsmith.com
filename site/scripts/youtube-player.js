@@ -37,7 +37,7 @@ class YouTubePlayer extends HTMLElement {
             this.instances[uuid].doRemoveFade()
           }
         }
-      }, 500)
+      }, 900)
     }
   }
 
@@ -95,8 +95,6 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
     this.parts.background.classList.remove('faded')
-    // const shader = this.shadowRoot.querySelector('.shader')
-    // const wrapper = this.shadowRoot.querySelector('.wrapper')
     this.parts.shader.classList.add('hidden')
     this.parts.wrapper.classList.add('hidden')
   }
@@ -105,12 +103,9 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.add('playing')
     this.parts.background.classList.remove('stopped')
     this.parts.background.classList.remove('faded')
-    // const wrapper = this.shadowRoot.querySelector('.wrapper')
     this.parts.wrapper.classList.remove('hidden')
-    // const playerEl = this.shadowRoot.querySelector('#player')
     this.parts.player.classList.remove('dark')
     let shaderUpdate = setTimeout(() => {
-      // const shader = this.shadowRoot.querySelector('.shader')
       this.parts.shader.classList.remove('dark-shader-over-background')
       this.parts.shader.classList.remove('hidden')
     }, 1000)
@@ -121,8 +116,6 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
   }
-
-
 
 
   // TODO: Start with the highest quality and 
@@ -166,9 +159,6 @@ class YouTubePlayer extends HTMLElement {
           this.getAttribute(attr)
       }
     })
-  }
-
-  getParts() {
   }
 
   // addButtons(player) {
@@ -356,15 +346,15 @@ class YouTubePlayer extends HTMLElement {
   //   player.stopVideo()
   // }
 
-  getPlaybackRates() {
-    this.playbackRates = []
-    let targetRates = [0.5, 1, 1.5, 2, 3]
-    this.player.getAvailablePlaybackRates().forEach((playbackRate) => {
-      if (targetRates.includes(playbackRate)) {
-        this.playbackRates.push(playbackRate)
-      }
-    })
-  }
+  // getPlaybackRates() {
+  //   this.playbackRates = []
+  //   let targetRates = [0.5, 1, 1.5, 2, 3]
+  //   this.player.getAvailablePlaybackRates().forEach((playbackRate) => {
+  //     if (targetRates.includes(playbackRate)) {
+  //       this.playbackRates.push(playbackRate)
+  //     }
+  //   })
+  // }
 
   handleFastForwardButtonClick(event) {
     this.player.seekTo(
@@ -402,52 +392,22 @@ class YouTubePlayer extends HTMLElement {
     this.updateButtonStyles()
   }
 
-  
-  // makeHidden() {
-  //   this.wrapper.classList.add("hidden")
-  // }
-
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
-      // this.dataset.state = 'unstarted'
-      // document.body.dataset.youtubePlayerState = 'unstated'
+      // N/A - here for reference
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      // this.dataset.state = 'buffering'
-      // document.body.dataset.youtubePlayerState = 'buffering'
+      // N/A - here for reference
     } else if (playerState == YT.PlayerState.CUED) {
-      // this.dataset.state = 'cued'
-      // document.body.dataset.youtubePlayerState = 'cued'
+      // N/A - here for reference
     } else if (playerState == YT.PlayerState.ENDED) {
-      // TODO: Move the start time back to the origianal
+      // TODO: Move the start time back to the original 
       // start time.
       this.constructor.handleEnded(this)
-      // this.wrapper.classList.add("hidden")
-      // this.ytLogo.classList.remove("hidden")
-      // this.updateButtonStyles()
-      // this.player.g.style.visibility = 'hidden'
-      // this.ytLogo.style.visibility = 'visible'
-      // this.dataset.state = 'ended'
-      // document.body.dataset.youtubePlayerState = 'ended'
     } else if (playerState == YT.PlayerState.PAUSED) {
       this.constructor.handlePause(this)
-      // REMINDER: Can't do hidden here because
-      // the controls go away if you try to scrub 
-      // this.updateButtonStyles()
-      // this.dataset.state = 'paused'
-      // document.body.dataset.youtubePlayerState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
       this.constructor.switchActivePlayer(this)
-
-      // clearTimeout(this.timer)
-      // this.wrapper.classList.remove("hidden")
-      // this.ytLogo.classList.add("hidden")
-
-      //this.updateButtonStyles()
-      // this.player.g.style.visibility = 'visible'
-      //this.ytLogo.style.visibility = 'hidden'
-      //this.dataset.state = 'playing'
-      // document.body.dataset.youtubePlayerState = 'playing'
     }
   }
 
@@ -460,12 +420,10 @@ class YouTubePlayer extends HTMLElement {
   }
 
   handleWrapperClick(event) {
-    // this.ytLogo.classList.add("hidden")
     this.player.playVideo()
   }
 
   handleYtLogoClick(event) {
-    this.ytLogo.classList.add("hidden")
     this.player.playVideo()
   }
 
@@ -697,17 +655,12 @@ class YouTubePlayer extends HTMLElement {
     this.parts.shader = this.shadowRoot.querySelector('.shader')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
     this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
-    // this.wrapper = this.shadowRoot.querySelector('.wrapper')
-    // this.playerEl = this.shadowRoot.querySelector('#player')
-    // this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
   }
 
   doPauseAndFade() {
     this.parts.background.classList.add('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.remove('stopped')
-    // const shader = this.shadowRoot.querySelector('.shader')
-    // const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
       this.parts.shader.classList.remove('dark-shader-over-background')
       this.parts.shader.classList.remove('hidden')
@@ -726,8 +679,6 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
-    // const shader = this.shadowRoot.querySelector('.shader')
-    // const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 2) {
       this.parts.player.classList.remove('dark')
     } else {

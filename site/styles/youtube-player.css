@@ -5,11 +5,12 @@
 }
 
 body {
-  transition: background-color 1.2s ease-out;
+  transition: background-color 0.9s ease-in, color 0.9s ease-in;
 }
 
 body[data-youtube-player-state="playing"] {
   --background-color: black;
   --primary-color: #444;
+  transition: background-color 1.2s ease-in, color 1.2s ease-in;
 }
 
