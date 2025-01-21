@@ -86,8 +86,6 @@ class YouTubePlayer extends HTMLElement {
       "hover-border": "var(--youtube-player-hover-background, #aaa)",
     }
     this.parts = {}
-
-    // this.timer = null
     this.attachShadow({mode: 'open'})
   }
 
