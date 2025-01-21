@@ -5,7 +5,7 @@ class YouTubePlayer extends HTMLElement {
   static timeout = null
 
   static handleEnded(instance) {
-    console.log(`handleEnded: ${instance.uuid}`)
+    // console.log(`handleEnded: ${instance.uuid}`)
     this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'ended'
@@ -19,7 +19,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static handlePause(instance) {
-    console.log(`handlePause: ${instance.uuid}`)
+    // console.log(`handlePause: ${instance.uuid}`)
     if (instance.uuid == this.activeInstance) {
       // This is in a timeout because fast 
       // forwarding and rewinding videos sends
@@ -50,7 +50,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static switchActivePlayer(instance) {
-    console.log(`switchActivePlayer: ${instance.uuid}`)
+    // console.log(`switchActivePlayer: ${instance.uuid}`)
     // This clears the pause timeout which
     // is necessary to prevent short changes
     // when fast forwarding and rewinding
@@ -639,16 +639,17 @@ class YouTubePlayer extends HTMLElement {
 }
 */
 .yt-logo {
-  border-radius: 0.6rem;
-  position: absolute;
-  bottom: 2rem;
-  left: 2rem;
-  width: 4rem;
-  height: 3rem;
   background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
   background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  border-radius: 0.6rem;
+  bottom: 2rem;
+  filter: drop-shadow(1px 1px 3px black);
+  height: 3rem;
+  left: 2rem;
+  position: absolute;
+  width: 4rem;
   z-index: 5;
 }
 @media (hover: hover) {
