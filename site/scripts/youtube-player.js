@@ -2,6 +2,7 @@ class YouTubePlayer extends HTMLElement {
 
   static activeInstance = null
   static instances = {}
+  static timeout = null
 
   static handleEnded(instance) {
     console.log(`handleEnded: ${instance.uuid}`)
@@ -20,12 +21,23 @@ class YouTubePlayer extends HTMLElement {
   static handlePause(instance) {
     console.log(`handlePause: ${instance.uuid}`)
     if (instance.uuid == this.activeInstance) {
-      document.body.dataset.youtubePlayerState = 'paused'
-      for (const uuid in this.instances) {
-        if (uuid !== instance.uuid) {
-          this.instances[uuid].doRemoveFade()
+      // This is in a timeout because fast 
+      // forwarding and rewinding videos sends
+      // a pause event before sending another play
+      // event. without this everything does
+      // a quick unfade and then fade back. The
+      // little delay before fading back in when
+      // it should is less distracting than the
+      // in/out when moving in the video
+      this.timeout = setTimeout(() => {
+        instance.doPauseOnActivePlayer()
+        document.body.dataset.youtubePlayerState = 'paused'
+        for (const uuid in this.instances) {
+          if (uuid !== instance.uuid) {
+            this.instances[uuid].doRemoveFade()
+          }
         }
-      }
+      }, 500)
     }
   }
 
@@ -39,6 +51,10 @@ class YouTubePlayer extends HTMLElement {
 
   static switchActivePlayer(instance) {
     console.log(`switchActivePlayer: ${instance.uuid}`)
+    if (this.timeout !== null) {
+      clearTimeout(this.timeout)
+      this.timeout = null
+    }
     this.activeInstance = instance.uuid
     document.body.dataset.youtubePlayerState = 'playing'
     for (const uuid in this.instances) {
@@ -66,11 +82,16 @@ class YouTubePlayer extends HTMLElement {
       "hover-foreground": "var(--youtube-player-hover-background, #aaa)",
       "hover-border": "var(--youtube-player-hover-background, #aaa)",
     }
-    this.timer = null
+    this.parts = {}
+
+    // this.timer = null
     this.attachShadow({mode: 'open'})
   }
 
   doEnded() {
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.add('stopped')
+    this.parts.background.classList.remove('faded')
     const shader = this.shadowRoot.querySelector('.shader')
     const wrapper = this.shadowRoot.querySelector('.wrapper')
     shader.classList.add('hidden')
@@ -78,6 +99,9 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doPlaying() {
+    this.parts.background.classList.add('playing')
+    this.parts.background.classList.remove('stopped')
+    this.parts.background.classList.remove('faded')
     const wrapper = this.shadowRoot.querySelector('.wrapper')
     wrapper.classList.remove('hidden')
     const playerEl = this.shadowRoot.querySelector('#player')
@@ -90,9 +114,9 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doPauseOnActivePlayer() {
-    // if (this.player.getPlayerState() === 1) {
-    //   this.player.pauseVideo()
-    // }
+    this.parts.background.classList.remove('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.add('stopped')
   }
 
 
@@ -124,6 +148,7 @@ class YouTubePlayer extends HTMLElement {
     this.constructor.registerInstance(this)
     this.getAttributes()
     this.addContent()
+    this.getParts()
     this.addStyles()
     this.getBackgroundImage()
     this.addEventListeners()
@@ -139,6 +164,13 @@ class YouTubePlayer extends HTMLElement {
           this.getAttribute(attr)
       }
     })
+  }
+
+  getParts() {
+    this.parts.background = this.shadowRoot.querySelector('.background')
+    this.parts.player = this.shadowRoot.querySelector('#player')
+    this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
   }
 
   // addButtons(player) {
@@ -535,7 +567,6 @@ class YouTubePlayer extends HTMLElement {
   position: relative;
 }
 #player {
-  border: 1px solid maroon;
   border-radius: 0.6rem;
   position: absolute;
   top: 0;
@@ -544,8 +575,16 @@ class YouTubePlayer extends HTMLElement {
   height: 100%;
   z-index: 10;
 }  
+.playing {
+  border: var(--youtube-player-playing-border);
+}
+.faded {
+  border: var(--youtube-player-faded-border);
+}
+.stopped {
+  border: var(--youtube-player-stopped-border);
+}
 .shader {
-  border: 1px solid green;
   border-radius: 0.6rem;
   position: absolute;
   top: 0;
@@ -604,6 +643,11 @@ class YouTubePlayer extends HTMLElement {
 .wrapper, .yt-logo, .shader {
   transition: opacity 0.7s ease-in;
 }
+
+.background {
+  transition: border 0.7s ease-in;
+}
+
 /*
 #player {
   top: 20%;
@@ -630,7 +674,7 @@ class YouTubePlayer extends HTMLElement {
     const template = 
       this.ownerDocument.createElement('template')
     template.innerHTML = `
-<div class="background">
+<div class="background stopped">
   <div class="shader hidden"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
@@ -650,6 +694,9 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doPauseAndFade() {
+    this.parts.background.classList.add('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('stopped')
     const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
@@ -666,6 +713,9 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doRemoveFade() {
+    this.parts.background.classList.remove('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.add('stopped')
     const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 2) {
@@ -675,7 +725,6 @@ class YouTubePlayer extends HTMLElement {
       shader.classList.remove('dark-shader-over-background')
     }
   }
-
 }
 
 customElements.define('youtube-player', YouTubePlayer)

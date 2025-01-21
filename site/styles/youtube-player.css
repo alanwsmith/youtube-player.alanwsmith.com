@@ -1,3 +1,9 @@
+:root {
+  --youtube-player-faded-border: 1px solid #111;
+  --youtube-player-playing-border: 1px solid #222;
+  --youtube-player-stopped-border: 1px solid #555;
+}
+
 body {
   transition: background-color 1.2s ease-out;
 }
