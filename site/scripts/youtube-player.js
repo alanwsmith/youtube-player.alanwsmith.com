@@ -4,6 +4,7 @@ class YouTubePlayer extends HTMLElement {
   static instances = {}
 
   static handleEnded(instance) {
+    console.log(`handleEnded: ${instance.uuid}`)
     this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'ended'
@@ -17,13 +18,14 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static handlePause(instance) {
-    this.activeInstance = instance.uuid
+    console.log(`handlePause: ${instance.uuid}`)
+    // this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'paused'
-    }
-    for (const uuid in this.instances) {
-      if (uuid !== instance.uuid) {
-        this.instances[uuid].doRemoveFade()
+      for (const uuid in this.instances) {
+        if (uuid !== instance.uuid) {
+          this.instances[uuid].doRemoveFade()
+        }
       }
     }
   }
@@ -37,6 +39,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static switchActivePlayer(instance) {
+    console.log(`switchActivePlayer: ${instance.uuid}`)
     this.activeInstance = instance.uuid
     document.body.dataset.youtubePlayerState = 'playing'
     for (const uuid in this.instances) {
