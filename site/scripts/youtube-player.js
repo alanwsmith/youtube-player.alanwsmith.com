@@ -3,6 +3,12 @@ class YouTubePlayer extends HTMLElement {
   static activeInstance = null
   static instances = {}
 
+  static handlePause(instance) {
+    if (instance.uuid == this.activeInstance) {
+      document.body.dataset.youtubePlayerState = 'paused'
+    }
+  }
+
   static registerInstance(instance) {
     this.instances[instance.uuid] = instance
   }
@@ -12,8 +18,8 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static switchPlayer(instance) {
-    document.body.dataset.youtubeState = 'playing'
     this.activeInstance = instance.uuid
+    document.body.dataset.youtubePlayerState = 'playing'
     for (const uuid in this.instances) {
       if (uuid === instance.uuid) {
         this.instances[uuid].doPlaying()
@@ -106,9 +112,15 @@ class YouTubePlayer extends HTMLElement {
   background: black;
   z-index: 6;
 }
-.dark{
-  opacity: 0.5;
+
+#player {
+  transition: all 0.7s ease-in;
 }
+
+.dark{
+  opacity: 0.3;
+}
+
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -174,25 +186,24 @@ class YouTubePlayer extends HTMLElement {
   doPlaying() {
     const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
-    shader.classList.add('hidden')
+    // shader.classList.add('hidden')
     playerEl.classList.remove('dark')
   }
 
   doPauseOnActivePlayer() {
-    if (this.player.getPlayerState() === 1) {
-      this.player.pauseVideo()
-    }
+    // if (this.player.getPlayerState() === 1) {
+    //   this.player.pauseVideo()
+    // }
   }
 
   doPauseOnInactivePlayer() {
     const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
-    if (this.player.getPlayerState() === 1) {
+    if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
       shader.classList.remove('hidden')
       playerEl.classList.add('dark')
       this.player.pauseVideo()
     }
-    // console.log(this.player.getPlayerState())
   }
 
 
@@ -218,7 +229,7 @@ body {
   transition: all 1.2s ease-out;
 }
 
-body[data-youtube-state=playing] {
+body[data-youtube-player-state=playing] {
   --background-color: black;
   --primary-color: #444;
 }
@@ -245,7 +256,6 @@ body[data-youtube-state=playing] {
     this.init()
   }
 
-
   getAttributes() {
     this.attrs = {}
     const attrs = this.getAttributeNames()
@@ -256,7 +266,6 @@ body[data-youtube-state=playing] {
       }
     })
   }
-
 
   // addButtons(player) {
   //   this.playButton = document.createElement('button')
@@ -497,13 +506,13 @@ body[data-youtube-state=playing] {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
       // this.dataset.state = 'unstarted'
-      // document.body.dataset.youtubeState = 'unstated'
+      // document.body.dataset.youtubePlayerState = 'unstated'
     } else if (playerState == YT.PlayerState.BUFFERING) {
       // this.dataset.state = 'buffering'
-      // document.body.dataset.youtubeState = 'buffering'
+      // document.body.dataset.youtubePlayerState = 'buffering'
     } else if (playerState == YT.PlayerState.CUED) {
       // this.dataset.state = 'cued'
-      // document.body.dataset.youtubeState = 'cued'
+      // document.body.dataset.youtubePlayerState = 'cued'
     } else if (playerState == YT.PlayerState.ENDED) {
       // TODO: Move the start time back to the origianal
       // start time.
@@ -513,13 +522,14 @@ body[data-youtube-state=playing] {
       // this.player.g.style.visibility = 'hidden'
       // this.ytLogo.style.visibility = 'visible'
       // this.dataset.state = 'ended'
-      // document.body.dataset.youtubeState = 'ended'
+      // document.body.dataset.youtubePlayerState = 'ended'
     } else if (playerState == YT.PlayerState.PAUSED) {
+      this.constructor.handlePause(this)
       // REMINDER: Can't do hidden here because
       // the controls go away if you try to scrub 
       // this.updateButtonStyles()
       // this.dataset.state = 'paused'
-      // document.body.dataset.youtubeState = 'paused'
+      // document.body.dataset.youtubePlayerState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
       clearTimeout(this.timer)
       this.constructor.switchPlayer(this)
@@ -530,7 +540,7 @@ body[data-youtube-state=playing] {
       // this.player.g.style.visibility = 'visible'
       //this.ytLogo.style.visibility = 'hidden'
       //this.dataset.state = 'playing'
-      // document.body.dataset.youtubeState = 'playing'
+      // document.body.dataset.youtubePlayerState = 'playing'
     }
   }
 
