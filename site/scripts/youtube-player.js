@@ -556,6 +556,14 @@ class YouTubePlayer extends HTMLElement {
   background: black;
   z-index: 6;
 }
+.title {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  z-index: 5;
+  filter: drop-shadow(1px 1px 1px black);
+}
 .dark {
   opacity: 0.3;
 }
@@ -652,6 +660,7 @@ class YouTubePlayer extends HTMLElement {
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
+  <div class="title">This is the title</div>
   <div class="yt-logo"></div>
 </div>
 <div class="buttons">
