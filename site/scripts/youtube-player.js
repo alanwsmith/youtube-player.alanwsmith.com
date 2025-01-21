@@ -1,172 +1,3 @@
-// TODO: Figure out if there's away to tell if the
-// video isn't available and send a better message
-// than the youtube default one. or maybe play
-// a different video all together
-//
-// TODO: Maybe add an end time
-//
-// NOTE: YouTube iframe API Reference:
-// https://developers.google.com/youtube/iframe_api_reference
-//
-// TODO: Figure out if there's a way to make the
-// text switch from play to pause as soon as the
-// video itself is clicked (right now there's a
-// little delay)
-//
-// TODO: Add icon buttons
-//
-// TODO: Move CSS Into component file directly
-//
-// TODO: Pull title from: https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=q3lX2p_Uy9I&format=json
-//
-
-/*
-const componentStyles = document.createElement('style')
-componentStyles.innerHTML = `
-
-body {
-  transition: all 1.2s ease-out;
-}
-
-body[data-youtube-state=playing] {
-  --background-color: black;
-  --primary-color: #444;
-}
-
-.youtube-button {
-  background: none;
-  border: 1px solid #333;
-  border-radius: 0.4rem;
-  color: #aaa;
-  cursor: pointer;
-  font-size: 1rem;
-  outline: inherit;
-  padding: 0;
-}
-
-.youtube-button-wrapper {
-  align-items: center;
-  display: flex;
-  gap: 0.5rem;
-  justify-content: right;
-  padding-block: 0.6rem;
-  min-height: 3rem;
-}
-
-.youtube-logo {
-  cursor: pointer;
-  position: absolute;
-  width: 4rem;
-  height: 4rem;
-  bottom: 1rem;
-  left: 1rem;
-  background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  visibility: hidden;
-}
-
-.youtube-mute-button {
-  width: 8ch;
-}
-
-.youtube-play-button {
-  width: 7ch;
-}
-
-youtube-player {
-  display: block;
-}
-
-.youtube-play-icon {
-  background: var(--accent-color-2);
-mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%220.5%22%20style%3D%22--darkreader-inline-color%3A%20var(--darkreader-text-000000%2C%20%23e8e6e3)%3B%22%20data-darkreader-inline-color%3D%22%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%220.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20style%3D%22--darkreader-inline-fill%3A%20%23000000%3B%20--darkreader-inline-stroke%3A%20%23000000%3B%22%20data-darkreader-inline-fill%3D%22%22%20data-darkreader-inline-stroke%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%0A");
-mask-size: contain;
-mask-position: center;
-mask-repeat: no-repeat;
-  margin: 2px;
-  padding: 2px;
-  outline: 1px solid red;
-}
-
-.youtube-playback-button {
-  width: 3rem;
-  height: 1.2rem;
-}
-
-.youtube-playback-button[data-playback-rate="1"] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-.youtube-active-rate {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=buffering] {
-  border: 1px solid green;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=cued] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=ended] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=paused] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=playing] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-youtube-player[data-state=unstarted] {
-  border: 1px solid red;
-  border-radius: 0.4rem;
-}
-
-
-.youtube-speed-button {
-  width: 5ch;
-}
-
-.youtube-stop-button {
-  width: 6ch;
-}
-
-.youtube-video-wrapper {
-  border-radius: 0.6rem;
-  cursor: pointer;
-  height: 0;
-  padding-bottom: 56.25%;
-  position: relative;
-}
-
-.youtube-video-wrapper iframe {
-  border-radius: 0.6rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  visibility: hidden;
-}
-`
-document.head.appendChild(componentStyles)
-
-*/
-
-
 class YouTubePlayer extends HTMLElement {
 
   static activeInstance = null
@@ -181,10 +12,13 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static switchPlayer(instance) {
+    document.body.dataset.youtubeState = 'playing'
     this.activeInstance = instance.uuid
     for (const uuid in this.instances) {
-      if (uuid !== instance.uuid) {
-        this.instances[uuid].doPause()
+      if (uuid === instance.uuid) {
+        this.instances[uuid].doPlaying()
+      } else {
+        this.instances[uuid].doPauseOnInactivePlayer()
       }
     }
   }
@@ -214,6 +48,7 @@ class YouTubePlayer extends HTMLElement {
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background">
+  <div class="shader"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
@@ -234,35 +69,46 @@ class YouTubePlayer extends HTMLElement {
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
-
 .background {
+  background-color: black;
   position: relative;
 }
-
 .control-button {
   width: 3rem;
   height: 2rem;
 }
-
 .hidden {
   opacity: 0;
 }
-
 :host {
   display: block;
   border-radius: 0.6rem;
   position: relative;
 }
-
 #player {
+  border: 1px solid maroon;
   border-radius: 0.6rem;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 10;
+} 
+.shader {
+  border: 1px solid green;
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 6;
 }
-
+.dark{
+  opacity: 0.5;
+}
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -273,14 +119,12 @@ class YouTubePlayer extends HTMLElement {
   height: 30%;
 }
 */
-
 .background {
   border-radius: 0.6rem;
   cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
 }
-
 .play-button {
   background: ${this.colors["base-background"]};
   border: 1px solid ${this.colors["base-border"]};
@@ -288,7 +132,6 @@ class YouTubePlayer extends HTMLElement {
   margin: 0;
   position: relative;
 }
-
 .play-button:after {
   background: ${this.colors["base-foreground"]};
   content: "";
@@ -303,12 +146,9 @@ class YouTubePlayer extends HTMLElement {
   top: 0;
   width: 100%;
 }
-
 .wrapper, .yt-logo {
   transition: all 0.7s ease-in;
 }
-
-
 /*
 #player {
   top: 20%;
@@ -317,9 +157,6 @@ class YouTubePlayer extends HTMLElement {
   width: 30%;
 }
 */
-
-
-
 @media (hover: hover) {
   .play-button:hover {
     background: ${this.colors['hover-background']};
@@ -329,18 +166,28 @@ class YouTubePlayer extends HTMLElement {
     background: ${this.colors['hover-foreground']};
   }
 }
-
 `
-
     );
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
-  doPause() {
+  doPauseOnActivePlayer() {
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     }
   }
+
+  doPauseOnInactivePlayer() {
+    const shader = this.shadowRoot.querySelector('.shader')
+    const playerEl = this.shadowRoot.querySelector('#player')
+    if (this.player.getPlayerState() === 1) {
+      shader.classList.remove('hidden')
+      playerEl.classList.add('dark')
+      this.player.pauseVideo()
+    }
+    // console.log(this.player.getPlayerState())
+  }
+
 
   // TODO: Start with the highest quality and 
   // keep searching until you find one
@@ -389,6 +236,10 @@ body[data-youtube-state=playing] {
     this.getBackgroundImage()
     this.addEventListeners()
     this.init()
+  }
+
+  doPlaying() {
+
   }
 
   getAttributes() {
@@ -664,7 +515,7 @@ body[data-youtube-state=playing] {
       // the controls go away if you try to scrub 
       // this.updateButtonStyles()
       // this.dataset.state = 'paused'
-      document.body.dataset.youtubeState = 'paused'
+      // document.body.dataset.youtubeState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
       clearTimeout(this.timer)
       this.constructor.switchPlayer(this)
@@ -776,3 +627,174 @@ body[data-youtube-state=playing] {
 }
 
 customElements.define('youtube-player', YouTubePlayer)
+
+
+// TODO: Figure out if there's away to tell if the
+// video isn't available and send a better message
+// than the youtube default one. or maybe play
+// a different video all together
+//
+// TODO: Maybe add an end time
+//
+// NOTE: YouTube iframe API Reference:
+// https://developers.google.com/youtube/iframe_api_reference
+//
+// TODO: Figure out if there's a way to make the
+// text switch from play to pause as soon as the
+// video itself is clicked (right now there's a
+// little delay)
+//
+// TODO: Add icon buttons
+//
+// TODO: Move CSS Into component file directly
+//
+// TODO: Pull title from: https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=q3lX2p_Uy9I&format=json
+//
+
+/*
+const componentStyles = document.createElement('style')
+componentStyles.innerHTML = `
+
+body {
+  transition: all 1.2s ease-out;
+}
+
+body[data-youtube-state=playing] {
+  --background-color: black;
+  --primary-color: #444;
+}
+
+.youtube-button {
+  background: none;
+  border: 1px solid #333;
+  border-radius: 0.4rem;
+  color: #aaa;
+  cursor: pointer;
+  font-size: 1rem;
+  outline: inherit;
+  padding: 0;
+}
+
+.youtube-button-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: right;
+  padding-block: 0.6rem;
+  min-height: 3rem;
+}
+
+.youtube-logo {
+  cursor: pointer;
+  position: absolute;
+  width: 4rem;
+  height: 4rem;
+  bottom: 1rem;
+  left: 1rem;
+  background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  visibility: hidden;
+}
+
+.youtube-mute-button {
+  width: 8ch;
+}
+
+.youtube-play-button {
+  width: 7ch;
+}
+
+youtube-player {
+  display: block;
+}
+
+.youtube-play-icon {
+  background: var(--accent-color-2);
+mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%220.5%22%20style%3D%22--darkreader-inline-color%3A%20var(--darkreader-text-000000%2C%20%23e8e6e3)%3B%22%20data-darkreader-inline-color%3D%22%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%220.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20style%3D%22--darkreader-inline-fill%3A%20%23000000%3B%20--darkreader-inline-stroke%3A%20%23000000%3B%22%20data-darkreader-inline-fill%3D%22%22%20data-darkreader-inline-stroke%3D%22%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E%0A");
+mask-size: contain;
+mask-position: center;
+mask-repeat: no-repeat;
+  margin: 2px;
+  padding: 2px;
+  outline: 1px solid red;
+}
+
+.youtube-playback-button {
+  width: 3rem;
+  height: 1.2rem;
+}
+
+.youtube-playback-button[data-playback-rate="1"] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+.youtube-active-rate {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=buffering] {
+  border: 1px solid green;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=cued] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=ended] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=paused] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=playing] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+youtube-player[data-state=unstarted] {
+  border: 1px solid red;
+  border-radius: 0.4rem;
+}
+
+
+.youtube-speed-button {
+  width: 5ch;
+}
+
+.youtube-stop-button {
+  width: 6ch;
+}
+
+.youtube-video-wrapper {
+  border-radius: 0.6rem;
+  cursor: pointer;
+  height: 0;
+  padding-bottom: 56.25%;
+  position: relative;
+}
+
+.youtube-video-wrapper iframe {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  visibility: hidden;
+}
+`
+document.head.appendChild(componentStyles)
+
+*/
+
+
