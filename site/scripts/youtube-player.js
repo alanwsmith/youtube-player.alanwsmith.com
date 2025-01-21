@@ -4,9 +4,15 @@ class YouTubePlayer extends HTMLElement {
   static instances = {}
 
   static handleEnded(instance) {
+    this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'ended'
       instance.doEnded()
+    }
+    for (const uuid in this.instances) {
+      if (uuid !== instance.uuid) {
+        this.instances[uuid].doRemoveFade()
+      }
     }
   }
 
@@ -635,7 +641,6 @@ body[data-youtube-player-state=playing] {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
-
   addContent() {
     const template = 
       this.ownerDocument.createElement('template')
@@ -685,7 +690,6 @@ body[data-youtube-player-state=playing] {
       shader.classList.remove('dark-shader-over-background')
     }
   }
-
 
 }
 
