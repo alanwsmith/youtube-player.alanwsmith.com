@@ -113,14 +113,6 @@ class YouTubePlayer extends HTMLElement {
   addDocumentStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
-body {
-  transition: background-color 1.2s ease-out;
-}
-
-body[data-youtube-player-state=playing] {
-  --background-color: black;
-  --primary-color: #444;
-}
 `)
     document.adoptedStyleSheets.push(styles);
   }
