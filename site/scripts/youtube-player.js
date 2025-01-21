@@ -147,6 +147,7 @@ class YouTubePlayer extends HTMLElement {
     this.getAttributes()
     this.addContent()
     this.addStyles()
+    this.getTitle()
     this.getBackgroundImage()
     this.addEventListeners()
     this.init()
@@ -161,6 +162,18 @@ class YouTubePlayer extends HTMLElement {
           this.getAttribute(attr)
       }
     })
+  }
+
+  async getTitle() {
+    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
+    let response = await fetch(url)
+    if (!response.ok) {
+      throw new Error('There was a problem getting the data')
+    } else {
+      let json = await response.json()
+      // TODO: Figure out error handling here
+      this.parts.title.innerHTML = json.title
+    }
   }
 
   // addButtons(player) {
@@ -558,11 +571,12 @@ class YouTubePlayer extends HTMLElement {
 }
 .title {
   border-radius: 0.6rem;
+  color: var(--youtube-player-text-color);
+  filter: drop-shadow(1px 1px 1px black);
+  left: 1rem;
   position: absolute;
   top: 1rem;
-  left: 1rem;
   z-index: 5;
-  filter: drop-shadow(1px 1px 1px black);
 }
 .dark {
   opacity: 0.3;
@@ -660,7 +674,7 @@ class YouTubePlayer extends HTMLElement {
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
-  <div class="title">This is the title</div>
+  <div class="title"></div>
   <div class="yt-logo"></div>
 </div>
 <div class="buttons">
@@ -673,9 +687,10 @@ class YouTubePlayer extends HTMLElement {
     // NOTE: player isn't added here since the element
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
-    this.parts.shader = this.shadowRoot.querySelector('.shader')
-    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
     this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
+    this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.title = this.shadowRoot.querySelector('.title')
+    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
   }
 
   doPauseAndFade() {

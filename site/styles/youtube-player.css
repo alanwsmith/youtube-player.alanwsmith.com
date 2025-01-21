@@ -2,6 +2,7 @@
   --youtube-player-faded-border: 1px solid #111;
   --youtube-player-playing-border: 1px solid #222;
   --youtube-player-stopped-border: 1px solid #555;
+  --youtube-player-text-color: maroon;
 }
 
 body {
