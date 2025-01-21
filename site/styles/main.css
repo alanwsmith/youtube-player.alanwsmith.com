@@ -200,3 +200,11 @@ section {
 ul > :where(:not(:first-child)) {
   margin-top: 1em;
 }
+
+.warning {
+  margin: var(--large-margin);
+  padding: var(--large-padding);
+  border: 2px solid red;
+  border-radius: var(--medium-border-radius);
+}
+

@@ -67,9 +67,11 @@ class YouTubePlayer extends HTMLElement {
   </div>
 </div>
 <div class="yt-logo">YTLOGO</div>
+<!--
 <div class="buttons">
   <button aria-label="play" class="play-button control-button"></button>
 </div>
+-->
 `
     const contents = 
       template.content.cloneNode(true)

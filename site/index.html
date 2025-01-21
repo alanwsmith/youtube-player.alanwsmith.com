@@ -41,13 +41,27 @@
       <hgroup>
         <h1>Alan's YouTube Player Web Component</h1>
       </hgroup>
+
+      <div class="warning flow">
+        <h2>WORK-IN-PROGRESS</h2>
+        <p>
+          I'm still working on this component. It may or
+          may not do much when you see it. 
+        </p>
+      </div>
+
+          <!--
       <h2>Introduction</h2>
       <p>
         This is the web component I'm building to embed videos on 
         my sites. The first version is coming along nicely:
       </p>
+-->
 
-      <youtube-player :video="REPPgPcw4hk"></youtube-player>
+      <youtube-player :video="REPPgPcw4hk">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
       <youtube-player :video="NoMqvniiEkk" :start-at="53">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
