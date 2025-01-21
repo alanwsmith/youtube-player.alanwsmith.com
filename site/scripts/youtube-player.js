@@ -56,140 +56,6 @@ class YouTubePlayer extends HTMLElement {
     this.attachShadow({mode: 'open'})
   }
 
-  addContent() {
-    const template = 
-      this.ownerDocument.createElement('template')
-    template.innerHTML = `
-<div class="background">
-  <div class="shader hidden"></div>
-  <div class="wrapper hidden">
-    <div id="player"></div>
-  </div>
-</div>
-<div class="yt-logo">YTLOGO</div>
-<!--
-<div class="buttons">
-  <button aria-label="play" class="play-button control-button"></button>
-</div>
--->
-`
-    const contents = 
-      template.content.cloneNode(true)
-    this.shadowRoot.append(contents)
-    this.wrapper = this.shadowRoot.querySelector('.wrapper')
-    // this.playerEl = this.shadowRoot.querySelector('#player')
-    this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
-  }
-
-  addStyles() {
-    const styles = new CSSStyleSheet();
-    styles.replaceSync(`
-.background {
-  background-color: black;
-  position: relative;
-}
-.control-button {
-  width: 3rem;
-  height: 2rem;
-}
-.hidden {
-  opacity: 0;
-}
-:host {
-  display: block;
-  border-radius: 0.6rem;
-  position: relative;
-}
-#player {
-  border: 1px solid maroon;
-  border-radius: 0.6rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10;
-} 
-.shader {
-  border: 1px solid green;
-  border-radius: 0.6rem;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: black;
-  z-index: 6;
-}
-#player {
-  transition: all 0.7s ease-in;
-}
-.dark{
-  opacity: 0.3;
-}
-/*
-.wrapper.paused #player {
-  border-radius: 0.6rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 30%;
-  height: 30%;
-}
-*/
-.background {
-  border-radius: 0.6rem;
-  cursor: pointer;
-  height: 0;
-  padding-bottom: 56.25%;
-}
-.play-button {
-  background: ${this.colors["base-background"]};
-  border: 1px solid ${this.colors["base-border"]};
-  border-radius: 0.6rem;
-  margin: 0;
-  position: relative;
-}
-.play-button:after {
-  background: ${this.colors["base-foreground"]};
-  content: "";
-  height: 100%;
-  left: 0;
-  margin: 0;
-  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
-  mask-position: center;
-  mask-repeat: no-repeat;
-  mask-size: contain;
-  position: absolute;
-  top: 0;
-  width: 100%;
-}
-.wrapper, .yt-logo {
-  transition: all 0.7s ease-in;
-}
-/*
-#player {
-  top: 20%;
-  left: 40%;
-  postion: relative;
-  width: 30%;
-}
-*/
-@media (hover: hover) {
-  .play-button:hover {
-    background: ${this.colors['hover-background']};
-    border: 1px solid ${this.colors['hover-foreground']};
-  }
-  .play-button:hover:after {
-    background: ${this.colors['hover-foreground']};
-  }
-}
-`
-    );
-    this.shadowRoot.adoptedStyleSheets.push(styles);
-  }
-
-
   doEnded() {
     const shader = this.shadowRoot.querySelector('.shader')
     const wrapper = this.shadowRoot.querySelector('.wrapper')
@@ -224,7 +90,6 @@ class YouTubePlayer extends HTMLElement {
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     }
-
   }
 
 
@@ -256,7 +121,6 @@ body[data-youtube-player-state=playing] {
 }
 `)
     document.adoptedStyleSheets.push(styles);
-
   }
 
   addEventListeners() {
@@ -660,6 +524,142 @@ body[data-youtube-player-state=playing] {
       }
     })
   }
+
+
+  addStyles() {
+    const styles = new CSSStyleSheet();
+    styles.replaceSync(`
+.background {
+  background-color: black;
+  position: relative;
+}
+.control-button {
+  width: 3rem;
+  height: 2rem;
+}
+.hidden {
+  opacity: 0;
+}
+:host {
+  display: block;
+  border-radius: 0.6rem;
+  position: relative;
+}
+#player {
+  border: 1px solid maroon;
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+} 
+.shader {
+  border: 1px solid green;
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  z-index: 6;
+}
+#player {
+  transition: all 0.7s ease-in;
+}
+.dark{
+  opacity: 0.3;
+}
+/*
+.wrapper.paused #player {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 30%;
+  height: 30%;
+}
+*/
+.background {
+  border-radius: 0.6rem;
+  cursor: pointer;
+  height: 0;
+  padding-bottom: 56.25%;
+}
+.play-button {
+  background: ${this.colors["base-background"]};
+  border: 1px solid ${this.colors["base-border"]};
+  border-radius: 0.6rem;
+  margin: 0;
+  position: relative;
+}
+.play-button:after {
+  background: ${this.colors["base-foreground"]};
+  content: "";
+  height: 100%;
+  left: 0;
+  margin: 0;
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6.90588%204.53682C6.50592%204.2998%206%204.58808%206%205.05299V18.947C6%2019.4119%206.50592%2019.7002%206.90588%2019.4632L18.629%2012.5162C19.0211%2012.2838%2019.0211%2011.7162%2018.629%2011.4838L6.90588%204.53682Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+.wrapper, .yt-logo {
+  transition: all 0.7s ease-in;
+}
+/*
+#player {
+  top: 20%;
+  left: 40%;
+  postion: relative;
+  width: 30%;
+}
+*/
+@media (hover: hover) {
+  .play-button:hover {
+    background: ${this.colors['hover-background']};
+    border: 1px solid ${this.colors['hover-foreground']};
+  }
+  .play-button:hover:after {
+    background: ${this.colors['hover-foreground']};
+  }
+}
+`
+    );
+    this.shadowRoot.adoptedStyleSheets.push(styles);
+  }
+
+
+  addContent() {
+    const template = 
+      this.ownerDocument.createElement('template')
+    template.innerHTML = `
+<div class="background">
+  <div class="shader hidden"></div>
+  <div class="wrapper hidden">
+    <div id="player"></div>
+  </div>
+</div>
+<div class="yt-logo">YTLOGO</div>
+<!--
+<div class="buttons">
+  <button aria-label="play" class="play-button control-button"></button>
+</div>
+-->
+`
+    const contents = 
+      template.content.cloneNode(true)
+    this.shadowRoot.append(contents)
+    this.wrapper = this.shadowRoot.querySelector('.wrapper')
+    // this.playerEl = this.shadowRoot.querySelector('#player')
+    this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
+  }
+
 
 }
 
