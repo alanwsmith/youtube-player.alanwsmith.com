@@ -19,7 +19,6 @@ class YouTubePlayer extends HTMLElement {
 
   static handlePause(instance) {
     console.log(`handlePause: ${instance.uuid}`)
-    // this.activeInstance = instance.uuid
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'paused'
       for (const uuid in this.instances) {
@@ -57,7 +56,7 @@ class YouTubePlayer extends HTMLElement {
     this.attrs = {
       "fast-forward-time": 10,
       "rewind-time": 12,
-      "start-at": 0,
+      "start": 0,
     }
     this.colors = {
       "base-background": "var(--youtube-player-base-background, #aaa)",
@@ -81,10 +80,13 @@ class YouTubePlayer extends HTMLElement {
   doPlaying() {
     const wrapper = this.shadowRoot.querySelector('.wrapper')
     wrapper.classList.remove('hidden')
-    //const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
-    // shader.classList.add('hidden')
     playerEl.classList.remove('dark')
+    let shaderUpdate = setTimeout(() => {
+      const shader = this.shadowRoot.querySelector('.shader')
+      shader.classList.remove('dark-shader-over-background')
+      shader.classList.remove('hidden')
+    }, 1000)
   }
 
   doPauseOnActivePlayer() {
@@ -92,8 +94,6 @@ class YouTubePlayer extends HTMLElement {
     //   this.player.pauseVideo()
     // }
   }
-
-
 
 
 
@@ -449,7 +449,7 @@ class YouTubePlayer extends HTMLElement {
         videoId: this.attrs.video,
         playerVars: {
           playsinline: 1,
-          start: this.attrs["start-at"],
+          start: this.attrs["start"],
         },
         events: {
           onReady: (event) => {
@@ -543,7 +543,7 @@ class YouTubePlayer extends HTMLElement {
   width: 100%;
   height: 100%;
   z-index: 10;
-} 
+}  
 .shader {
   border: 1px solid green;
   border-radius: 0.6rem;
@@ -561,11 +561,9 @@ class YouTubePlayer extends HTMLElement {
 .dark {
   opacity: 0.3;
 }
-
 .dark-shader-over-background {
   opacity: 0.7;
 }
-
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
