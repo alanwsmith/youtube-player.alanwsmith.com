@@ -114,7 +114,7 @@ class YouTubePlayer extends HTMLElement {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
 body {
-  transition: all 1.2s ease-out;
+  transition: background-color 1.2s ease-out;
 }
 
 body[data-youtube-player-state=playing] {
@@ -616,8 +616,8 @@ body[data-youtube-player-state=playing] {
   top: 0;
   width: 100%;
 }
-.wrapper, .yt-logo {
-  transition: all 0.7s ease-in;
+.wrapper, .yt-logo, .shader {
+  transition: opacity 0.7s ease-in;
 }
 /*
 #player {
