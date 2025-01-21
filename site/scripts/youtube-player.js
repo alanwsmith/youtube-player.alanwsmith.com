@@ -78,19 +78,9 @@ class YouTubePlayer extends HTMLElement {
     // }
   }
 
-  doPauseAndFade() {
-    const shader = this.shadowRoot.querySelector('.shader')
-    const playerEl = this.shadowRoot.querySelector('#player')
 
-    if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-      shader.classList.remove('hidden')
-      playerEl.classList.add('dark')
-    }
 
-    if (this.player.getPlayerState() === 1) {
-      this.player.pauseVideo()
-    }
-  }
+
 
 
   // TODO: Start with the highest quality and 
@@ -569,9 +559,14 @@ body[data-youtube-player-state=playing] {
 #player {
   transition: all 0.7s ease-in;
 }
-.dark{
+.dark {
   opacity: 0.3;
 }
+
+.dark-shader-over-background {
+  opacity: 0.7;
+}
+
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -646,11 +641,9 @@ body[data-youtube-player-state=playing] {
   </div>
 </div>
 <div class="yt-logo">YTLOGO</div>
-<!--
 <div class="buttons">
   <button aria-label="play" class="play-button control-button"></button>
 </div>
--->
 `
     const contents = 
       template.content.cloneNode(true)
@@ -660,6 +653,21 @@ body[data-youtube-player-state=playing] {
     this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
   }
 
+  doPauseAndFade() {
+    const shader = this.shadowRoot.querySelector('.shader')
+    const playerEl = this.shadowRoot.querySelector('#player')
+    if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
+      shader.classList.remove('dark-shader-over-background')
+      shader.classList.remove('hidden')
+      playerEl.classList.add('dark')
+    } else {
+      shader.classList.add('dark-shader-over-background')
+      shader.classList.remove('hidden')
+    }
+    if (this.player.getPlayerState() === 1) {
+      this.player.pauseVideo()
+    }
+  }
 
 }
 
