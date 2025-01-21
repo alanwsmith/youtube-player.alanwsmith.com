@@ -48,7 +48,7 @@ class YouTubePlayer extends HTMLElement {
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background">
-  <div class="shader"></div>
+  <div class="shader hidden"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
@@ -171,6 +171,13 @@ class YouTubePlayer extends HTMLElement {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
+  doPlaying() {
+    const shader = this.shadowRoot.querySelector('.shader')
+    const playerEl = this.shadowRoot.querySelector('#player')
+    shader.classList.add('hidden')
+    playerEl.classList.remove('dark')
+  }
+
   doPauseOnActivePlayer() {
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
@@ -238,9 +245,6 @@ body[data-youtube-state=playing] {
     this.init()
   }
 
-  doPlaying() {
-
-  }
 
   getAttributes() {
     this.attrs = {}
