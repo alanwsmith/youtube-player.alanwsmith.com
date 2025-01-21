@@ -8,7 +8,7 @@ body {
   transition: background-color 1.2s ease-out;
 }
 
-body[data-youtube-player-state=playing] {
+body[data-youtube-player-state="playing"] {
   --background-color: black;
   --primary-color: #444;
 }

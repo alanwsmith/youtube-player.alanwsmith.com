@@ -51,6 +51,9 @@ class YouTubePlayer extends HTMLElement {
 
   static switchActivePlayer(instance) {
     console.log(`switchActivePlayer: ${instance.uuid}`)
+    // This clears the pause timeout which
+    // is necessary to prevent short changes
+    // when fast forwarding and rewinding
     if (this.timeout !== null) {
       clearTimeout(this.timeout)
       this.timeout = null
@@ -92,24 +95,24 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
     this.parts.background.classList.remove('faded')
-    const shader = this.shadowRoot.querySelector('.shader')
-    const wrapper = this.shadowRoot.querySelector('.wrapper')
-    shader.classList.add('hidden')
-    wrapper.classList.add('hidden')
+    // const shader = this.shadowRoot.querySelector('.shader')
+    // const wrapper = this.shadowRoot.querySelector('.wrapper')
+    this.parts.shader.classList.add('hidden')
+    this.parts.wrapper.classList.add('hidden')
   }
 
   doPlaying() {
     this.parts.background.classList.add('playing')
     this.parts.background.classList.remove('stopped')
     this.parts.background.classList.remove('faded')
-    const wrapper = this.shadowRoot.querySelector('.wrapper')
-    wrapper.classList.remove('hidden')
-    const playerEl = this.shadowRoot.querySelector('#player')
-    playerEl.classList.remove('dark')
+    // const wrapper = this.shadowRoot.querySelector('.wrapper')
+    this.parts.wrapper.classList.remove('hidden')
+    // const playerEl = this.shadowRoot.querySelector('#player')
+    this.parts.player.classList.remove('dark')
     let shaderUpdate = setTimeout(() => {
-      const shader = this.shadowRoot.querySelector('.shader')
-      shader.classList.remove('dark-shader-over-background')
-      shader.classList.remove('hidden')
+      // const shader = this.shadowRoot.querySelector('.shader')
+      this.parts.shader.classList.remove('dark-shader-over-background')
+      this.parts.shader.classList.remove('hidden')
     }, 1000)
   }
 
@@ -148,7 +151,6 @@ class YouTubePlayer extends HTMLElement {
     this.constructor.registerInstance(this)
     this.getAttributes()
     this.addContent()
-    this.getParts()
     this.addStyles()
     this.getBackgroundImage()
     this.addEventListeners()
@@ -167,10 +169,6 @@ class YouTubePlayer extends HTMLElement {
   }
 
   getParts() {
-    this.parts.background = this.shadowRoot.querySelector('.background')
-    this.parts.player = this.shadowRoot.querySelector('#player')
-    this.parts.shader = this.shadowRoot.querySelector('.shader')
-    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
   }
 
   // addButtons(player) {
@@ -404,9 +402,10 @@ class YouTubePlayer extends HTMLElement {
     this.updateButtonStyles()
   }
 
-  makeHidden() {
-    this.wrapper.classList.add("hidden")
-  }
+  
+  // makeHidden() {
+  //   this.wrapper.classList.add("hidden")
+  // }
 
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
@@ -461,7 +460,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   handleWrapperClick(event) {
-    this.ytLogo.classList.add("hidden")
+    // this.ytLogo.classList.add("hidden")
     this.player.playVideo()
   }
 
@@ -499,6 +498,10 @@ class YouTubePlayer extends HTMLElement {
       return value
     })
     // TODO: Figure out how to handle errors here.
+
+    // The player can be added now that it's
+    // been switched to the iframe
+    this.parts.player = this.shadowRoot.querySelector('#player')
 
     // this.addRewindButton()
     // this.getPlaybackRates()
@@ -688,24 +691,31 @@ class YouTubePlayer extends HTMLElement {
     const contents = 
       template.content.cloneNode(true)
     this.shadowRoot.append(contents)
-    this.wrapper = this.shadowRoot.querySelector('.wrapper')
+    // NOTE: player isn't added here since the element
+    // is changed when the iframe loads
+    this.parts.background = this.shadowRoot.querySelector('.background')
+    this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
+    this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
+    // this.wrapper = this.shadowRoot.querySelector('.wrapper')
     // this.playerEl = this.shadowRoot.querySelector('#player')
-    this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
+    // this.ytLogo = this.shadowRoot.querySelector('.yt-logo')
   }
 
   doPauseAndFade() {
     this.parts.background.classList.add('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.remove('stopped')
-    const shader = this.shadowRoot.querySelector('.shader')
-    const playerEl = this.shadowRoot.querySelector('#player')
+    // const shader = this.shadowRoot.querySelector('.shader')
+    // const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-      shader.classList.remove('dark-shader-over-background')
-      shader.classList.remove('hidden')
-      playerEl.classList.add('dark')
+      this.parts.shader.classList.remove('dark-shader-over-background')
+      this.parts.shader.classList.remove('hidden')
+      this.parts.player.classList.add('dark')
+
     } else {
-      shader.classList.add('dark-shader-over-background')
-      shader.classList.remove('hidden')
+      this.parts.shader.classList.add('dark-shader-over-background')
+      this.parts.shader.classList.remove('hidden')
     }
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
@@ -716,13 +726,13 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
-    const shader = this.shadowRoot.querySelector('.shader')
-    const playerEl = this.shadowRoot.querySelector('#player')
+    // const shader = this.shadowRoot.querySelector('.shader')
+    // const playerEl = this.shadowRoot.querySelector('#player')
     if (this.player.getPlayerState() === 2) {
-      playerEl.classList.remove('dark')
+      this.parts.player.classList.remove('dark')
     } else {
-      shader.classList.add('hidden')
-      shader.classList.remove('dark-shader-over-background')
+      this.parts.shader.classList.add('hidden')
+      this.parts.shader.classList.remove('dark-shader-over-background')
     }
   }
 }
