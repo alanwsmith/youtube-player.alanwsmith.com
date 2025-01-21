@@ -110,13 +110,6 @@ class YouTubePlayer extends HTMLElement {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
-  addDocumentStyles() {
-    const styles = new CSSStyleSheet();
-    styles.replaceSync(`
-`)
-    document.adoptedStyleSheets.push(styles);
-  }
-
   addEventListeners() {
     const background = this.shadowRoot.querySelector(".background")
     background.addEventListener("click", (event) => {
@@ -129,7 +122,6 @@ class YouTubePlayer extends HTMLElement {
     this.getAttributes()
     this.addContent()
     this.addStyles()
-    this.addDocumentStyles()
     this.getBackgroundImage()
     this.addEventListeners()
     this.init()
