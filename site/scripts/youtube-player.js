@@ -3,6 +3,13 @@ class YouTubePlayer extends HTMLElement {
   static activeInstance = null
   static instances = {}
 
+  static handleEnded(instance) {
+    if (instance.uuid == this.activeInstance) {
+      document.body.dataset.youtubePlayerState = 'ended'
+      instance.doEnded()
+    }
+  }
+
   static handlePause(instance) {
     if (instance.uuid == this.activeInstance) {
       document.body.dataset.youtubePlayerState = 'paused'
@@ -112,15 +119,12 @@ class YouTubePlayer extends HTMLElement {
   background: black;
   z-index: 6;
 }
-
 #player {
   transition: all 0.7s ease-in;
 }
-
 .dark{
   opacity: 0.3;
 }
-
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -183,8 +187,18 @@ class YouTubePlayer extends HTMLElement {
     this.shadowRoot.adoptedStyleSheets.push(styles);
   }
 
-  doPlaying() {
+
+  doEnded() {
     const shader = this.shadowRoot.querySelector('.shader')
+    const wrapper = this.shadowRoot.querySelector('.wrapper')
+    shader.classList.add('hidden')
+    wrapper.classList.add('hidden')
+  }
+
+  doPlaying() {
+    const wrapper = this.shadowRoot.querySelector('.wrapper')
+    wrapper.classList.remove('hidden')
+    //const shader = this.shadowRoot.querySelector('.shader')
     const playerEl = this.shadowRoot.querySelector('#player')
     // shader.classList.add('hidden')
     playerEl.classList.remove('dark')
@@ -516,8 +530,9 @@ body[data-youtube-player-state=playing] {
     } else if (playerState == YT.PlayerState.ENDED) {
       // TODO: Move the start time back to the origianal
       // start time.
-      this.wrapper.classList.add("hidden")
-      this.ytLogo.classList.remove("hidden")
+      this.constructor.handleEnded(this)
+      // this.wrapper.classList.add("hidden")
+      // this.ytLogo.classList.remove("hidden")
       // this.updateButtonStyles()
       // this.player.g.style.visibility = 'hidden'
       // this.ytLogo.style.visibility = 'visible'
@@ -531,10 +546,11 @@ body[data-youtube-player-state=playing] {
       // this.dataset.state = 'paused'
       // document.body.dataset.youtubePlayerState = 'paused'
     } else if (playerState == YT.PlayerState.PLAYING) {
-      clearTimeout(this.timer)
       this.constructor.switchPlayer(this)
-      this.wrapper.classList.remove("hidden")
-      this.ytLogo.classList.add("hidden")
+
+      // clearTimeout(this.timer)
+      // this.wrapper.classList.remove("hidden")
+      // this.ytLogo.classList.add("hidden")
 
       //this.updateButtonStyles()
       // this.player.g.style.visibility = 'visible'
