@@ -92,6 +92,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doEnded() {
+    this.parts.logo.classList.remove('hidden')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
     this.parts.background.classList.remove('faded')
@@ -100,15 +101,18 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doPlaying() {
+    this.parts.logo.classList.add('hidden')
     this.parts.background.classList.add('playing')
     this.parts.background.classList.remove('stopped')
     this.parts.background.classList.remove('faded')
     this.parts.wrapper.classList.remove('hidden')
     this.parts.player.classList.remove('dark')
+
     let shaderUpdate = setTimeout(() => {
       this.parts.shader.classList.remove('dark-shader-over-background')
       this.parts.shader.classList.remove('hidden')
-    }, 1000)
+    }, 3000)
+
   }
 
   doPauseOnActivePlayer() {
@@ -507,7 +511,6 @@ class YouTubePlayer extends HTMLElement {
     })
   }
 
-
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
@@ -555,9 +558,6 @@ class YouTubePlayer extends HTMLElement {
   background: black;
   z-index: 6;
 }
-#player {
-  transition: all 0.7s ease-in;
-}
 .dark {
   opacity: 0.3;
 }
@@ -601,14 +601,15 @@ class YouTubePlayer extends HTMLElement {
   top: 0;
   width: 100%;
 }
+#player {
+  transition: all 0.7s ease-out;
+}
 .wrapper, .yt-logo, .shader {
   transition: opacity 0.7s ease-in;
 }
-
 .background {
   transition: border 0.7s ease-in;
 }
-
 /*
 #player {
   top: 20%;
@@ -617,6 +618,19 @@ class YouTubePlayer extends HTMLElement {
   width: 30%;
 }
 */
+.yt-logo {
+  border-radius: 0.6rem;
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  width: 4rem;
+  height: 3rem;
+  background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 5;
+}
 @media (hover: hover) {
   .play-button:hover {
     background: ${this.colors['hover-background']};
@@ -640,8 +654,8 @@ class YouTubePlayer extends HTMLElement {
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
+  <div class="yt-logo"></div>
 </div>
-<div class="yt-logo">YTLOGO</div>
 <div class="buttons">
   <button aria-label="play" class="play-button control-button"></button>
 </div>
