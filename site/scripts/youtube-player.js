@@ -191,6 +191,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.thumbnail.classList.remove('hidden')
@@ -203,6 +207,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.rewindButton.classList.add('dark')
     this.parts.fastForwardButton.classList.add('dark')
     this.parts.muteButton.classList.add('dark')
@@ -223,10 +231,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseAndFade() {
-    this.parts.rewindButton.classList.add('dark')
-    this.parts.fastForwardButton.classList.add('dark')
-    this.parts.muteButton.classList.add('dark')
-    this.parts.playButton.classList.add('dark')
+    this.parts.rewindButton.classList.add('darker')
+    this.parts.fastForwardButton.classList.add('darker')
+    this.parts.muteButton.classList.add('darker')
+    this.parts.playButton.classList.add('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.add('faded')
@@ -250,6 +258,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.remove('faded')
@@ -258,10 +270,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doRemoveFade() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.background.classList.remove('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
@@ -519,12 +531,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   width: 100%;
   height: 100%;
   z-index: 2;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
 }
 .thumbnail object img {
-  border-radius: 0.6rem;
-  height: 100%;
   z-index: 2;
 }
 .title {
@@ -542,7 +552,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-right: 1rem;
 }
 .dark {
-  opacity: 0.3;
+  opacity: 0.4;
+}
+.darker {
+  opacity: 0.1;
 }
 .dark-shader-over-background {
   opacity: 0.7;
@@ -587,17 +600,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-@media (hover: hover) {
-  .mute-button:hover {
-    background: var(--button-hover-background-color);
-    border: 1px solid var(--button-hover-border-color);
-  }
-
-  .mute-button:hover:after {
-    background: var(--button-hover-color);
-  }
-}
-
 #player {
   transition: all 0.6s ease-out;
 }
