@@ -127,59 +127,6 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.add('stopped')
   }
 
-
-  // TODO: Start with the highest quality and 
-  // keep searching until you find one
-  getThumbnail() {
-
-    // const targetImage = this.backgroundImageSizes.pop()
-    // let img = new Image()
-    // this.parts.thumbnail.appendChild(img);
-    // img.addEventListener('error', () => { console.log("asdf") } )
-    // // img.src = `https://i.ytimg.com/vi/lXMskKTw3Bc/${targetImage}.jpg`
-    // img.src = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
-    // // img.src = `https://i.ytimg.com/vi/lXMskKTw3Bc/${targetImage}.jpg`
-    // // thumbnailImage.onerror(console.log("asdf"))
-    // console.log(img)
-
-
-    // thumbnailImage.src = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
-
-
-
-
-
-    //if (this.backgroundImageSizes.length > 0) {
-    //  const targetImage = this.backgroundImageSizes.pop()
-    //  const url = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
-    //  console.log(`Trying: ${url}`)
-    //  let response = await fetch(url, {
-    //    //headers: { 'mode': 'no-cors'}
-    //  })
-    //  let result = await response.json()
-    //  console.log(result)
-    //  console.log(body.status)
-    //  // if (!response.ok) {
-    //  //   console.log("PROBLEM")
-    //  //   // this.getBackgroundImage()
-    //  //   // throw new Error('There was a problem getting the data')
-    //  // } else {
-    //  //   console.log(`Got: ${url}`)
-    //  //   const styles = new CSSStyleSheet();
-    //  //   styles.replaceSync(`
-    //  //     .background {
-    //  //       background-image: url("${url}");
-    //  //       background-size: cover;
-    //  //       background-position: center;
-    //  //       background-repeat: no-repeat
-    //  //     }`)
-    //  //   this.shadowRoot.adoptedStyleSheets.push(styles);
-    //  // }
-    //}
-
-
-  }
-
   addEventListeners() {
     const background = this.shadowRoot.querySelector(".background")
     background.addEventListener("click", (event) => {
@@ -193,7 +140,6 @@ class YouTubePlayer extends HTMLElement {
     this.addContent()
     this.addStyles()
     this.getTitle()
-    this.getThumbnail()
     this.addEventListeners()
     this.init()
   }
@@ -640,13 +586,18 @@ class YouTubePlayer extends HTMLElement {
   z-index: 2;
 }
 .title {
-  border-radius: 0.6rem;
+  background: rgb(0 0 0 / 0.3);
+  border-top-left-radius: 0.6rem;
   color: var(--youtube-player-text-color);
   filter: drop-shadow(1px 1px 1px black);
-  left: 1rem;
+  left: 0rem;
   position: absolute;
-  top: 1rem;
+  top: 0rem;
   z-index: 5;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 .dark {
   opacity: 0.3;
