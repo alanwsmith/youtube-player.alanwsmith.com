@@ -107,8 +107,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   -->
 </div>
 <div class="buttons">
-  <button aria-label="play" class="play-button control-button"></button>
-  <button aria-label="mute" class="mute-button control-button"></button>
+  <button aria-label="Rewind" class="rewind-button control-button"></button>
+  <button aria-label="Play" class="play-button control-button"></button>
+  <button aria-label="Fast" class="fast-forward-button control-button"></button>
+  <button aria-label="Mute" class="mute-button control-button"></button>
 </div>
 `
     const contents = 
@@ -124,7 +126,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
-    this.parts.clickCatcher = this.shadowRoot.querySelector('.click-catcher')
+    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
+    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
   }
 
   addEventListeners() {
@@ -132,17 +135,17 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.background.addEventListener('click', (event) => {
       this.handleWrapperClick.call(this, event)
     })
-    // this.parts.background.addEventListener('mousedown', (event) => {
-    //   console.log(event)
-    // })
-    // this.parts.background.addEventListener('mouseup', (event) => {
-    //   console.log(event)
-    // })
     this.parts.playButton.addEventListener('click', (event) => {
       this.handlePlayButtonClick.call(this, event)
     })
-    this.parts.wrapper.addEventListener('click', (event) => {
-      console.log('click')
+    this.parts.muteButton.addEventListener('click', (event) => {
+      this.handleMuteButtonClick.call(this, event)
+    })
+    this.parts.rewindButton.addEventListener('click', (event) => {
+      this.handleRewindButtonClick.call(this, event)
+    })
+    this.parts.fastForwardButton.addEventListener('click', (event) => {
+      this.handleFastForwardButtonClick.call(this, event)
     })
   }
 
@@ -160,8 +163,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     super()
     this.uuid = self.crypto.randomUUID()
     this.attrs = {
-      "fast-forward-time": 10,
-      "rewind-time": 12,
+      "fast-forward-time": 7,
+      "rewind-time": 10,
       "start": 0,
     }
     this.colors = {
@@ -184,6 +187,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doEnded() {
+    this.parts.rewindButton.classList.remove('dark')
+    this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
     this.parts.playButton.classList.add('play-button')
@@ -198,6 +203,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    this.parts.rewindButton.classList.add('dark')
+    this.parts.fastForwardButton.classList.add('dark')
     this.parts.muteButton.classList.add('dark')
     this.parts.playButton.classList.add('dark')
     this.parts.playButton.classList.remove('play-button')
@@ -216,6 +223,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseAndFade() {
+    this.parts.rewindButton.classList.add('dark')
+    this.parts.fastForwardButton.classList.add('dark')
     this.parts.muteButton.classList.add('dark')
     this.parts.playButton.classList.add('dark')
     this.parts.playButton.classList.add('play-button')
@@ -237,6 +246,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseOnActivePlayer() {
+    this.parts.rewindButton.classList.remove('dark')
+    this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
     this.parts.playButton.classList.add('play-button')
@@ -247,6 +258,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doRemoveFade() {
+    this.parts.rewindButton.classList.remove('dark')
+    this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
     this.parts.background.classList.remove('faded')
@@ -261,7 +274,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   getAttributes() {
-    this.attrs = {}
     const attrs = this.getAttributeNames()
     attrs.forEach((attr) => {
       if (attr.startsWith(':') === true) {
@@ -286,7 +298,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   handleFastForwardButtonClick(event) {
     this.player.seekTo(
       Math.min(
-        this.player.getCurrentTime() + this.fastForwardAmount,
+        this.player.getCurrentTime() + parseInt(this.attrs['fast-forward-time'], 10),
         this.player.getDuration() 
       )
     )
@@ -294,10 +306,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   handleMuteButtonClick(event) {
     if (this.player.isMuted() === true) {
-      this.muteButton.innerHTML = "mute"
+      this.parts.muteButton.classList.add('mute-button')
+      this.parts.muteButton.classList.remove('unmute-button')
       this.player.unMute()
     } else {
-      this.muteButton.innerHTML = "unmute"
+      this.parts.muteButton.classList.add('unmute-button')
+      this.parts.muteButton.classList.remove('mute-button')
       this.player.mute()
     }
   }
@@ -313,24 +327,24 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
-      console.log("STATUS: UNSTARTED")
+      // console.log("STATUS: UNSTARTED")
       // N/A - here for reference
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      console.log("STATUS: BUFFERING")
+      // console.log("STATUS: BUFFERING")
       this.constructor.handleBuffering(this)
     } else if (playerState == YT.PlayerState.CUED) {
-      console.log("STATUS: CUED")
+      // console.log("STATUS: CUED")
       // N/A - here for reference
     } else if (playerState == YT.PlayerState.ENDED) {
-      console.log("STATUS: ENDED")
+      // console.log("STATUS: ENDED")
       // TODO: Move the start time back to the original 
       // start time.
       this.constructor.handleEnded(this)
     } else if (playerState == YT.PlayerState.PAUSED) {
-      console.log("STATUS: PAUSED")
+      // console.log("STATUS: PAUSED")
       this.constructor.handlePause(this)
     } else if (playerState == YT.PlayerState.PLAYING) {
-      console.log("STATUS: PLAYING")
+      // console.log("STATUS: PLAYING")
       this.constructor.switchActivePlayer(this)
     }
   }
@@ -338,7 +352,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   handleRewindButtonClick(event) {
     this.player.seekTo(
       Math.max(
-        0, this.player.getCurrentTime() - this.rewindAmount
+        0, this.player.getCurrentTime() - parseInt(this.attrs['rewind-time'], 10)
       )
     )
   }
@@ -415,6 +429,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   background-color: black;
   position: relative;
 }
+.buttons {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.3rem;
+  justify-content: right;
+}
 .control-button {
   background: ${this.colors["base-background"]};
   border: 1px solid ${this.colors["base-border"]};
@@ -456,6 +476,18 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 }
 .faded {
   border: var(--youtube-player-faded-border);
+}
+.fast-forward-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cpath%20d%3D%22M13%206L19%2012L13%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M5%206L11%2012L5%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+.rewind-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cpath%20d%3D%22M11%206L5%2012L11%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M19%206L13%2012L19%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
 .stopped {
   border: var(--youtube-player-stopped-border);
@@ -549,6 +581,23 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
+.unmute-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cg%20clip-path%3D%22url(%23clip0_4223_8258)%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M17.4696%209.46973C17.7625%209.1768%2018.2373%209.17675%2018.5303%209.46961L20.0003%2010.9393L21.4696%209.46973C21.7625%209.1768%2022.2373%209.17675%2022.5303%209.46961C22.8232%209.76247%2022.8232%2010.2373%2022.5304%2010.5303L21.061%2012L22.5304%2013.4697C22.8232%2013.7627%2022.8232%2014.2375%2022.5303%2014.5304C22.2373%2014.8233%2021.7625%2014.8232%2021.4696%2014.5303L20.0003%2013.0607L18.5303%2014.5304C18.2373%2014.8233%2017.7625%2014.8232%2017.4696%2014.5303C17.1767%2014.2373%2017.1768%2013.7625%2017.4697%2013.4696L18.9397%2012L17.4697%2010.5304C17.1768%2010.2375%2017.1767%209.76266%2017.4696%209.46973Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3Cpath%20fill-rule%3D%22evenodd%22%20clip-rule%3D%22evenodd%22%20d%3D%22M13.0367%203.3964C14.2002%202.62923%2015.75%203.46373%2015.75%204.85741V19.1431C15.75%2020.5368%2014.2002%2021.3713%2013.0367%2020.6041L7.03762%2016.6487C6.99677%2016.6218%206.94892%2016.6074%206.9%2016.6074H4C2.48122%2016.6074%201.25%2015.3762%201.25%2013.8574V10.1431C1.25%208.62434%202.48122%207.39313%204%207.39313H6.9C6.94892%207.39313%206.99677%207.37877%207.03762%207.35184L13.0367%203.3964Z%22%20fill%3D%22%23000000%22%3E%3C%2Fpath%3E%3C%2Fg%3E%3Cdefs%3E%3CclipPath%20id%3D%22clip0_4223_8258%22%3E%3Crect%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22white%22%3E%3C%2Frect%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+@media (hover: hover) {
+  .mute-button:hover {
+    background: var(--button-hover-background-color);
+    border: 1px solid var(--button-hover-border-color);
+  }
+
+  .mute-button:hover:after {
+    background: var(--button-hover-color);
+  }
+}
+
 #player {
   transition: all 0.6s ease-out;
 }
