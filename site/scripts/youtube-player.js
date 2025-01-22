@@ -112,7 +112,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.background.addEventListener('click', (event) => {
       this.handleWrapperClick.call(this, event)
     })
-    this.parts.playButton.addEventListener('click', this)
+    this.parts.playButton.addEventListener('click', (event) => {
+      this.handlePlayButtonClick.call(this, event)
+    })
   }
 
   connectedCallback() {
@@ -153,6 +155,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doEnded() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
     this.parts.thumbnail.classList.remove('hidden')
     this.parts.logo.classList.remove('hidden')
     this.parts.background.classList.remove('playing')
@@ -163,6 +167,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    this.parts.playButton.classList.remove('play-button')
+    this.parts.playButton.classList.add('pause-button')
     this.parts.thumbnail.classList.add('hidden')
     this.parts.logo.classList.add('hidden')
     this.parts.background.classList.add('playing')
@@ -177,6 +183,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseAndFade() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.add('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.remove('stopped')
@@ -194,6 +202,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseOnActivePlayer() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.remove('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
@@ -250,6 +260,14 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     } else {
       this.muteButton.innerHTML = "unmute"
       this.player.mute()
+    }
+  }
+
+  handlePlayButtonClick(event) {
+    if (this.player.getPlayerState() === 1) {
+      this.player.pauseVideo()
+    } else {
+      this.player.playVideo()
     }
   }
 
@@ -350,6 +368,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   position: relative;
 }
 .control-button {
+  background: ${this.colors["base-background"]};
+  border: 1px solid ${this.colors["base-border"]};
+  border-radius: 0.6rem;
+  margin: 0;
+  position: relative;
   width: 3rem;
   height: 2rem;
 }
@@ -450,12 +473,19 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 0;
   padding-bottom: 56.25%;
 }
-.play-button {
-  background: ${this.colors["base-background"]};
-  border: 1px solid ${this.colors["base-border"]};
-  border-radius: 0.6rem;
+.pause-button:after {
+  background: ${this.colors["base-foreground"]};
+  content: "";
+  height: 100%;
+  left: 0;
   margin: 0;
-  position: relative;
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3Cpath%20d%3D%22M6%2018.4V5.6C6%205.26863%206.26863%205%206.6%205H9.4C9.73137%205%2010%205.26863%2010%205.6V18.4C10%2018.7314%209.73137%2019%209.4%2019H6.6C6.26863%2019%206%2018.7314%206%2018.4Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M14%2018.4V5.6C14%205.26863%2014.2686%205%2014.6%205H17.4C17.7314%205%2018%205.26863%2018%205.6V18.4C18%2018.7314%2017.7314%2019%2017.4%2019H14.6C14.2686%2019%2014%2018.7314%2014%2018.4Z%22%20fill%3D%22%23000000%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+  position: absolute;
+  top: 0;
+  width: 100%;
 }
 .play-button:after {
   background: ${this.colors["base-foreground"]};
@@ -510,11 +540,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   .background:hover .yt-logo{
     filter: drop-shadow(0px 0px 1px white);
   }
-  .play-button:hover {
+  .control-button:hover {
     background: ${this.colors['hover-background']};
     border: 1px solid ${this.colors['hover-foreground']};
   }
-  .play-button:hover:after {
+  .control-button:hover:after {
     background: ${this.colors['hover-foreground']};
   }
 }`
