@@ -373,10 +373,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.player.playVideo()
   }
 
-  // handleYtLogoClick(event) {
-  //   this.player.playVideo()
-  // }
-
   async init() {
     this.loadApi()
     await this.apiLoader
