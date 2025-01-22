@@ -83,6 +83,7 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
+
   addContent() {
     const template = 
       this.ownerDocument.createElement('template')
@@ -163,6 +164,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   constructor() {
     super()
     this.uuid = self.crypto.randomUUID()
+    this.loadingTimeout = null
+    this.loadingTimeoutTime = 400
     this.attrs = {
       "fast-forward-time": 7,
       "rewind-time": 10,
@@ -208,6 +211,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    if (this.loadingTimeout !== null) {
+      clearTimeout(this.loadingTimeout)
+      this.loadingTimeout = null
+    }
     this.parts.loading.classList.add('hidden')
     this.parts.rewindButton.classList.remove('darker')
     this.parts.fastForwardButton.classList.remove('darker')
@@ -334,7 +341,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     } else {
-      this.parts.loading.classList.remove('hidden')
+      this.loadingTimeout = setTimeout(() => {
+        this.parts.loading.classList.remove('hidden')
+      }, this.loadingTimeoutTime)
       this.player.playVideo()
     }
   }
@@ -373,7 +382,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handleWrapperClick(event) {
-    this.parts.loading.classList.remove('hidden')
+    this.loadingTimeout = setTimeout(() => {
+      this.parts.loading.classList.remove('hidden')
+    }, this.loadingTimeoutTime)
     this.player.playVideo()
   }
 
@@ -480,7 +491,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   border-bottom-left-radius: 0.6rem;
   color: var(--youtube-player-text-color);
   filter: drop-shadow(1px 1px 1px black);
-  left: 0rem;
+  left: calc(50vw - 3rem);
   position: absolute;
   bottom: 0rem;
   z-index: 5;
@@ -488,7 +499,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  transition: all 0.3s ease-in;
+  transition: all 0.5s ease-in;
 }
 
 .loading.hidden {
@@ -573,7 +584,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-right: 1rem;
 }
 .dark {
-  opacity: 0.4;
+  opacity: 0.35;
 }
 .darker {
   opacity: 0.1;
