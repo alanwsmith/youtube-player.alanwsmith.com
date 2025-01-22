@@ -23,15 +23,6 @@
     <link rel="stylesheet" href="/styles/main.css" />
     <script type="module" src="/scripts/youtube-player.js"></script>
     <link rel="stylesheet" href="/styles/youtube-player.css" />
-
-    <!--
-<style>
-    :root {
-      --youtube-player-base-background: maroon;
-    }
-    </style>
--->
-
   </head>
  
   <body>
@@ -81,36 +72,38 @@
       </p>
 -->
 
-      <!--
-      <youtube-player :video="REPPgPcw4hk">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
 
+      <!-- Summer Girl -->
       <youtube-player :video="ZjuA_o6Jzyo">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- Somebody That I Used To Know -->
       <youtube-player :video="REPPgPcw4hk">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- Kenzo World -->
       <youtube-player :video="NoMqvniiEkk" :start="54">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- Star Wars - One Vision -->
       <youtube-player :video="8bOtuoNFzB0" :start="18">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- Rage Against The Machine -->
       <youtube-player :video="Rm1nCYOZB-s" :start="11">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- David Bowie -->
       <youtube-player :video="LT3cERVRoQo" :start="2">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <!-- Muppets -->
       <!-- this one doesn't have a maxres thumbnail -->
       <!-- use it to check fallback to hq version -->
       <youtube-player :video="Cz8cbwR_6ms" :start="3">
@@ -207,6 +200,10 @@
           TODO: Look at using :not(:defined) to hide
           the element but set its height 
           before it's fully loaded
+        </li>
+        <li>
+          TODO: Add a spinner if to show loading for
+          when the network is slow
         </li>
       </ul>
       <h2>Someday/Maybe</h2>

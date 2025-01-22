@@ -83,6 +83,7 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
+
   addContent() {
     const template = 
       this.ownerDocument.createElement('template')
@@ -101,6 +102,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     <div id="player"></div>
   </div>
   <div class="title"></div>
+  <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
   <div class="yt-logo"></div>
@@ -119,15 +121,15 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // NOTE: player isn't added here since the element
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
-    // this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
+    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
+    this.parts.loading = this.shadowRoot.querySelector('.loading')
+    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
+    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
+    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
     this.parts.shader = this.shadowRoot.querySelector('.shader')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
-    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
-    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
-    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
   }
 
   addEventListeners() {
@@ -162,6 +164,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   constructor() {
     super()
     this.uuid = self.crypto.randomUUID()
+    this.loadingTimeout = null
+    this.loadingTimeoutTime = 400
     this.attrs = {
       "fast-forward-time": 7,
       "rewind-time": 10,
@@ -191,6 +195,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.thumbnail.classList.remove('hidden')
@@ -203,6 +211,15 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    if (this.loadingTimeout !== null) {
+      clearTimeout(this.loadingTimeout)
+      this.loadingTimeout = null
+    }
+    this.parts.loading.classList.add('hidden')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.rewindButton.classList.add('dark')
     this.parts.fastForwardButton.classList.add('dark')
     this.parts.muteButton.classList.add('dark')
@@ -223,10 +240,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPauseAndFade() {
-    this.parts.rewindButton.classList.add('dark')
-    this.parts.fastForwardButton.classList.add('dark')
-    this.parts.muteButton.classList.add('dark')
-    this.parts.playButton.classList.add('dark')
+    this.parts.rewindButton.classList.add('darker')
+    this.parts.fastForwardButton.classList.add('darker')
+    this.parts.muteButton.classList.add('darker')
+    this.parts.playButton.classList.add('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.add('faded')
@@ -250,6 +267,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.fastForwardButton.classList.remove('dark')
     this.parts.muteButton.classList.remove('dark')
     this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.playButton.classList.add('play-button')
     this.parts.playButton.classList.remove('pause-button')
     this.parts.background.classList.remove('faded')
@@ -258,10 +279,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doRemoveFade() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
+    this.parts.rewindButton.classList.remove('darker')
+    this.parts.fastForwardButton.classList.remove('darker')
+    this.parts.muteButton.classList.remove('darker')
+    this.parts.playButton.classList.remove('darker')
     this.parts.background.classList.remove('faded')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
@@ -320,6 +341,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     } else {
+      this.loadingTimeout = setTimeout(() => {
+        this.parts.loading.classList.remove('hidden')
+      }, this.loadingTimeoutTime)
       this.player.playVideo()
     }
   }
@@ -358,12 +382,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handleWrapperClick(event) {
+    this.loadingTimeout = setTimeout(() => {
+      this.parts.loading.classList.remove('hidden')
+    }, this.loadingTimeoutTime)
     this.player.playVideo()
   }
-
-  // handleYtLogoClick(event) {
-  //   this.player.playVideo()
-  // }
 
   async init() {
     this.loadApi()
@@ -462,6 +485,27 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   border-radius: 0.6rem;
   position: relative;
 }
+.loading {
+  background: rgb(0 0 0 / 0.3);
+  border-top-right-radius: 0.6rem;
+  border-bottom-left-radius: 0.6rem;
+  color: var(--youtube-player-text-color);
+  filter: drop-shadow(1px 1px 1px black);
+  left: calc(50vw - 3rem);
+  position: absolute;
+  bottom: 0rem;
+  z-index: 5;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: all 0.5s ease-in;
+}
+
+.loading.hidden {
+  transition: none;
+}
+
 #player {
   border-radius: 0.6rem;
   position: absolute;
@@ -519,12 +563,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   width: 100%;
   height: 100%;
   z-index: 2;
-  display: grid;
-  place-items: center;
+  display: flex;
+  justify-content: center;
 }
 .thumbnail object img {
-  border-radius: 0.6rem;
-  height: 100%;
   z-index: 2;
 }
 .title {
@@ -542,7 +584,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-right: 1rem;
 }
 .dark {
-  opacity: 0.3;
+  opacity: 0.35;
+}
+.darker {
+  opacity: 0.1;
 }
 .dark-shader-over-background {
   opacity: 0.7;
@@ -587,17 +632,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-@media (hover: hover) {
-  .mute-button:hover {
-    background: var(--button-hover-background-color);
-    border: 1px solid var(--button-hover-border-color);
-  }
-
-  .mute-button:hover:after {
-    background: var(--button-hover-color);
-  }
-}
-
 #player {
   transition: all 0.6s ease-out;
 }
