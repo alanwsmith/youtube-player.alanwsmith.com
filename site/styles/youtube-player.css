@@ -1,0 +1,17 @@
+:root {
+  --youtube-player-faded-border: 1px solid #111;
+  --youtube-player-playing-border: 1px solid #222;
+  --youtube-player-stopped-border: 1px solid #555;
+  --youtube-player-text-color: maroon;
+}
+
+body {
+  transition: background-color 0.9s ease-in, color 0.9s ease-in;
+}
+
+body[data-youtube-player-state="playing"] {
+  --background-color: black;
+  --primary-color: #444;
+  transition: background-color 1.2s ease-in, color 1.2s ease-in;
+}
+

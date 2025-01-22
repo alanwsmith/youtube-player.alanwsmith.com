@@ -22,6 +22,7 @@
     <meta name="description" content="My YouTube player web component" />
     <link rel="stylesheet" href="/styles/main.css" />
     <script type="module" src="/scripts/youtube-player.js"></script>
+    <link rel="stylesheet" href="/styles/youtube-player.css" />
 
     <!--
 <style>
@@ -69,8 +70,6 @@
           the players on the page. Starting on player pauses 
           any others that are playing. 
         </p>
-
-
       </div>
 
 
@@ -82,13 +81,48 @@
       </p>
 -->
 
+      <!--
+      <youtube-player :video="REPPgPcw4hk">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+      <youtube-player :video="ZjuA_o6Jzyo">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
       <youtube-player :video="REPPgPcw4hk">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
-      <youtube-player :video="NoMqvniiEkk" :start-at="53">
+      <youtube-player :video="NoMqvniiEkk" :start="54">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
+
+      <youtube-player :video="8bOtuoNFzB0" :start="18">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+      <youtube-player :video="Rm1nCYOZB-s" :start="11">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+      <youtube-player :video="LT3cERVRoQo" :start="2">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+      <!-- this one doesn't have a maxres thumbnail -->
+      <!-- use it to check fallback to hq version -->
+      <youtube-player :video="Cz8cbwR_6ms" :start="3">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+      <!--
+      <youtube-player :video="JSkn4zaUh78" :start="10">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
 
       <h2>Features And TODOs</h2>
       <ul>
@@ -178,12 +212,28 @@
       <h2>Someday/Maybe</h2>
       <ul>
         <li>
+          PROBABLY: Use page metrics to figure out if the
+          page loaded within a certain threshold and then
+          preload the videos if it does.
+        </li>
+        <li>
+          PROBABLY: Or, preload a video when it's in the
+          view
+        </li>
+        <li>
           PROBABLY: when first launching the page the videos might
           be mutted. When the first one is unmutted send a signal to
           unmute the rest so you don't have to do that manually
           for each video
         </li>
-
+        <li>
+          MAYBE: Add ability to float the video player keeping
+          it in frame.
+        </li>
+        <li>
+          Or, maybe a button to drop it down into the 
+          side of the page
+        </li>
         <li>
           PROBABLY: Send focus to video player so keyboard commands work
         </li>
@@ -235,6 +285,49 @@
           is provided directly by the YouTube API and default iFrame
         </li>
       </ul>
+
+      <h2>Test Cases</h2>
+      <pre>
+- [] Start video from start
+
+      - [] Fade video in 
+
+      - [] Set body tag to playing
+
+      - [] Fade out other videos
+
+      - [] Play Video
+
+- [] Start video from paused
+
+      - [] Fade video in if necessary 
+            (e.g. it wasn't active)
+
+      - [] Set body tag to playing
+
+      - [] Fade out other videos
+
+      - Play Video
+
+- [] Pause playing video 
+
+      - [] Pause the video
+
+      - [] Update body tag to paused
+
+      - [] Fade in other videos
+        
+            - [] Unplayed videos
+
+            - [] Pause videos
+
+
+
+
+
+
+      </pre>
+      
 
       <h2>References</h2>
       <ul>
