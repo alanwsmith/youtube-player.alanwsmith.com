@@ -97,6 +97,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doEnded() {
+    this.parts.thumbnail.classList.remove('hidden')
     this.parts.logo.classList.remove('hidden')
     this.parts.background.classList.remove('playing')
     this.parts.background.classList.add('stopped')
@@ -106,6 +107,7 @@ class YouTubePlayer extends HTMLElement {
   }
 
   doPlaying() {
+    this.parts.thumbnail.classList.add('hidden')
     this.parts.logo.classList.add('hidden')
     this.parts.background.classList.add('playing')
     this.parts.background.classList.remove('stopped')
