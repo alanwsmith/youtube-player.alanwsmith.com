@@ -645,7 +645,7 @@ class YouTubePlayer extends HTMLElement {
 #player {
   transition: all 0.7s ease-out;
 }
-.wrapper, .yt-logo, .shader, .thumbnail {
+.wrapper, .shader, .thumbnail {
   transition: opacity 0.7s ease-in;
 }
 .background {
@@ -665,15 +665,22 @@ class YouTubePlayer extends HTMLElement {
   background-position: center;
   background-repeat: no-repeat;
   border-radius: 0.6rem;
-  bottom: 2rem;
+  bottom: 1.8rem;
   filter: drop-shadow(1px 1px 3px black);
-  height: 3rem;
-  left: 2rem;
+  height: 2.5rem;
+  left: 1.8rem;
   position: absolute;
-  width: 4rem;
+  width: 3.5rem;
   z-index: 5;
+  transition: opacity 0.7s ease-in;
 }
 @media (hover: hover) {
+  .background:hover .title {
+    color: white;
+  }
+  .background:hover .yt-logo{
+    filter: drop-shadow(0px 0px 1px white);
+  }
   .play-button:hover {
     background: ${this.colors['hover-background']};
     border: 1px solid ${this.colors['hover-foreground']};
