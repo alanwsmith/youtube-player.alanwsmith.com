@@ -86,6 +86,13 @@ class YouTubePlayer extends HTMLElement {
       "hover-border": "var(--youtube-player-hover-background, #aaa)",
     }
     this.parts = {}
+    this.backgroundImageSizes = [
+      "default",
+      "mqdefault", 
+      "hqdefault", 
+      "sddefault", 
+      "maxresdefault",
+    ]
     this.attachShadow({mode: 'open'})
   }
 
@@ -105,7 +112,6 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background.classList.remove('faded')
     this.parts.wrapper.classList.remove('hidden')
     this.parts.player.classList.remove('dark')
-
     let shaderUpdate = setTimeout(() => {
       this.parts.shader.classList.remove('dark-shader-over-background')
       this.parts.shader.classList.remove('hidden')
@@ -122,17 +128,54 @@ class YouTubePlayer extends HTMLElement {
 
   // TODO: Start with the highest quality and 
   // keep searching until you find one
-  async getBackgroundImage() {
-    const backgroundUrl = `https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg`
-    const styles = new CSSStyleSheet();
-    styles.replaceSync(`
-.background {
-  background-image: url("${backgroundUrl}");
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat
-}`)
-    this.shadowRoot.adoptedStyleSheets.push(styles);
+  getThumbnail() {
+
+    // const targetImage = this.backgroundImageSizes.pop()
+    // let img = new Image()
+    // this.parts.thumbnail.appendChild(img);
+    // img.addEventListener('error', () => { console.log("asdf") } )
+    // // img.src = `https://i.ytimg.com/vi/lXMskKTw3Bc/${targetImage}.jpg`
+    // img.src = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
+    // // img.src = `https://i.ytimg.com/vi/lXMskKTw3Bc/${targetImage}.jpg`
+    // // thumbnailImage.onerror(console.log("asdf"))
+    // console.log(img)
+
+
+    // thumbnailImage.src = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
+
+
+
+
+
+    //if (this.backgroundImageSizes.length > 0) {
+    //  const targetImage = this.backgroundImageSizes.pop()
+    //  const url = `https://i.ytimg.com/vi/${this.attrs.video}/${targetImage}.jpg`
+    //  console.log(`Trying: ${url}`)
+    //  let response = await fetch(url, {
+    //    //headers: { 'mode': 'no-cors'}
+    //  })
+    //  let result = await response.json()
+    //  console.log(result)
+    //  console.log(body.status)
+    //  // if (!response.ok) {
+    //  //   console.log("PROBLEM")
+    //  //   // this.getBackgroundImage()
+    //  //   // throw new Error('There was a problem getting the data')
+    //  // } else {
+    //  //   console.log(`Got: ${url}`)
+    //  //   const styles = new CSSStyleSheet();
+    //  //   styles.replaceSync(`
+    //  //     .background {
+    //  //       background-image: url("${url}");
+    //  //       background-size: cover;
+    //  //       background-position: center;
+    //  //       background-repeat: no-repeat
+    //  //     }`)
+    //  //   this.shadowRoot.adoptedStyleSheets.push(styles);
+    //  // }
+    //}
+
+
   }
 
   addEventListeners() {
@@ -148,7 +191,7 @@ class YouTubePlayer extends HTMLElement {
     this.addContent()
     this.addStyles()
     this.getTitle()
-    this.getBackgroundImage()
+    this.getThumbnail()
     this.addEventListeners()
     this.init()
   }
@@ -569,6 +612,31 @@ class YouTubePlayer extends HTMLElement {
   background: black;
   z-index: 6;
 }
+.thumbnail {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+}
+.thumbnail object {
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+.thumbnail object img {
+  border-radius: 0.6rem;
+  height: 100%;
+  z-index: 2;
+}
 .title {
   border-radius: 0.6rem;
   color: var(--youtube-player-text-color);
@@ -624,7 +692,7 @@ class YouTubePlayer extends HTMLElement {
 #player {
   transition: all 0.7s ease-out;
 }
-.wrapper, .yt-logo, .shader {
+.wrapper, .yt-logo, .shader, .thumbnail {
   transition: opacity 0.7s ease-in;
 }
 .background {
@@ -671,6 +739,16 @@ class YouTubePlayer extends HTMLElement {
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background stopped">
+  <div class="thumbnail">
+    <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
+      <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
+
+      <!--
+https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
+      -->
+
+    </object>
+  </div>
   <div class="shader hidden"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
@@ -690,6 +768,7 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background = this.shadowRoot.querySelector('.background')
     this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
     this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
   }
