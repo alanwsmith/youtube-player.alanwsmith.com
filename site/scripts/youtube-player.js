@@ -101,6 +101,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     <div id="player"></div>
   </div>
   <div class="title"></div>
+  <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
   <div class="yt-logo"></div>
@@ -119,15 +120,15 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // NOTE: player isn't added here since the element
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
-    // this.parts.logo = this.shadowRoot.querySelector('.yt-logo')
+    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
+    this.parts.loading = this.shadowRoot.querySelector('.loading')
+    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
+    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
+    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
     this.parts.shader = this.shadowRoot.querySelector('.shader')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
-    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
-    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
-    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
   }
 
   addEventListeners() {
@@ -207,6 +208,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doPlaying() {
+    this.parts.loading.classList.add('hidden')
     this.parts.rewindButton.classList.remove('darker')
     this.parts.fastForwardButton.classList.remove('darker')
     this.parts.muteButton.classList.remove('darker')
@@ -332,6 +334,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     } else {
+      this.parts.loading.classList.remove('hidden')
       this.player.playVideo()
     }
   }
@@ -370,6 +373,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handleWrapperClick(event) {
+    this.parts.loading.classList.remove('hidden')
     this.player.playVideo()
   }
 
@@ -470,6 +474,27 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   border-radius: 0.6rem;
   position: relative;
 }
+.loading {
+  background: rgb(0 0 0 / 0.3);
+  border-top-right-radius: 0.6rem;
+  border-bottom-left-radius: 0.6rem;
+  color: var(--youtube-player-text-color);
+  filter: drop-shadow(1px 1px 1px black);
+  left: 0rem;
+  position: absolute;
+  bottom: 0rem;
+  z-index: 5;
+  padding-top: 1rem;
+  padding-bottom: 0.5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  transition: all 0.3s ease-in;
+}
+
+.loading.hidden {
+  transition: none;
+}
+
 #player {
   border-radius: 0.6rem;
   position: absolute;
