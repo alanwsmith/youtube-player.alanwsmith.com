@@ -413,7 +413,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handlePlayButtonClick(event) {
-    if (this.player.getPlayerState() === 1) {
+    const state = this.player.getPlayerState()
+    if (state === 1) {
       this.showPlayButton()
       this.player.pauseVideo()
     } else {
@@ -421,8 +422,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.showLoading()
       this.constructor.stopOtherVideos(this)
       this.constructor.fadeOtherVideos(this)
-      this.player.seekTo(parseInt(this.attrs['start'], 10))
-      // this.player.seekTo(100)
+      if (state !== 2) {
+        this.player.seekTo(parseInt(this.attrs['start'], 10))
+      }
       this.player.playVideo()
       this.showPauseButton()
     }
@@ -690,7 +692,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 100%;
   background: black;
   z-index: 6;
-  opacity: 0.7;
+  opacity: 0.75;
 }
 .fader.hidden {
   opacity: 0;
