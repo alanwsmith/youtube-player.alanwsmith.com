@@ -232,11 +232,12 @@ class YouTubePlayer extends HTMLElement {
     this.loadingTimeoutTime = 400
     this.restart = false
     this.attrs = {
+      "end": null, 
       "fast-forward-time": 7,
+      "restart": "off",
       "rewind-time": 10,
       "start": 0,
-      "end": null, 
-      "restart": "off",
+      "title": null
     }
 
     // this.colors = {
@@ -409,14 +410,18 @@ class YouTubePlayer extends HTMLElement {
   }
 
   async getTitle() {
-    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
-    let response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('There was a problem getting the data')
+    if (this.attrs['title'] !== null) {
+      this.parts.title.innerHTML = this.attrs['title']
     } else {
-      let json = await response.json()
-      // TODO: Figure out error handling here
-      this.parts.title.innerHTML = json.title
+      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
+      let response = await fetch(url)
+      if (!response.ok) {
+        throw new Error('There was a problem getting the data')
+      } else {
+        let json = await response.json()
+        // TODO: Figure out error handling here
+        this.parts.title.innerHTML = json.title
+      }
     }
   }
 

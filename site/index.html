@@ -64,43 +64,66 @@
       </div>
 
 
-      <!-- Star Wars - One Vision -->
-      <youtube-player :video="8bOtuoNFzB0" :start="18">
+      <h3>Basic Example</h3>
+      <!-- Somebody That I Used To Know -->
+      <youtube-player 
+        :video="REPPgPcw4hk"></youtube-player>
+
+      <h3>The :start Attribute</h3>
+      <!-- Kenzo World -->
+      <youtube-player 
+        :video="NoMqvniiEkk" 
+        :start="54"></youtube-player>
+
+      <h3>The :end Attribute</h3>
+      <!-- David Bowie -->
+      <youtube-player :video="LT3cERVRoQo" :end="12">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+
+      <h3>The :title Attribute</h3>
+      <!-- Star Wars - One Vision -->
+      <youtube-player :video="8bOtuoNFzB0" :start="18" :title="One Star Wars Vision">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+
+      <h3>The :restart Attribute</h3>
       <!-- Summer Girl -->
       <youtube-player :video="ZjuA_o6Jzyo" :restart="on">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
-      <!-- Somebody That I Used To Know -->
-      <youtube-player :video="REPPgPcw4hk">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
-
-      <!-- Kenzo World -->
-      <youtube-player :video="NoMqvniiEkk" :start="54" :end="64">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
-
+      <h3>The :fast-forward-time Attribute</h3>
       <!-- Rage Against The Machine -->
-      <youtube-player :video="Rm1nCYOZB-s" :start="11">
+      <youtube-player :video="Rm1nCYOZB-s" :fast-forward-time="30">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
-      <!-- David Bowie -->
-      <youtube-player :video="LT3cERVRoQo" :start="2">
+
+      <h3>The :rewide-time Attribute</h3>
+      <!-- Victor Wooten -->
+      <youtube-player :video="PHdo1qWNWI4" :start="695" :rewind-time="70">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <h3>Fallback Quality Thumbnails</h3>
       <!-- Muppets -->
       <!-- this one doesn't have a maxres thumbnail -->
       <!-- use it to check fallback to hq version -->
-      <youtube-player :video="Cz8cbwR_6ms" :start="3">
+      <youtube-player :video="Cz8cbwR_6ms">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+
+
+
+      <!--
+-->
+
+
+      <!-- Lawrence -->
       <!--
       <youtube-player :video="JSkn4zaUh78" :start="10">
         <noscript>No JavaScript available to load YouTube player</noscript>
@@ -200,7 +223,28 @@
           TODO: Add a spinner if to show loading for
           when the network is slow
         </li>
+        <li>
+          TODO: Set up so you can paste a full URL in
+          and have it parse (so you don't have to pull
+          the ID yourself)
+        </li>
+        <li>
+          TODO: Make an error message if there's
+          no video id available
+        </li>
+        <li>
+          TODO: Figure out if you can figure out
+          if a video won't play in a certain region
+          and provide a fallback of some sort.
+        </li>
+        <li>
+          TODO: Custom thumbnails
+        </li>
+        <li>
+          TODO: Make chapter markers
+        </li>
       </ul>
+
       <h2>Someday/Maybe</h2>
       <ul>
         <li>
@@ -255,6 +299,7 @@
           auto play the video
         </li>
       </ul>
+
       <h2>Notes</h2>
       <ul>
         <li>
