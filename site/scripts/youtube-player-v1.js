@@ -267,7 +267,7 @@ class YouTubePlayer extends HTMLElement {
     this.timeouts = {}
     this.restart = false
     this.attrs = {
-      "cw": null,
+      "ca": null,
       "end": null, 
       "skip-forward": 7,
       "restart": "off",
@@ -468,8 +468,8 @@ class YouTubePlayer extends HTMLElement {
 
   async getTitle() {
     let contentWarning = ""
-    if (this.attrs['cw'] !== null) {
-      contentWarning = `<div class="content-warning">${this.attrs['cw']}</div>`
+    if (this.attrs['ca'] !== null) {
+      contentWarning = `<div class="content-warning">${this.attrs['ca']}</div>`
     }
     if (this.attrs['title'] !== null) {
       this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentWarning}`
