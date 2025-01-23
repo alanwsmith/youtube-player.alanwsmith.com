@@ -198,6 +198,7 @@ class YouTubePlayer extends HTMLElement {
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
     this.parts.buttons = this.shadowRoot.querySelector('.buttons')
+    this.parts.contentWarning = this.shadowRoot.querySelector('.content-warning')
     this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
     this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
@@ -261,6 +262,7 @@ class YouTubePlayer extends HTMLElement {
     this.timeouts = {}
     this.restart = false
     this.attrs = {
+      "cw": null,
       "end": null, 
       "fast-forward-time": 7,
       "restart": "off",
@@ -460,8 +462,12 @@ class YouTubePlayer extends HTMLElement {
   }
 
   async getTitle() {
+    let contentWarning = ""
+    if (this.attrs['cw'] !== null) {
+      contentWarning = `<div>${this.attrs['cw']}</div>`
+    }
     if (this.attrs['title'] !== null) {
-      this.parts.title.innerHTML = this.attrs['title']
+      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentWarning}`
     } else {
       const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
       let response = await fetch(url)
@@ -470,7 +476,7 @@ class YouTubePlayer extends HTMLElement {
       } else {
         let json = await response.json()
         // TODO: Figure out error handling here
-        this.parts.title.innerHTML = json.title
+        this.parts.title.innerHTML = `<div>${json.title}</div>${contentWarning}`
       }
     }
   }
