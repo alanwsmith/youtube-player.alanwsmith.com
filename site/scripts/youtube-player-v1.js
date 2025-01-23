@@ -181,7 +181,7 @@ class YouTubePlayer extends HTMLElement {
   <div class="yt-logo"></div>
   -->
 </div>
-<div class="buttons">
+<div class="buttons hidden">
   <button aria-label="Restart" class="restart-button control-button"></button>
   <button aria-label="Rewind" class="rewind-button control-button"></button>
   ${previousChapterButton}
@@ -648,6 +648,7 @@ class YouTubePlayer extends HTMLElement {
     })
     this.cueVideo()
     this.parts.player = this.shadowRoot.querySelector('#player')
+    this.parts.buttons.classList.remove('hidden')
   }
 
   loadApi() {
