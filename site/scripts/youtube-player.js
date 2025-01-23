@@ -21,6 +21,14 @@ class YouTubePlayer extends HTMLElement {
   }
 
   static handleEnded(instance) {
+    document.body.dataset.youtubePlayerState = 'ended'
+    for (const uuid in this.instances) {
+      if (uuid === instance.uuid) {
+        this.instances[uuid].hidePlayer()
+      } else {
+        this.instances[uuid].hideFader()
+      }
+    }
 
     // // console.log(`handleEnded: ${instance.uuid}`)
     // this.activeInstance = instance.uuid
@@ -29,15 +37,11 @@ class YouTubePlayer extends HTMLElement {
     //   instance.doEnded()
     // }
 
-    // for (const uuid in this.instances) {
-    //   if (uuid !== instance.uuid) {
-    //     this.instances[uuid].doRemoveFade()
-    //   }
-    // }
 
   }
 
   static handlePaused(instance) {
+    document.body.dataset.youtubePlayerState = 'paused'
 
     // // console.log(`handlePause: ${instance.uuid}`)
     // if (instance.uuid == this.activeInstance) {
@@ -75,6 +79,7 @@ class YouTubePlayer extends HTMLElement {
       if (instance.uuid !== uuid) {
         this.instances[uuid].stopPlaying()
         this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
       }
     }
   }
@@ -82,7 +87,7 @@ class YouTubePlayer extends HTMLElement {
   static handlePlaying(instance) {
     document.body.dataset.youtubePlayerState = 'playing'
     instance.showPlayer()
-
+    instance.hideLoading()
 
     // for (const uuid in this.instances) {
     //   if (this.activeInstance === uuid) {
@@ -408,17 +413,18 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handlePlayButtonClick(event) {
-
-    // this.constructor.setActivePlayer(this)
     if (this.player.getPlayerState() === 1) {
+      this.showPlayButton()
       this.player.pauseVideo()
     } else {
+      this.hideFader()
       this.showLoading()
       this.constructor.stopOtherVideos(this)
       this.constructor.fadeOtherVideos(this)
       this.player.seekTo(parseInt(this.attrs['start'], 10))
       // this.player.seekTo(100)
       this.player.playVideo()
+      this.showPauseButton()
     }
 
     // if (this.player.getPlayerState() === 1) {
@@ -530,6 +536,14 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.append(el)
     })
   }
+  
+  hideLoading() {
+    this.parts.loading.classList.add('hidden')
+  }
+
+  hideFader() {
+    this.parts.fader.classList.add('hidden')
+  }
 
   hidePlayer() {
     this.parts.wrapper.classList.add('hidden')
@@ -541,6 +555,16 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   showLoading() {
     this.parts.loading.classList.remove('hidden')
+  }
+
+  showPlayButton() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
+  }
+
+  showPauseButton() {
+    this.parts.playButton.classList.add('pause-button')
+    this.parts.playButton.classList.remove('play-button')
   }
 
   showPlayer() {
