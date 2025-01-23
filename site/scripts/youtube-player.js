@@ -177,12 +177,12 @@ class YouTubePlayer extends HTMLElement {
   -->
 </div>
 <div class="buttons">
-  ${previousChapterButton}
-  <button aria-label="Rewind" class="rewind-button control-button"></button>
   <button aria-label="Restart" class="restart-button control-button"></button>
+  <button aria-label="Rewind" class="rewind-button control-button"></button>
+  ${previousChapterButton}
   <button aria-label="Play" class="play-button control-button"></button>
-  <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
   ${nextChapterButton}
+  <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
   <button aria-label="Mute" class="mute-button control-button"></button>
 </div>
 `
@@ -447,6 +447,7 @@ class YouTubePlayer extends HTMLElement {
     }
     if (this.attrs['chapters']) {
       let chapterTimes = this.attrs['chapters'].split(',')
+      this.chapters.push(0)
       chapterTimes.forEach((chapterTime) => {
         this.chapters.push(parseInt(chapterTime, 10))
       })
@@ -503,13 +504,18 @@ class YouTubePlayer extends HTMLElement {
 
   handleNextChapterButtonClick(event) {
     const currentTime = this.player.getCurrentTime()
+    let foundChapter = false
     // for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
     for (let checkIndex = 0; checkIndex < this.chapters.length; checkIndex += 1) {
       if (currentTime < this.chapters[checkIndex]) {
         this.player.seekTo(this.chapters[checkIndex])
-        this.flashMessage(`Chapter ${checkIndex + 2}`)
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        foundChapter = true
         break
       }
+    }
+    if (foundChapter === false) {
+      this.flashMessage(`No more chapters`)
     }
   }
 
@@ -519,6 +525,7 @@ class YouTubePlayer extends HTMLElement {
       this.showPlayButton()
       this.player.pauseVideo()
       this.showStoppedBorder()
+      this.flashMessage(this.player.getCurrentTime())
     } else {
       this.showPlayingBorder()
       this.hideFader()
@@ -531,7 +538,14 @@ class YouTubePlayer extends HTMLElement {
   }
 
   handlePreviousChapterButtonClick(event) {
-    console.log("previous chapter")
+    const currentTime = this.player.getCurrentTime()
+    for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
+      if (currentTime > this.chapters[checkIndex] + 2) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        break
+      }
+    }
   }
 
   handleRestartButtonClick(event) {
@@ -824,7 +838,7 @@ class YouTubePlayer extends HTMLElement {
   mask-size: contain;
 }
 .previous-chapter-button:after {
-  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22iso-8859-1%22%3F%3E%0A%3C!--%20Uploaded%20to%3A%20SVG%20Repo%2C%20www.svgrepo.com%2C%20Generator%3A%20SVG%20Repo%20Mixer%20Tools%20--%3E%0A%3Csvg%20height%3D%22800px%22%20width%3D%22800px%22%20version%3D%221.1%22%20id%3D%22Capa_1%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Axlink%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2Fxlink%22%20%0A%09%20viewBox%3D%220%200%2022.261%2022.261%22%20xml%3Aspace%3D%22preserve%22%3E%0A%3Cg%3E%0A%09%3Cg%20id%3D%22c94_rewind%22%3E%0A%09%09%3Cpath%20style%3D%22fill%3A%23030104%3B%22%20d%3D%22M13.148%2C2.27c-0.141-0.069-0.305-0.051-0.426%2C0.044L1.947%2C10.816%0A%09%09%09c-0.093%2C0.074-0.152%2C0.191-0.152%2C0.312c0%2C0.119%2C0.06%2C0.24%2C0.152%2C0.314l10.775%2C8.502c0.074%2C0.056%2C0.161%2C0.088%2C0.249%2C0.088%0A%09%09%09l0.177-0.041c0.138-0.064%2C0.225-0.207%2C0.225-0.361v-17C13.373%2C2.476%2C13.286%2C2.333%2C13.148%2C2.27z%22%2F%3E%0A%09%09%3Cpath%20style%3D%22fill%3A%23030104%3B%22%20d%3D%22M22.035%2C2.27c-0.14-0.069-0.303-0.051-0.425%2C0.044l-10.776%2C8.502%0A%09%09%09c-0.094%2C0.074-0.153%2C0.191-0.153%2C0.312c0%2C0.119%2C0.06%2C0.24%2C0.153%2C0.314l10.776%2C8.502c0.073%2C0.056%2C0.162%2C0.088%2C0.249%2C0.088%0A%09%09%09l0.176-0.041c0.139-0.064%2C0.226-0.207%2C0.226-0.361v-17C22.261%2C2.476%2C22.174%2C2.333%2C22.035%2C2.27z%22%2F%3E%0A%09%09%3Cpath%20style%3D%22fill%3A%23030104%3B%22%20d%3D%22M2.972%2C2.261H0.314C0.143%2C2.261%2C0%2C2.443%2C0%2C2.661v16.936C0%2C19.818%2C0.143%2C20%2C0.314%2C20h2.657%0A%09%09%09c0.174%2C0%2C0.315-0.183%2C0.315-0.403V2.661C3.287%2C2.443%2C3.146%2C2.261%2C2.972%2C2.261z%22%2F%3E%0A%09%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%201024%201024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22m230.2%20499.3%20287.4-225.8c10.7-8.4%2026.4-.8%2026.4%2012.7v451.6c0%2013.5-15.7%2021.1-26.4%2012.7L230.2%20524.7a16.14%2016.14%200%200%201%200-25.4zm320%200%20287.4-225.8c10.7-8.4%2026.4-.8%2026.4%2012.7v451.5c0%2013.5-15.7%2021.1-26.4%2012.7L550.2%20524.6c-4.1-3.2-6.2-8-6.2-12.7%200-4.6%202.1-9.4%206.2-12.6zM166.4%20248h51.2c3.5%200%206.4%202.7%206.4%206v516c0%203.3-2.9%206-6.4%206h-51.2c-3.5%200-6.4-2.7-6.4-6V254c0-3.3%202.9-6%206.4-6z%22%2F%3E%3C%2Fsvg%3E");
   mask-position: center;
   mask-repeat: no-repeat;
   mask-size: contain;
