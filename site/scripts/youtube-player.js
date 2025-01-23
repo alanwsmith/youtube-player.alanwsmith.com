@@ -62,6 +62,14 @@ class YouTubePlayer extends HTMLElement {
 
   }
 
+  static fadeOtherVideos(instance) {
+    for (const uuid in this.instances) {
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].showFader()
+      }
+    }
+  }
+
   static stopOtherVideos(instance) {
     for (const uuid in this.instances) {
       if (instance.uuid !== uuid) {
@@ -126,7 +134,7 @@ class YouTubePlayer extends HTMLElement {
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background stopped">
-  <div class="shader hidden"></div>
+  <div class="fader hidden"></div>
   <div class="thumbnail">
     <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
       <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
@@ -163,7 +171,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
@@ -243,7 +251,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // this.parts.background.classList.remove('playing')
     // this.parts.background.classList.add('stopped')
     // this.parts.background.classList.remove('faded')
-    // this.parts.shader.classList.add('hidden')
+    // this.parts.fader.classList.add('hidden')
     // this.parts.wrapper.classList.add('hidden')
 
   }
@@ -273,9 +281,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // this.parts.background.classList.remove('faded')
     // this.parts.wrapper.classList.remove('hidden')
     // this.parts.player.classList.remove('dark')
-    // let shaderUpdate = setTimeout(() => {
-    //   this.parts.shader.classList.remove('dark-shader-over-background')
-    //   this.parts.shader.classList.remove('hidden')
+    // let faderUpdate = setTimeout(() => {
+    //   this.parts.fader.classList.remove('dark-fader-over-background')
+    //   this.parts.fader.classList.remove('hidden')
     // }, 3000)
 
   }
@@ -284,7 +292,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   doPauseAndFade() {
 
     // this.parts.thumbnail.classList.remove('hidden')
-    // // this.parts.shader.classList.remove('hidden')
+    // // this.parts.fader.classList.remove('hidden')
     // this.parts.wrapper.classList.remove('hidden')
     // this.parts.player.classList.add('hidden')
     // this.parts.rewindButton.classList.add('darker')
@@ -301,13 +309,13 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     //this.parts.wrapper.classList.remove('hidden')
 
     //if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-    //  this.parts.shader.classList.remove('dark-shader-over-background')
-    //  this.parts.shader.classList.remove('hidden')
+    //  this.parts.fader.classList.remove('dark-fader-over-background')
+    //  this.parts.fader.classList.remove('hidden')
     //  // this.parts.player.classList.add('dark')
     //  this.parts.player.classList.add('hidden')
     //} else {
-    //  this.parts.shader.classList.add('dark-shader-over-background')
-    //  this.parts.shader.classList.remove('hidden')
+    //  this.parts.fader.classList.add('dark-fader-over-background')
+    //  this.parts.fader.classList.remove('hidden')
     //  //
     //  this.parts.player.classList.add('hidden')
     //}
@@ -350,8 +358,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // if (this.player.getPlayerState() === 2) {
     //   this.parts.player.classList.remove('dark')
     // } else {
-    //   this.parts.shader.classList.add('hidden')
-    //   this.parts.shader.classList.remove('dark-shader-over-background')
+    //   this.parts.fader.classList.add('hidden')
+    //   this.parts.fader.classList.remove('dark-fader-over-background')
     // }
 
   }
@@ -405,7 +413,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     } else {
+      this.showLoading()
       this.constructor.stopOtherVideos(this)
+      this.constructor.fadeOtherVideos(this)
       this.player.seekTo(parseInt(this.attrs['start'], 10))
       // this.player.seekTo(100)
       this.player.playVideo()
@@ -525,6 +535,14 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.wrapper.classList.add('hidden')
   }
 
+  showFader() {
+    this.parts.fader.classList.remove('hidden')
+  }
+
+  showLoading() {
+    this.parts.loading.classList.remove('hidden')
+  }
+
   showPlayer() {
     this.parts.wrapper.classList.remove('hidden')
   }
@@ -536,8 +554,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.player.cueVideoById(this.attrs.video, parseInt(this.attrs.start, 10))
     }
   }
-
-
 
 
   addStyles() {
@@ -641,7 +657,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 .stopped {
   border: var(--youtube-player-stopped-border);
 }
-.shader {
+.fader {
   border-radius: 0.6rem;
   position: absolute;
   top: 0;
@@ -650,7 +666,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 100%;
   background: black;
   z-index: 6;
+  opacity: 0.7;
 }
+.fader.hidden {
+  opacity: 0;
+}
+
 .thumbnail {
   border-radius: 0.6rem;
   position: absolute;
@@ -694,7 +715,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 .darker {
   opacity: 0.1;
 }
-.dark-shader-over-background {
+.dark-fader-over-background {
   opacity: 0.7;
 }
 /*
@@ -743,7 +764,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 }
 */
 /*
-.wrapper, .shader, .thumbnail {
+.wrapper, .fader, .thumbnail {
   transition: opacity 0.6s ease-in;
 }
 .background {
