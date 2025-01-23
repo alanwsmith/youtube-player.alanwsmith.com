@@ -1,58 +1,110 @@
 class YouTubePlayer extends HTMLElement {
 
-  static activeInstance = null
+  // static activeInstance = null
   static instances = {}
-  static timeout = null
+  // static timeout = null
 
   static handleBuffering(instance) {
-    // this is here to help prevent the
-    // pause from flowing through and triggering
-    // the style changes when scrolling
-    this.activeInstance = instance.uuid
-    if (instance.uuid == this.activeInstance) {
-      if (this.timeout !== null) {
-        clearTimeout(this.timeout)
-        this.timeout = null
-      }
-      document.body.dataset.youtubePlayerState = 'playing'
-    }
+
+    // // this is here to help prevent the
+    // // pause from flowing through and triggering
+    // // the style changes when scrolling
+    // this.activeInstance = instance.uuid
+    // if (instance.uuid == this.activeInstance) {
+    //   if (this.timeout !== null) {
+    //     clearTimeout(this.timeout)
+    //     this.timeout = null
+    //   }
+    //   document.body.dataset.youtubePlayerState = 'playing'
+    // }
+
   }
 
   static handleEnded(instance) {
-    // console.log(`handleEnded: ${instance.uuid}`)
-    this.activeInstance = instance.uuid
-    if (instance.uuid == this.activeInstance) {
-      document.body.dataset.youtubePlayerState = 'ended'
-      instance.doEnded()
-    }
+
+    // // console.log(`handleEnded: ${instance.uuid}`)
+    // this.activeInstance = instance.uuid
+    // if (instance.uuid == this.activeInstance) {
+    //   document.body.dataset.youtubePlayerState = 'ended'
+    //   instance.doEnded()
+    // }
+
+    // for (const uuid in this.instances) {
+    //   if (uuid !== instance.uuid) {
+    //     this.instances[uuid].doRemoveFade()
+    //   }
+    // }
+
+  }
+
+  static handlePaused(instance) {
+
+    // // console.log(`handlePause: ${instance.uuid}`)
+    // if (instance.uuid == this.activeInstance) {
+    //   // This is in a timeout because fast 
+    //   // forwarding and rewinding videos sends
+    //   // a pause event before sending another play
+    //   // event. without this everything does
+    //   // a quick unfade and then fade back. The
+    //   // little delay before fading back in when
+    //   // it should is less distracting than the
+    //   // in/out when moving in the video
+    //   this.timeout = setTimeout(() => {
+    //     instance.doPauseOnActivePlayer()
+    //     document.body.dataset.youtubePlayerState = 'paused'
+    //     for (const uuid in this.instances) {
+    //       if (uuid !== instance.uuid) {
+    //         this.instances[uuid].doRemoveFade()
+    //       }
+    //     }
+    //   }, 200)
+    // }
+
+  }
+
+  static stopOtherVideos(instance) {
     for (const uuid in this.instances) {
-      if (uuid !== instance.uuid) {
-        this.instances[uuid].doRemoveFade()
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].stopPlaying()
+        this.instances[uuid].hidePlayer()
       }
     }
   }
 
-  static handlePause(instance) {
-    // console.log(`handlePause: ${instance.uuid}`)
-    if (instance.uuid == this.activeInstance) {
-      // This is in a timeout because fast 
-      // forwarding and rewinding videos sends
-      // a pause event before sending another play
-      // event. without this everything does
-      // a quick unfade and then fade back. The
-      // little delay before fading back in when
-      // it should is less distracting than the
-      // in/out when moving in the video
-      this.timeout = setTimeout(() => {
-        instance.doPauseOnActivePlayer()
-        document.body.dataset.youtubePlayerState = 'paused'
-        for (const uuid in this.instances) {
-          if (uuid !== instance.uuid) {
-            this.instances[uuid].doRemoveFade()
-          }
-        }
-      }, 200)
-    }
+  static handlePlaying(instance) {
+    document.body.dataset.youtubePlayerState = 'playing'
+    instance.showPlayer()
+
+
+    // for (const uuid in this.instances) {
+    //   if (this.activeInstance === uuid) {
+    //     this.instances[uuid].showPlayer()
+    //   } else {
+    //     this.instances[uuid].stopPlaying()
+    //     this.instances[uuid].hidePlayer()
+    //     this.instances[uuid].showThumbnail()
+    //   }
+    // }
+
+
+    // // console.log(`switchActivePlayer: ${instance.uuid}`)
+    // // This clears the pause timeout which
+    // // is necessary to prevent short changes
+    // // when fast forwarding and rewinding
+    // if (this.timeout !== null) {
+    //   clearTimeout(this.timeout)
+    //   this.timeout = null
+    // }
+    // this.activeInstance = instance.uuid
+    // document.body.dataset.youtubePlayerState = 'playing'
+    // for (const uuid in this.instances) {
+    //   if (uuid === instance.uuid) {
+    //     this.instances[uuid].doPlaying()
+    //   } else {
+    //     this.instances[uuid].doPauseAndFade()
+    //   }
+    // }
+
   }
 
   static registerInstance(instance) {
@@ -63,25 +115,11 @@ class YouTubePlayer extends HTMLElement {
     delete this.instances[instance.uuid]
   }
 
-  static switchActivePlayer(instance) {
-    // console.log(`switchActivePlayer: ${instance.uuid}`)
-    // This clears the pause timeout which
-    // is necessary to prevent short changes
-    // when fast forwarding and rewinding
-    if (this.timeout !== null) {
-      clearTimeout(this.timeout)
-      this.timeout = null
-    }
-    this.activeInstance = instance.uuid
-    document.body.dataset.youtubePlayerState = 'playing'
-    for (const uuid in this.instances) {
-      if (uuid === instance.uuid) {
-        this.instances[uuid].doPlaying()
-      } else {
-        this.instances[uuid].doPauseAndFade()
-      }
-    }
+  static setActivePlayer(instance) {
+    console.log(`Active player now: ${instance.uuid}`)
+    this.activePlayer = instance.uuid
   }
+
 
 
   addContent() {
@@ -89,6 +127,7 @@ class YouTubePlayer extends HTMLElement {
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background stopped">
+  <div class="shader hidden"></div>
   <div class="thumbnail">
     <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
       <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
@@ -97,7 +136,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       -->
     </object>
   </div>
-  <div class="shader hidden"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
@@ -133,7 +171,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   addEventListeners() {
-    // const background = this.shadowRoot.querySelector(".background")
     this.parts.background.addEventListener('click', (event) => {
       this.handleWrapperClick.call(this, event)
     })
@@ -191,107 +228,133 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doEnded() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.thumbnail.classList.remove('hidden')
-    // this.parts.logo.classList.remove('hidden')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
-    this.parts.background.classList.remove('faded')
-    this.parts.shader.classList.add('hidden')
-    this.parts.wrapper.classList.add('hidden')
+
+    // this.parts.rewindButton.classList.remove('dark')
+    // this.parts.fastForwardButton.classList.remove('dark')
+    // this.parts.muteButton.classList.remove('dark')
+    // this.parts.playButton.classList.remove('dark')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+    // this.parts.thumbnail.classList.remove('hidden')
+    // // this.parts.logo.classList.remove('hidden')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.shader.classList.add('hidden')
+    // this.parts.wrapper.classList.add('hidden')
+
   }
 
   doPlaying() {
-    if (this.loadingTimeout !== null) {
-      clearTimeout(this.loadingTimeout)
-      this.loadingTimeout = null
-    }
-    this.parts.loading.classList.add('hidden')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.rewindButton.classList.add('dark')
-    this.parts.fastForwardButton.classList.add('dark')
-    this.parts.muteButton.classList.add('dark')
-    this.parts.playButton.classList.add('dark')
-    this.parts.playButton.classList.remove('play-button')
-    this.parts.playButton.classList.add('pause-button')
-    this.parts.thumbnail.classList.add('hidden')
-    // this.parts.logo.classList.add('hidden')
-    this.parts.background.classList.add('playing')
-    this.parts.background.classList.remove('stopped')
-    this.parts.background.classList.remove('faded')
-    this.parts.wrapper.classList.remove('hidden')
-    this.parts.player.classList.remove('dark')
-    let shaderUpdate = setTimeout(() => {
-      this.parts.shader.classList.remove('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-    }, 3000)
+
+    // if (this.loadingTimeout !== null) {
+    //   clearTimeout(this.loadingTimeout)
+    //   this.loadingTimeout = null
+    // }
+    // this.parts.player.classList.remove('hidden')
+    // this.parts.loading.classList.add('hidden')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.rewindButton.classList.add('dark')
+    // this.parts.fastForwardButton.classList.add('dark')
+    // this.parts.muteButton.classList.add('dark')
+    // this.parts.playButton.classList.add('dark')
+    // this.parts.playButton.classList.remove('play-button')
+    // this.parts.playButton.classList.add('pause-button')
+    // this.parts.thumbnail.classList.add('hidden')
+    // // this.parts.logo.classList.add('hidden')
+    // this.parts.background.classList.add('playing')
+    // this.parts.background.classList.remove('stopped')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.wrapper.classList.remove('hidden')
+    // this.parts.player.classList.remove('dark')
+    // let shaderUpdate = setTimeout(() => {
+    //   this.parts.shader.classList.remove('dark-shader-over-background')
+    //   this.parts.shader.classList.remove('hidden')
+    // }, 3000)
+
   }
 
+  // really stop and fade
   doPauseAndFade() {
-    this.parts.rewindButton.classList.add('darker')
-    this.parts.fastForwardButton.classList.add('darker')
-    this.parts.muteButton.classList.add('darker')
-    this.parts.playButton.classList.add('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.background.classList.add('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.remove('stopped')
-    if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-      this.parts.shader.classList.remove('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-      this.parts.player.classList.add('dark')
-    } else {
-      this.parts.shader.classList.add('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-    }
-    if (this.player.getPlayerState() === 1) {
-      this.player.pauseVideo()
-    }
+
+    // this.parts.thumbnail.classList.remove('hidden')
+    // // this.parts.shader.classList.remove('hidden')
+    // this.parts.wrapper.classList.remove('hidden')
+    // this.parts.player.classList.add('hidden')
+    // this.parts.rewindButton.classList.add('darker')
+    // this.parts.fastForwardButton.classList.add('darker')
+    // this.parts.muteButton.classList.add('darker')
+    // this.parts.playButton.classList.add('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+
+    // this.parts.background.classList.add('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.remove('stopped')
+
+    //this.parts.wrapper.classList.remove('hidden')
+
+    //if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
+    //  this.parts.shader.classList.remove('dark-shader-over-background')
+    //  this.parts.shader.classList.remove('hidden')
+    //  // this.parts.player.classList.add('dark')
+    //  this.parts.player.classList.add('hidden')
+    //} else {
+    //  this.parts.shader.classList.add('dark-shader-over-background')
+    //  this.parts.shader.classList.remove('hidden')
+    //  //
+    //  this.parts.player.classList.add('hidden')
+    //}
+    
+    // if (this.player.getPlayerState() === 1) {
+    //   this.player.pauseVideo()
+    // }
+
+    this.player.stopVideo()
   }
 
   doPauseOnActivePlayer() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.background.classList.remove('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
+
+    // this.blur()
+    // this.parts.rewindButton.classList.remove('dark')
+    // this.parts.fastForwardButton.classList.remove('dark')
+    // this.parts.muteButton.classList.remove('dark')
+    // this.parts.playButton.classList.remove('dark')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+
   }
 
   doRemoveFade() {
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.background.classList.remove('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
-    if (this.player.getPlayerState() === 2) {
-      this.parts.player.classList.remove('dark')
-    } else {
-      this.parts.shader.classList.add('hidden')
-      this.parts.shader.classList.remove('dark-shader-over-background')
-    }
+
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+    // if (this.player.getPlayerState() === 2) {
+    //   this.parts.player.classList.remove('dark')
+    // } else {
+    //   this.parts.shader.classList.add('hidden')
+    //   this.parts.shader.classList.remove('dark-shader-over-background')
+    // }
+
   }
 
   getAttributes() {
@@ -338,14 +401,24 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   handlePlayButtonClick(event) {
+
+    // this.constructor.setActivePlayer(this)
     if (this.player.getPlayerState() === 1) {
       this.player.pauseVideo()
     } else {
-      this.loadingTimeout = setTimeout(() => {
-        this.parts.loading.classList.remove('hidden')
-      }, this.loadingTimeoutTime)
+      this.constructor.stopOtherVideos(this)
       this.player.playVideo()
     }
+
+    // if (this.player.getPlayerState() === 1) {
+    //   this.player.pauseVideo()
+    // } else {
+    //   this.loadingTimeout = setTimeout(() => {
+    //     this.parts.loading.classList.remove('hidden')
+    //   }, this.loadingTimeoutTime)
+    //   this.player.playVideo()
+    // }
+
   }
 
   handlePlayerStateChange(event) {
@@ -366,10 +439,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.constructor.handleEnded(this)
     } else if (playerState == YT.PlayerState.PAUSED) {
       // console.log("STATUS: PAUSED")
-      this.constructor.handlePause(this)
+      this.constructor.handlePaused(this)
     } else if (playerState == YT.PlayerState.PLAYING) {
       // console.log("STATUS: PLAYING")
-      this.constructor.switchActivePlayer(this)
+      this.constructor.handlePlaying(this)
     }
   }
 
@@ -445,9 +518,29 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     })
   }
 
+  hidePlayer() {
+    this.parts.wrapper.classList.add('hidden')
+  }
+
+  showPlayer() {
+    this.parts.wrapper.classList.remove('hidden')
+  }
+
+  stopPlaying() {
+    this.player.stopVideo()
+  }
+
+
+
+
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
+
+:root {
+  --transition-time: 0.5s;
+}
+
 .background {
   background-color: black;
   position: relative;
@@ -488,10 +581,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 .loading {
   background: rgb(0 0 0 / 0.3);
   border-top-right-radius: 0.6rem;
-  border-bottom-left-radius: 0.6rem;
+  border-top-left-radius: 0.6rem;
   color: var(--youtube-player-text-color);
   filter: drop-shadow(1px 1px 1px black);
-  left: calc(50vw - 3rem);
+  left: calc(50vw - 10ch);
   position: absolute;
   bottom: 0rem;
   z-index: 5;
@@ -499,11 +592,16 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  /*
   transition: all 0.5s ease-in;
+  */
 }
 
+
 .loading.hidden {
+  /*
   transition: none;
+  */  
 }
 
 #player {
@@ -632,15 +730,19 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
+/*
 #player {
   transition: all 0.6s ease-out;
 }
+*/
+/*
 .wrapper, .shader, .thumbnail {
   transition: opacity 0.6s ease-in;
 }
 .background {
   transition: border 0.6s ease-in;
 }
+*/
 /*
 #player {
   top: 20%;
