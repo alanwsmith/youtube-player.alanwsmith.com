@@ -1,8 +1,18 @@
 :root {
-  --youtube-player-faded-border: 1px solid #111;
-  --youtube-player-playing-border: 1px solid #222;
-  --youtube-player-stopped-border: 1px solid #555;
-  --youtube-player-text-color: maroon;
+  --youtube-player-button-base-foreground: #333;
+  --youtube-player-button-base-background: #999;
+  --youtube-player-button-base-hover-foreground: var(--youtube-player-button-base-background);
+  --youtube-player-button-base-hover-background: var(--youtube-player-button-base-foreground);
+  --youtube-player-button-faded-foreground: #111;
+  --youtube-player-button-faded-background: #333;
+  --youtube-player-button-faded-hover-foreground: var(--youtube-player-button-faded-background);
+  --youtube-player-button-faded-hover-background: var(--youtube-player-button-faded-foreground);
+  --youtube-player-faded-border: 1px solid #222;
+  --youtube-player-playing-border: 1px solid #aaa;
+  --youtube-player-stopped-border: 1px solid #999;
+  --youtube-player-text-color: #aaa;
+  --youtube-player-text-background-color: rgb(0 0 0 / 0.5);
+  --youtube-player-font-size: 0.9rem;
 }
 
 body {
@@ -12,9 +22,11 @@ body {
 body[data-youtube-player-state="playing"] {
   --background-color: black;
   --primary-color: #444;
-  transition: background-color 1.2s ease-in, color 1.2s ease-in;
+  --secondary-color: #444;
+  transition: background-color 0.9s ease-in, color 0.9s ease-in;
 }
 
 youtube-player {
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
 }
+

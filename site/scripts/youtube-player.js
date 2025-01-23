@@ -1,58 +1,138 @@
 class YouTubePlayer extends HTMLElement {
 
-  static activeInstance = null
+  // static activeInstance = null
   static instances = {}
-  static timeout = null
+  // static timeout = null
 
   static handleBuffering(instance) {
-    // this is here to help prevent the
-    // pause from flowing through and triggering
-    // the style changes when scrolling
-    this.activeInstance = instance.uuid
-    if (instance.uuid == this.activeInstance) {
-      if (this.timeout !== null) {
-        clearTimeout(this.timeout)
-        this.timeout = null
-      }
-      document.body.dataset.youtubePlayerState = 'playing'
-    }
+
+    // // this is here to help prevent the
+    // // pause from flowing through and triggering
+    // // the style changes when scrolling
+    // this.activeInstance = instance.uuid
+    // if (instance.uuid == this.activeInstance) {
+    //   if (this.timeout !== null) {
+    //     clearTimeout(this.timeout)
+    //     this.timeout = null
+    //   }
+    //   document.body.dataset.youtubePlayerState = 'playing'
+    // }
+
   }
 
   static handleEnded(instance) {
-    // console.log(`handleEnded: ${instance.uuid}`)
-    this.activeInstance = instance.uuid
-    if (instance.uuid == this.activeInstance) {
-      document.body.dataset.youtubePlayerState = 'ended'
-      instance.doEnded()
-    }
+    document.body.dataset.youtubePlayerState = 'ended'
     for (const uuid in this.instances) {
-      if (uuid !== instance.uuid) {
-        this.instances[uuid].doRemoveFade()
+      this.instances[uuid].showStoppedBorder()
+      if (uuid === instance.uuid) {
+        this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
+        this.instances[uuid].cueVideo()
+      } else {
+        this.instances[uuid].hideFader()
+      }
+    }
+
+    // // console.log(`handleEnded: ${instance.uuid}`)
+    // this.activeInstance = instance.uuid
+    // if (instance.uuid == this.activeInstance) {
+    //   document.body.dataset.youtubePlayerState = 'ended'
+    //   instance.doEnded()
+    // }
+
+
+  }
+
+  static handlePaused(instance) {
+    document.body.dataset.youtubePlayerState = 'paused'
+    for (const uuid in this.instances) {
+      this.instances[uuid].hideFader()
+      this.instances[uuid].showStoppedBorder()
+    }
+
+
+    // // console.log(`handlePause: ${instance.uuid}`)
+    // if (instance.uuid == this.activeInstance) {
+    //   // This is in a timeout because fast 
+    //   // forwarding and rewinding videos sends
+    //   // a pause event before sending another play
+    //   // event. without this everything does
+    //   // a quick unfade and then fade back. The
+    //   // little delay before fading back in when
+    //   // it should is less distracting than the
+    //   // in/out when moving in the video
+    //   this.timeout = setTimeout(() => {
+    //     instance.doPauseOnActivePlayer()
+    //     document.body.dataset.youtubePlayerState = 'paused'
+    //     for (const uuid in this.instances) {
+    //       if (uuid !== instance.uuid) {
+    //         this.instances[uuid].doRemoveFade()
+    //       }
+    //     }
+    //   }, 200)
+    // }
+
+  }
+
+  static fadeOtherVideos(instance) {
+    for (const uuid in this.instances) {
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].showFader()
       }
     }
   }
 
-  static handlePause(instance) {
-    // console.log(`handlePause: ${instance.uuid}`)
-    if (instance.uuid == this.activeInstance) {
-      // This is in a timeout because fast 
-      // forwarding and rewinding videos sends
-      // a pause event before sending another play
-      // event. without this everything does
-      // a quick unfade and then fade back. The
-      // little delay before fading back in when
-      // it should is less distracting than the
-      // in/out when moving in the video
-      this.timeout = setTimeout(() => {
-        instance.doPauseOnActivePlayer()
-        document.body.dataset.youtubePlayerState = 'paused'
-        for (const uuid in this.instances) {
-          if (uuid !== instance.uuid) {
-            this.instances[uuid].doRemoveFade()
-          }
-        }
-      }, 200)
+  static stopOtherVideos(instance) {
+    for (const uuid in this.instances) {
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].stopPlaying()
+        this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
+      }
     }
+  }
+
+  static handlePlaying(instance) {
+    document.body.dataset.youtubePlayerState = 'playing'
+    instance.showPlayer()
+    instance.hideLoading()
+    instance.showPlayingBorder()
+
+    for (const uuid in this.instances) {
+      if (uuid !== instance.uuid) {
+        this.instances[uuid].showFader()
+      }
+    }
+
+    // for (const uuid in this.instances) {
+    //   if (this.activeInstance === uuid) {
+    //     this.instances[uuid].showPlayer()
+    //   } else {
+    //     this.instances[uuid].stopPlaying()
+    //     this.instances[uuid].hidePlayer()
+    //     this.instances[uuid].showThumbnail()
+    //   }
+    // }
+
+
+    // // console.log(`switchActivePlayer: ${instance.uuid}`)
+    // // This clears the pause timeout which
+    // // is necessary to prevent short changes
+    // // when fast forwarding and rewinding
+    // if (this.timeout !== null) {
+    //   clearTimeout(this.timeout)
+    //   this.timeout = null
+    // }
+    // this.activeInstance = instance.uuid
+    // document.body.dataset.youtubePlayerState = 'playing'
+    // for (const uuid in this.instances) {
+    //   if (uuid === instance.uuid) {
+    //     this.instances[uuid].doPlaying()
+    //   } else {
+    //     this.instances[uuid].doPauseAndFade()
+    //   }
+    // }
+
   }
 
   static registerInstance(instance) {
@@ -63,45 +143,38 @@ class YouTubePlayer extends HTMLElement {
     delete this.instances[instance.uuid]
   }
 
-  static switchActivePlayer(instance) {
-    // console.log(`switchActivePlayer: ${instance.uuid}`)
-    // This clears the pause timeout which
-    // is necessary to prevent short changes
-    // when fast forwarding and rewinding
-    if (this.timeout !== null) {
-      clearTimeout(this.timeout)
-      this.timeout = null
-    }
-    this.activeInstance = instance.uuid
-    document.body.dataset.youtubePlayerState = 'playing'
-    for (const uuid in this.instances) {
-      if (uuid === instance.uuid) {
-        this.instances[uuid].doPlaying()
-      } else {
-        this.instances[uuid].doPauseAndFade()
-      }
-    }
+  static setActivePlayer(instance) {
+    console.log(`Active player now: ${instance.uuid}`)
+    this.activePlayer = instance.uuid
   }
 
 
   addContent() {
+    let previousChapterButton = ""
+    let nextChapterButton = ""
+    if (this.chapters.length > 0) {
+      previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
+      nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
+    }
+    let defaultThumbnail = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
+    if (this.attrs.thumbnail) {
+      defaultThumbnail = this.attrs.thumbnail 
+    }
     const template = 
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background stopped">
+  <div class="fader hidden"></div>
   <div class="thumbnail">
-    <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
+    <object type="image/jpg" data="${defaultThumbnail}" aria-label="Video thumbnail image">
       <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
-      <!--
-https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
-      -->
     </object>
   </div>
-  <div class="shader hidden"></div>
   <div class="wrapper hidden">
     <div id="player"></div>
   </div>
   <div class="title"></div>
+  <div class="scrub-display hidden"></div>
   <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
@@ -109,9 +182,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   -->
 </div>
 <div class="buttons">
+  <button aria-label="Restart" class="restart-button control-button"></button>
   <button aria-label="Rewind" class="rewind-button control-button"></button>
+  ${previousChapterButton}
   <button aria-label="Play" class="play-button control-button"></button>
-  <button aria-label="Fast" class="fast-forward-button control-button"></button>
+  ${nextChapterButton}
+  <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
   <button aria-label="Mute" class="mute-button control-button"></button>
 </div>
 `
@@ -121,34 +197,50 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // NOTE: player isn't added here since the element
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
+    this.parts.buttons = this.shadowRoot.querySelector('.buttons')
+    this.parts.contentWarning = this.shadowRoot.querySelector('.content-warning')
+    this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
+    this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
     this.parts.loading = this.shadowRoot.querySelector('.loading')
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
+    this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.shader = this.shadowRoot.querySelector('.shader')
+    this.parts.scrubDisplay = this.shadowRoot.querySelector('.scrub-display')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton = this.shadowRoot.querySelector('.previous-chapter-button')
+      this.parts.nextChapterButton = this.shadowRoot.querySelector('.next-chapter-button')
+    }
   }
 
   addEventListeners() {
-    // const background = this.shadowRoot.querySelector(".background")
-    this.parts.background.addEventListener('click', (event) => {
-      this.handleWrapperClick.call(this, event)
-    })
-    this.parts.playButton.addEventListener('click', (event) => {
-      this.handlePlayButtonClick.call(this, event)
+    this.parts.fastForwardButton.addEventListener('click', (event) => {
+      this.handleSkipForwardButtonClick.call(this, event)
     })
     this.parts.muteButton.addEventListener('click', (event) => {
       this.handleMuteButtonClick.call(this, event)
     })
+    this.parts.playButton.addEventListener('click', (event) => {
+      this.handlePlayButtonClick.call(this, event)
+    })
+    this.parts.restartButton.addEventListener('click', (event) => {
+      this.handleRestartButtonClick.call(this, event)
+    })
     this.parts.rewindButton.addEventListener('click', (event) => {
-      this.handleRewindButtonClick.call(this, event)
+      this.handleSkipBackButtonClick.call(this, event)
     })
-    this.parts.fastForwardButton.addEventListener('click', (event) => {
-      this.handleFastForwardButtonClick.call(this, event)
-    })
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton.addEventListener('click', (event) => {
+        this.handlePreviousChapterButtonClick.call(this, event)
+      })
+      this.parts.nextChapterButton.addEventListener('click', (event) => {
+        this.handleNextChapterButtonClick.call(this, event)
+      })
+     }
   }
 
   connectedCallback() {
@@ -164,21 +256,32 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   constructor() {
     super()
     this.uuid = self.crypto.randomUUID()
+    this.chapters = []
     this.loadingTimeout = null
     this.loadingTimeoutTime = 400
+    this.timeouts = {}
+    this.restart = false
     this.attrs = {
-      "fast-forward-time": 7,
-      "rewind-time": 10,
+      "cw": null,
+      "end": null, 
+      "skip-forward": 7,
+      "restart": "off",
+      "skip-back": 10,
       "start": 0,
+      "title": null,
     }
-    this.colors = {
-      "base-background": "var(--youtube-player-base-background, #aaa)",
-      "base-foreground": "var(--youtube-player-base-background, black)",
-      "base-border": "var(--youtube-player-base-background, black)",
-      "hover-background": "var(--youtube-player-hover-background, black)",
-      "hover-foreground": "var(--youtube-player-hover-background, #aaa)",
-      "hover-border": "var(--youtube-player-hover-background, #aaa)",
-    }
+
+    // this.colors = {
+    //   "button-base-foreground": "var(--youtube-player-button-base-background, black)",
+    //   "button-base-background": "var(--youtube-player-button-base-foreground, #aaa)",
+    //   "button-base-hover-foreground": "var(--youtube-player-button-base-background, black)",
+    //   "button-base-hover-background": "var(--youtube-player-button-base-foreground, #aaa)",
+    //   "button-faded-foreground": "var(--youtube-player-button-faded-background, black)",
+    //   "button-faded-background": "var(--youtube-player-button-faded-foreground, #aaa)",
+    //   "button-faded-hover-foreground": "var(--youtube-player-button-faded-background, black)",
+    //   "button-faded-hover-background": "var(--youtube-player-button-faded-foreground, #aaa)",
+    // }
+
     this.parts = {}
     this.backgroundImageSizes = [
       "default",
@@ -191,107 +294,147 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   doEnded() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.thumbnail.classList.remove('hidden')
-    // this.parts.logo.classList.remove('hidden')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
-    this.parts.background.classList.remove('faded')
-    this.parts.shader.classList.add('hidden')
-    this.parts.wrapper.classList.add('hidden')
+
+    // this.parts.rewindButton.classList.remove('dark')
+    // this.parts.fastForwardButton.classList.remove('dark')
+    // this.parts.muteButton.classList.remove('dark')
+    // this.parts.playButton.classList.remove('dark')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+    // this.parts.thumbnail.classList.remove('hidden')
+    // // this.parts.logo.classList.remove('hidden')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.fader.classList.add('hidden')
+    // this.parts.wrapper.classList.add('hidden')
+
   }
 
   doPlaying() {
-    if (this.loadingTimeout !== null) {
-      clearTimeout(this.loadingTimeout)
-      this.loadingTimeout = null
-    }
-    this.parts.loading.classList.add('hidden')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.rewindButton.classList.add('dark')
-    this.parts.fastForwardButton.classList.add('dark')
-    this.parts.muteButton.classList.add('dark')
-    this.parts.playButton.classList.add('dark')
-    this.parts.playButton.classList.remove('play-button')
-    this.parts.playButton.classList.add('pause-button')
-    this.parts.thumbnail.classList.add('hidden')
-    // this.parts.logo.classList.add('hidden')
-    this.parts.background.classList.add('playing')
-    this.parts.background.classList.remove('stopped')
-    this.parts.background.classList.remove('faded')
-    this.parts.wrapper.classList.remove('hidden')
-    this.parts.player.classList.remove('dark')
-    let shaderUpdate = setTimeout(() => {
-      this.parts.shader.classList.remove('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-    }, 3000)
+
+    // if (this.loadingTimeout !== null) {
+    //   clearTimeout(this.loadingTimeout)
+    //   this.loadingTimeout = null
+    // }
+    // this.parts.player.classList.remove('hidden')
+    // this.parts.loading.classList.add('hidden')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.rewindButton.classList.add('dark')
+    // this.parts.fastForwardButton.classList.add('dark')
+    // this.parts.muteButton.classList.add('dark')
+    // this.parts.playButton.classList.add('dark')
+    // this.parts.playButton.classList.remove('play-button')
+    // this.parts.playButton.classList.add('pause-button')
+    // this.parts.thumbnail.classList.add('hidden')
+    // // this.parts.logo.classList.add('hidden')
+    // this.parts.background.classList.add('playing')
+    // this.parts.background.classList.remove('stopped')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.wrapper.classList.remove('hidden')
+    // this.parts.player.classList.remove('dark')
+    // let faderUpdate = setTimeout(() => {
+    //   this.parts.fader.classList.remove('dark-fader-over-background')
+    //   this.parts.fader.classList.remove('hidden')
+    // }, 3000)
+
   }
 
+  // really stop and fade
   doPauseAndFade() {
-    this.parts.rewindButton.classList.add('darker')
-    this.parts.fastForwardButton.classList.add('darker')
-    this.parts.muteButton.classList.add('darker')
-    this.parts.playButton.classList.add('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.background.classList.add('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.remove('stopped')
-    if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-      this.parts.shader.classList.remove('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-      this.parts.player.classList.add('dark')
-    } else {
-      this.parts.shader.classList.add('dark-shader-over-background')
-      this.parts.shader.classList.remove('hidden')
-    }
-    if (this.player.getPlayerState() === 1) {
-      this.player.pauseVideo()
-    }
+
+    // this.parts.thumbnail.classList.remove('hidden')
+    // // this.parts.fader.classList.remove('hidden')
+    // this.parts.wrapper.classList.remove('hidden')
+    // this.parts.player.classList.add('hidden')
+    // this.parts.rewindButton.classList.add('darker')
+    // this.parts.fastForwardButton.classList.add('darker')
+    // this.parts.muteButton.classList.add('darker')
+    // this.parts.playButton.classList.add('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+
+    // this.parts.background.classList.add('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.remove('stopped')
+
+    //this.parts.wrapper.classList.remove('hidden')
+
+    //if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
+    //  this.parts.fader.classList.remove('dark-fader-over-background')
+    //  this.parts.fader.classList.remove('hidden')
+    //  // this.parts.player.classList.add('dark')
+    //  this.parts.player.classList.add('hidden')
+    //} else {
+    //  this.parts.fader.classList.add('dark-fader-over-background')
+    //  this.parts.fader.classList.remove('hidden')
+    //  //
+    //  this.parts.player.classList.add('hidden')
+    //}
+    
+    // if (this.player.getPlayerState() === 1) {
+    //   this.player.pauseVideo()
+    // }
+
+    this.player.stopVideo()
   }
 
   doPauseOnActivePlayer() {
-    this.parts.rewindButton.classList.remove('dark')
-    this.parts.fastForwardButton.classList.remove('dark')
-    this.parts.muteButton.classList.remove('dark')
-    this.parts.playButton.classList.remove('dark')
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-    this.parts.background.classList.remove('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
+
+    // this.blur()
+    // this.parts.rewindButton.classList.remove('dark')
+    // this.parts.fastForwardButton.classList.remove('dark')
+    // this.parts.muteButton.classList.remove('dark')
+    // this.parts.playButton.classList.remove('dark')
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.playButton.classList.add('play-button')
+    // this.parts.playButton.classList.remove('pause-button')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+
   }
 
   doRemoveFade() {
-    this.parts.rewindButton.classList.remove('darker')
-    this.parts.fastForwardButton.classList.remove('darker')
-    this.parts.muteButton.classList.remove('darker')
-    this.parts.playButton.classList.remove('darker')
-    this.parts.background.classList.remove('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.add('stopped')
-    if (this.player.getPlayerState() === 2) {
-      this.parts.player.classList.remove('dark')
-    } else {
-      this.parts.shader.classList.add('hidden')
-      this.parts.shader.classList.remove('dark-shader-over-background')
+
+    // this.parts.rewindButton.classList.remove('darker')
+    // this.parts.fastForwardButton.classList.remove('darker')
+    // this.parts.muteButton.classList.remove('darker')
+    // this.parts.playButton.classList.remove('darker')
+    // this.parts.background.classList.remove('faded')
+    // this.parts.background.classList.remove('playing')
+    // this.parts.background.classList.add('stopped')
+    // if (this.player.getPlayerState() === 2) {
+    //   this.parts.player.classList.remove('dark')
+    // } else {
+    //   this.parts.fader.classList.add('hidden')
+    //   this.parts.fader.classList.remove('dark-fader-over-background')
+    // }
+
+  }
+
+  flashMessage(text) {
+    this.parts.scrubDisplay.innerHTML = text
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
     }
+    this.timeouts.scrubDisplay = setTimeout(
+      () => {
+        this.parts.scrubDisplay.classList.add('hidden')
+      },
+      500
+    )
   }
 
   getAttributes() {
@@ -302,26 +445,59 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
           this.getAttribute(attr)
       }
     })
-  }
-
-  async getTitle() {
-    const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
-    let response = await fetch(url)
-    if (!response.ok) {
-      throw new Error('There was a problem getting the data')
-    } else {
-      let json = await response.json()
-      // TODO: Figure out error handling here
-      this.parts.title.innerHTML = json.title
+    const ints = ['skip-forward', 'skip-back', 'start', 'end']
+    ints.forEach((int) => {
+      this.attrs[int] = parseInt(this.attrs[int], 10)
+    })
+    if (this.attrs['restart'].toLowerCase() === 'on') {
+      this.restart = true
+    }
+    if (this.attrs['chapters']) {
+      let chapterTimes = this.attrs['chapters'].split(',')
+      this.chapters.push(0)
+      chapterTimes.forEach((chapterTime) => {
+        this.chapters.push(parseInt(chapterTime, 10))
+      })
     }
   }
 
-  handleFastForwardButtonClick(event) {
+  async getTitle() {
+    let contentWarning = ""
+    if (this.attrs['cw'] !== null) {
+      contentWarning = `<div class="content-warning">${this.attrs['cw']}</div>`
+    }
+    if (this.attrs['title'] !== null) {
+      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentWarning}`
+    } else {
+      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
+      let response = await fetch(url)
+      if (!response.ok) {
+        throw new Error('There was a problem getting the data')
+      } else {
+        let json = await response.json()
+        // TODO: Figure out error handling here
+        this.parts.title.innerHTML = `<div>${json.title}</div>${contentWarning}`
+      }
+    }
+  }
+
+  handleSkipForwardButtonClick(event) {
     this.player.seekTo(
       Math.min(
-        this.player.getCurrentTime() + parseInt(this.attrs['fast-forward-time'], 10),
+        this.player.getCurrentTime() + this.attrs['skip-forward'],
         this.player.getDuration() 
       )
+    )
+    this.parts.scrubDisplay.innerHTML = `+${this.attrs['skip-forward']}sec.`
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
+    }
+    this.timeouts.scrubDisplay = setTimeout(
+      () => {
+        this.parts.scrubDisplay.classList.add('hidden')
+      },
+      500
     )
   }
 
@@ -337,14 +513,58 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     }
   }
 
+  handleNextChapterButtonClick(event) {
+    const currentTime = this.player.getCurrentTime()
+    let foundChapter = false
+    // for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
+    for (let checkIndex = 0; checkIndex < this.chapters.length; checkIndex += 1) {
+      if (currentTime < this.chapters[checkIndex]) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        foundChapter = true
+        break
+      }
+    }
+    if (foundChapter === false) {
+      this.flashMessage(`No more chapters`)
+    }
+  }
+
   handlePlayButtonClick(event) {
-    if (this.player.getPlayerState() === 1) {
+    const state = this.player.getPlayerState()
+    if (state === 1) {
+      this.showPlayButton()
       this.player.pauseVideo()
+      this.showStoppedBorder()
+      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
+      // this.flashMessage(this.player.getCurrentTime())
     } else {
-      this.loadingTimeout = setTimeout(() => {
-        this.parts.loading.classList.remove('hidden')
-      }, this.loadingTimeoutTime)
+      this.showPlayingBorder()
+      this.hideFader()
+      this.showLoading()
+      this.constructor.stopOtherVideos(this)
+      this.constructor.fadeOtherVideos(this)
       this.player.playVideo()
+      this.showPauseButton()
+      console.log(`YouTube Player: Playing`)
+    }
+  }
+
+  handlePreviousChapterButtonClick(event) {
+    const currentTime = this.player.getCurrentTime()
+    for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
+      if (currentTime > this.chapters[checkIndex] + 2) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        break
+      }
+    }
+  }
+
+  handleRestartButtonClick(event) {
+    const playerState = this.player.getPlayerState()
+    if (playerState === 1 || playerState === 2) {
+      this.player.seekTo(this.attrs['start'])
     }
   }
 
@@ -366,18 +586,29 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.constructor.handleEnded(this)
     } else if (playerState == YT.PlayerState.PAUSED) {
       // console.log("STATUS: PAUSED")
-      this.constructor.handlePause(this)
+      this.constructor.handlePaused(this)
     } else if (playerState == YT.PlayerState.PLAYING) {
       // console.log("STATUS: PLAYING")
-      this.constructor.switchActivePlayer(this)
+      this.constructor.handlePlaying(this)
     }
   }
 
-  handleRewindButtonClick(event) {
+  handleSkipBackButtonClick(event) {
     this.player.seekTo(
       Math.max(
-        0, this.player.getCurrentTime() - parseInt(this.attrs['rewind-time'], 10)
+        0, this.player.getCurrentTime() - this.attrs['skip-back']
       )
+    )
+    this.parts.scrubDisplay.innerHTML = `-${this.attrs['skip-back']}sec.`
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
+    }
+    this.timeouts.scrubDisplay = setTimeout(
+      () => {
+        this.parts.scrubDisplay.classList.add('hidden')
+      },
+      500
     )
   }
 
@@ -396,10 +627,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       let player = new YT.Player(videoEl, {
         width: '560',
         height: '315',
-        videoId: this.attrs.video,
         playerVars: {
           playsinline: 1,
-          start: this.attrs["start"],
         },
         events: {
           onReady: (event) => {
@@ -415,15 +644,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       })
     }).then((value) => {
       return value
+      // TODO: Figure out how to handle errors here.
     })
-    // TODO: Figure out how to handle errors here.
-    //
-    // The player can be added now that it's
-    // been switched to the iframe
+    this.cueVideo()
     this.parts.player = this.shadowRoot.querySelector('#player')
-    // window.addEventListener('click', () => {
-    //   console.log("asdf")
-    // })
   }
 
   loadApi() {
@@ -444,11 +668,100 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.append(el)
     })
   }
+  
+  hideLoading() {
+    this.parts.loading.classList.add('hidden')
+  }
+
+  hideFader() {
+    this.parts.fader.classList.add('hidden')
+    this.parts.buttons.classList.remove('button-fader')
+  }
+
+  hidePlayer() {
+    this.parts.wrapper.classList.add('hidden')
+  }
+
+  showPlayingBorder() {
+    this.parts.background.classList.add('playing')
+    this.parts.background.classList.remove('stopped')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showStoppedBorder() {
+    this.parts.background.classList.add('stopped')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showFadedBorder() {
+    this.parts.background.classList.add('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('stopped')
+  }
+
+  showFader() {
+    this.parts.fader.classList.remove('hidden')
+    this.parts.buttons.classList.add('button-fader')
+    this.showFadedBorder()
+  }
+
+  showLoading() {
+    this.parts.loading.classList.remove('hidden')
+  }
+
+  showPlayButton() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
+  }
+
+  showPauseButton() {
+    this.parts.playButton.classList.add('pause-button')
+    this.parts.playButton.classList.remove('play-button')
+  }
+
+  showPlayer() {
+    this.parts.wrapper.classList.remove('hidden')
+  }
+
+  stopPlaying() {
+    const state = this.player.getPlayerState()
+    if (state === 1 || state === 2) {
+      this.player.stopVideo()
+      this.cueVideo()
+    }
+  }
+
+  cueVideo() {
+    let options = {
+      'videoId': this.attrs.video,
+    }
+    if (this.restart === true) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === -1) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.CUED) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.ENDED) {
+      options['startSeconds'] = this.attrs['start']
+    } else {
+      const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
+      options['startSeconds'] = currentTime
+    }
+    if (this.attrs['end'] !== null) {
+      options['endSeconds'] = this.attrs['end']
+    }
+    this.player.cueVideoById(options)
+  }
 
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
+:root {
+  --transition-time: 0.5s;
+}
 .background {
+  font-size: var(--youtube-player-font-size, 0.9rem);
   background-color: black;
   position: relative;
 }
@@ -459,8 +772,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   justify-content: right;
 }
 .control-button {
-  background: ${this.colors["base-background"]};
-  border: 1px solid ${this.colors["base-border"]};
+  background: var(--youtube-player-button-base-background, #999);
+  border: 1px solid var(--youtube-player-button-base-foreground, #333);
   border-radius: 0.6rem;
   margin: 0;
   position: relative;
@@ -468,7 +781,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 2rem;
 }
 .control-button:after {
-  background: ${this.colors["base-foreground"]};
+  background: var(--youtube-player-button-base-foreground, #333);
   content: "";
   height: 100%;
   left: 0;
@@ -476,6 +789,17 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   position: absolute;
   top: 0;
   width: 100%;
+}
+.content-warning {
+  padding-top: 1rem;
+  font-weight: 900;
+}
+.button-fader > .control-button {
+  background: var(--youtube-player-button-faded-background, #333);
+  border: 1px solid var(--youtube-player-button-faded-foreground, #111);
+}
+.button-fader > .control-button:after {
+  background: var(--youtube-player-button-faded-foreground, #111);
 }
 .hidden {
   opacity: 0;
@@ -486,12 +810,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   position: relative;
 }
 .loading {
-  background: rgb(0 0 0 / 0.3);
+  background: var(--youtube-player-text-background-color, rbg(0 0 0 / 0.5));
   border-top-right-radius: 0.6rem;
-  border-bottom-left-radius: 0.6rem;
-  color: var(--youtube-player-text-color);
+  border-top-left-radius: 0.6rem;
+  color: var(--youtube-player-text-color, #aaa);
   filter: drop-shadow(1px 1px 1px black);
-  left: calc(50vw - 3rem);
+  left: calc(50vw - 10ch);
   position: absolute;
   bottom: 0rem;
   z-index: 5;
@@ -499,13 +823,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
+  /*
   transition: all 0.5s ease-in;
+  */
 }
-
-.loading.hidden {
-  transition: none;
-}
-
 #player {
   border-radius: 0.6rem;
   position: absolute;
@@ -516,10 +837,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   z-index: 10;
 }  
 .playing {
-  border: var(--youtube-player-playing-border);
+  border: var(--youtube-player-playing-border, 1px solid #999);
 }
 .faded {
-  border: var(--youtube-player-faded-border);
+  border: var(--youtube-player-faded-border, 1px solid #444);
 }
 .fast-forward-button:after {
   mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cpath%20d%3D%22M13%206L19%2012L13%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M5%206L11%2012L5%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
@@ -533,10 +854,64 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-.stopped {
-  border: var(--youtube-player-stopped-border);
+.previous-chapter-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%220%200%201024%201024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22m230.2%20499.3%20287.4-225.8c10.7-8.4%2026.4-.8%2026.4%2012.7v451.6c0%2013.5-15.7%2021.1-26.4%2012.7L230.2%20524.7a16.14%2016.14%200%200%201%200-25.4zm320%200%20287.4-225.8c10.7-8.4%2026.4-.8%2026.4%2012.7v451.5c0%2013.5-15.7%2021.1-26.4%2012.7L550.2%20524.6c-4.1-3.2-6.2-8-6.2-12.7%200-4.6%202.1-9.4%206.2-12.6zM166.4%20248h51.2c3.5%200%206.4%202.7%206.4%206v516c0%203.3-2.9%206-6.4%206h-51.2c-3.5%200-6.4-2.7-6.4-6V254c0-3.3%202.9-6%206.4-6z%22%2F%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
 }
-.shader {
+.next-chapter-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22utf-8%22%3F%3E%0A%3C!--%20Uploaded%20to%3A%20SVG%20Repo%2C%20www.svgrepo.com%2C%20Generator%3A%20SVG%20Repo%20Mixer%20Tools%20--%3E%0A%3Csvg%20fill%3D%22%23000000%22%20width%3D%22800px%22%20height%3D%22800px%22%20viewBox%3D%220%200%201024%201024%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%20%20%3Cpath%20d%3D%22M793.8%20499.3L506.4%20273.5c-10.7-8.4-26.4-.8-26.4%2012.7v451.6c0%2013.5%2015.7%2021.1%2026.4%2012.7l287.4-225.8a16.14%2016.14%200%200%200%200-25.4zm-320%200L186.4%20273.5c-10.7-8.4-26.4-.8-26.4%2012.7v451.5c0%2013.5%2015.7%2021.1%2026.4%2012.7l287.4-225.8c4.1-3.2%206.2-8%206.2-12.7%200-4.6-2.1-9.4-6.2-12.6zM857.6%20248h-51.2c-3.5%200-6.4%202.7-6.4%206v516c0%203.3%202.9%206%206.4%206h51.2c3.5%200%206.4-2.7%206.4-6V254c0-3.3-2.9-6-6.4-6z%22%2F%3E%0A%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+@media (hover: hover) {
+  .fast-forward-chapter-button:hover {
+    background: var(--button-hover-background-color);
+    border: 1px solid var(--button-hover-border-color);
+  }
+
+  .fast-forward-chapter-button:hover:after {
+    background: var(--button-hover-color);
+  }
+}
+
+
+@media (hover: hover) {
+  .rewind-chapter-button:hover {
+    background: var(--button-hover-background-color);
+    border: 1px solid var(--button-hover-border-color);
+  }
+
+  .rewind-chapter-button:hover:after {
+    background: var(--button-hover-color);
+  }
+}
+
+
+.scrub-display {
+  font-size: 1.6rem;
+  color: var(--youtube-player-button-base-background, blue);
+  border-radius: 0.6rem;
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 30;
+  transition: opacity 0s;
+  text-align: right;
+  background: var(--youtube-player-text-background-color, rgb(0 0 0 / 0.5));
+  padding: 0.5rem;
+}
+.scrub-display.hidden {
+  transition: opacity 0.7s ease-in;
+}
+
+.stopped {
+  border: var(--youtube-player-stopped-border, 1px solid #aaa);
+}
+.fader {
   border-radius: 0.6rem;
   position: absolute;
   top: 0;
@@ -545,7 +920,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 100%;
   background: black;
   z-index: 6;
+  opacity: 0.75;
 }
+.fader.hidden {
+  opacity: 0;
+}
+
 .thumbnail {
   border-radius: 0.6rem;
   position: absolute;
@@ -570,7 +950,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   z-index: 2;
 }
 .title {
-  background: rgb(0 0 0 / 0.3);
+  background: var(--youtube-player-text-background-color, #aaa);
   border-top-left-radius: 0.6rem;
   color: var(--youtube-player-text-color);
   filter: drop-shadow(1px 1px 1px black);
@@ -583,15 +963,17 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-left: 1rem;
   padding-right: 1rem;
 }
+/*
 .dark {
   opacity: 0.35;
 }
 .darker {
   opacity: 0.1;
 }
-.dark-shader-over-background {
+.dark-fader-over-background {
   opacity: 0.7;
 }
+*/
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -604,7 +986,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 */
 .background {
   border-radius: 0.6rem;
-  cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
 }
@@ -632,15 +1013,26 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
+.restart-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%22-7.5%200%2032%2032%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15.88%2013.84c-1.68-3.48-5.44-5.24-9.04-4.6l.96-1.8a.8.8%200%200%200-.32-1.12.8.8%200%200%200-1.12.32L4.4%2010.28s-.44.72.24%201.04l3.64%201.96c.12.08.28.12.4.12.28%200%20.6-.16.72-.44a.8.8%200%200%200-.32-1.12L7.2%2010.8c2.84-.48%205.8.96%207.12%203.68%201.6%203.32.2%207.32-3.12%208.88-1.6.76-3.4.88-5.08.28s-3.04-1.8-3.8-3.4c-.76-1.6-.88-3.4-.28-5.08a.848.848%200%200%200-.52-1.08c-.4-.08-.88.16-1.04.6-.72%202.12-.6%204.36.36%206.36s2.64%203.52%204.76%204.28c.92.32%201.84.48%202.76.48%201.24%200%202.48-.28%203.6-.84%204.16-2%205.92-7%203.92-11.12z%22%2F%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
+/*
 #player {
   transition: all 0.6s ease-out;
 }
-.wrapper, .shader, .thumbnail {
+*/
+/*
+.wrapper, .fader, .thumbnail {
   transition: opacity 0.6s ease-in;
 }
 .background {
   transition: border 0.6s ease-in;
 }
+*/
 /*
 #player {
   top: 20%;
@@ -667,18 +1059,19 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 }
 */
 @media (hover: hover) {
-  .background:hover .title {
-    color: white;
-  }
-  .background:hover .yt-logo{
-    filter: drop-shadow(0px 0px 1px white);
-  }
   .control-button:hover {
-    background: ${this.colors['hover-background']};
-    border: 1px solid ${this.colors['hover-foreground']};
+    background: var(--youtube-player-button-base-hover-background, #333);
+    border: 1px solid var(--youtube-player-button-base-hover-foreground, #999);
   }
   .control-button:hover:after {
-    background: ${this.colors['hover-foreground']};
+    background: var(--youtube-player-button-base-hover-foreground, #999);
+  }
+  .button-fader > .control-button:hover {
+    background: var(--youtube-player-button-faded-hover-background, #111);
+    border: 1px solid var(--youtube-player-button-faded-hover-foreground, #333);
+  }
+  .button-fader > .control-button:hover:after {
+    background: var(--youtube-player-button-faded-hover-foreground, #333);
   }
 }`
     );
