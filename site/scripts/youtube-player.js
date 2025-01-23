@@ -464,7 +464,7 @@ class YouTubePlayer extends HTMLElement {
   async getTitle() {
     let contentWarning = ""
     if (this.attrs['cw'] !== null) {
-      contentWarning = `<div>${this.attrs['cw']}</div>`
+      contentWarning = `<div class="content-warning">${this.attrs['cw']}</div>`
     }
     if (this.attrs['title'] !== null) {
       this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentWarning}`
@@ -789,6 +789,10 @@ class YouTubePlayer extends HTMLElement {
   position: absolute;
   top: 0;
   width: 100%;
+}
+.content-warning {
+  padding-top: 1rem;
+  font-weight: 900;
 }
 .button-fader > .control-button {
   background: var(--youtube-player-button-faded-background, #333);
