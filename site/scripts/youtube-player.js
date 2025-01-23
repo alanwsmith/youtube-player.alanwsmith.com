@@ -23,8 +23,10 @@ class YouTubePlayer extends HTMLElement {
   static handleEnded(instance) {
     document.body.dataset.youtubePlayerState = 'ended'
     for (const uuid in this.instances) {
+      this.instances[uuid].showStoppedBorder()
       if (uuid === instance.uuid) {
         this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
       } else {
         this.instances[uuid].hideFader()
       }
@@ -42,9 +44,9 @@ class YouTubePlayer extends HTMLElement {
 
   static handlePaused(instance) {
     document.body.dataset.youtubePlayerState = 'paused'
-
     for (const uuid in this.instances) {
       this.instances[uuid].hideFader()
+      this.instances[uuid].showStoppedBorder()
     }
 
 
@@ -93,6 +95,7 @@ class YouTubePlayer extends HTMLElement {
     document.body.dataset.youtubePlayerState = 'playing'
     instance.showPlayer()
     instance.hideLoading()
+    instance.showPlayingBorder()
 
     for (const uuid in this.instances) {
       if (uuid !== instance.uuid) {
@@ -235,16 +238,18 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       "rewind-time": 10,
       "start": 0,
     }
-    this.colors = {
-      "button-base-foreground": "var(--youtube-player-button-base-background, black)",
-      "button-base-background": "var(--youtube-player-button-base-foreground, #aaa)",
-      "button-base-hover-foreground": "var(--youtube-player-button-base-background, black)",
-      "button-base-hover-background": "var(--youtube-player-button-base-foreground, #aaa)",
-      "button-faded-foreground": "var(--youtube-player-button-faded-background, black)",
-      "button-faded-background": "var(--youtube-player-button-faded-foreground, #aaa)",
-      "button-faded-hover-foreground": "var(--youtube-player-button-faded-background, black)",
-      "button-faded-hover-background": "var(--youtube-player-button-faded-foreground, #aaa)",
-    }
+
+    // this.colors = {
+    //   "button-base-foreground": "var(--youtube-player-button-base-background, black)",
+    //   "button-base-background": "var(--youtube-player-button-base-foreground, #aaa)",
+    //   "button-base-hover-foreground": "var(--youtube-player-button-base-background, black)",
+    //   "button-base-hover-background": "var(--youtube-player-button-base-foreground, #aaa)",
+    //   "button-faded-foreground": "var(--youtube-player-button-faded-background, black)",
+    //   "button-faded-background": "var(--youtube-player-button-faded-foreground, #aaa)",
+    //   "button-faded-hover-foreground": "var(--youtube-player-button-faded-background, black)",
+    //   "button-faded-hover-background": "var(--youtube-player-button-faded-foreground, #aaa)",
+    // }
+
     this.parts = {}
     this.backgroundImageSizes = [
       "default",
@@ -434,7 +439,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     if (state === 1) {
       this.showPlayButton()
       this.player.pauseVideo()
+      this.showStoppedBorder()
     } else {
+      this.showPlayingBorder()
       this.hideFader()
       this.showLoading()
       this.constructor.stopOtherVideos(this)
@@ -569,9 +576,28 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.wrapper.classList.add('hidden')
   }
 
+  showPlayingBorder() {
+    this.parts.background.classList.add('playing')
+    this.parts.background.classList.remove('stopped')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showStoppedBorder() {
+    this.parts.background.classList.add('stopped')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showFadedBorder() {
+    this.parts.background.classList.add('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('stopped')
+  }
+
   showFader() {
     this.parts.fader.classList.remove('hidden')
     this.parts.buttons.classList.add('button-fader')
+    this.showFadedBorder()
   }
 
   showLoading() {
@@ -608,6 +634,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   --transition-time: 0.5s;
 }
 .background {
+  font-size: var(--youtube-player-font-size, 0.9rem);
   background-color: black;
   position: relative;
 }
@@ -618,8 +645,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   justify-content: right;
 }
 .control-button {
-  background: ${this.colors["button-base-foreground"]};
-  border: 1px solid ${this.colors["button-base-background"]};
+  background: var(--youtube-player-button-base-background, #999);
+  border: 1px solid var(--youtube-player-button-base-foreground, #333);
   border-radius: 0.6rem;
   margin: 0;
   position: relative;
@@ -627,7 +654,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 2rem;
 }
 .control-button:after {
-  background: ${this.colors["button-base-background"]};
+  background: var(--youtube-player-button-base-foreground, #333);
   content: "";
   height: 100%;
   left: 0;
@@ -637,11 +664,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   width: 100%;
 }
 .button-fader > .control-button {
-  background: ${this.colors["button-faded-foreground"]};
-  border: 1px solid ${this.colors["button-faded-background"]};
+  background: var(--youtube-player-button-faded-background, #333);
+  border: 1px solid var(--youtube-player-button-faded-foreground, #111);
 }
 .button-fader > .control-button:after {
-  background: ${this.colors["button-faded-background"]};
+  background: var(--youtube-player-button-faded-foreground, #111);
 }
 .hidden {
   opacity: 0;
@@ -652,10 +679,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   position: relative;
 }
 .loading {
-  background: rgb(0 0 0 / 0.3);
+  background: var(--youtube-player-text-background-color, rbg(0 0 0 / 0.5));
   border-top-right-radius: 0.6rem;
   border-top-left-radius: 0.6rem;
-  color: var(--youtube-player-text-color);
+  color: var(--youtube-player-text-color, #aaa);
   filter: drop-shadow(1px 1px 1px black);
   left: calc(50vw - 10ch);
   position: absolute;
@@ -686,10 +713,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   z-index: 10;
 }  
 .playing {
-  border: var(--youtube-player-playing-border);
+  border: var(--youtube-player-playing-border, 1px solid #999);
 }
 .faded {
-  border: var(--youtube-player-faded-border);
+  border: var(--youtube-player-faded-border, 1px solid #444);
 }
 .fast-forward-button:after {
   mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cpath%20d%3D%22M13%206L19%2012L13%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M5%206L11%2012L5%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
@@ -704,7 +731,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-size: contain;
 }
 .stopped {
-  border: var(--youtube-player-stopped-border);
+  border: var(--youtube-player-stopped-border, 1px solid #aaa);
 }
 .fader {
   border-radius: 0.6rem;
@@ -848,18 +875,18 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 */
 @media (hover: hover) {
   .control-button:hover {
-    background: ${this.colors['button-base-hover-background']};
-    border: 1px solid ${this.colors['button-base-hover-foreground']};
+    background: var(--youtube-player-button-base-hover-background, #333);
+    border: 1px solid var(--youtube-player-button-base-hover-foreground, #999);
   }
   .control-button:hover:after {
-    background: ${this.colors['button-base-hover-foreground']};
+    background: var(--youtube-player-button-base-hover-foreground, #999);
   }
   .button-fader > .control-button:hover {
-    background: ${this.colors['button-faded-hover-background']};
-    border: 1px solid ${this.colors['button-faded-hover-foreground']};
+    background: var(--youtube-player-button-faded-hover-background, #111);
+    border: 1px solid var(--youtube-player-button-faded-hover-foreground, #333);
   }
   .button-fader > .control-button:hover:after {
-    background: ${this.colors['button-faded-hover-foreground']};
+    background: var(--youtube-player-button-faded-hover-foreground, #333);
   }
 }`
     );
