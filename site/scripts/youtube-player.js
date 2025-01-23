@@ -148,6 +148,7 @@ class YouTubePlayer extends HTMLElement {
     this.activePlayer = instance.uuid
   }
 
+
   addContent() {
     let previousChapterButton = ""
     let nextChapterButton = ""
@@ -155,13 +156,17 @@ class YouTubePlayer extends HTMLElement {
       previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
       nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
     }
+    let defaultThumbnail = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
+    if (this.attrs.thumbnail) {
+      defaultThumbnail = this.attrs.thumbnail 
+    }
     const template = 
       this.ownerDocument.createElement('template')
     template.innerHTML = `
 <div class="background stopped">
   <div class="fader hidden"></div>
   <div class="thumbnail">
-    <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
+    <object type="image/jpg" data="${defaultThumbnail}" aria-label="Video thumbnail image">
       <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
     </object>
   </div>
