@@ -787,7 +787,6 @@ class YouTubePlayer extends HTMLElement {
   gap: 0.3rem;
   justify-content: right;
 }
-
 .control-button {
   background: var(--youtube-player-button-base-background, #999);
   border: 1px solid var(--youtube-player-button-base-foreground, #333);
@@ -840,9 +839,6 @@ class YouTubePlayer extends HTMLElement {
   padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
-  /*
-  transition: all 0.5s ease-in;
-  */
 }
 #player {
   border-radius: 0.6rem;
@@ -883,31 +879,6 @@ class YouTubePlayer extends HTMLElement {
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-
-@media (hover: hover) {
-  .fast-forward-chapter-button:hover {
-    background: var(--button-hover-background-color);
-    border: 1px solid var(--button-hover-border-color);
-  }
-
-  .fast-forward-chapter-button:hover:after {
-    background: var(--button-hover-color);
-  }
-}
-
-
-@media (hover: hover) {
-  .rewind-chapter-button:hover {
-    background: var(--button-hover-background-color);
-    border: 1px solid var(--button-hover-border-color);
-  }
-
-  .rewind-chapter-button:hover:after {
-    background: var(--button-hover-color);
-  }
-}
-
-
 .scrub-display {
   font-size: 1.6rem;
   color: var(--youtube-player-button-base-background, blue);
@@ -924,7 +895,6 @@ class YouTubePlayer extends HTMLElement {
 .scrub-display.hidden {
   transition: opacity 0.7s ease-in;
 }
-
 .stopped {
   border: var(--youtube-player-stopped-border, 1px solid #aaa);
 }
@@ -942,7 +912,6 @@ class YouTubePlayer extends HTMLElement {
 .fader.hidden {
   opacity: 0;
 }
-
 .thumbnail {
   border-radius: 0.6rem;
   position: absolute;
@@ -980,27 +949,6 @@ class YouTubePlayer extends HTMLElement {
   padding-left: 1rem;
   padding-right: 1rem;
 }
-/*
-.dark {
-  opacity: 0.35;
-}
-.darker {
-  opacity: 0.1;
-}
-.dark-fader-over-background {
-  opacity: 0.7;
-}
-*/
-/*
-.wrapper.paused #player {
-  border-radius: 0.6rem;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 30%;
-  height: 30%;
-}
-*/
 .background {
   border-radius: 0.6rem;
   height: 0;
@@ -1036,45 +984,6 @@ class YouTubePlayer extends HTMLElement {
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-
-/*
-#player {
-  transition: all 0.6s ease-out;
-}
-*/
-/*
-.wrapper, .fader, .thumbnail {
-  transition: opacity 0.6s ease-in;
-}
-.background {
-  transition: border 0.6s ease-in;
-}
-*/
-/*
-#player {
-  top: 20%;
-  left: 40%;
-  postion: relative;
-  width: 30%;
-}
-*/
-/*
-.yt-logo {
-  background-image: url("data:image/svg+xml;utf8,<svg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 176 124'><defs><style>.cls-1 {fill: white;} .cls-2 {fill: red;}</style></defs><path class='cls-2' d='M172.32,19.36c-2.02-7.62-7.99-13.62-15.56-15.66C143.04,0,88,0,88,0c0,0-55.04,0-68.76,3.7-7.57,2.04-13.54,8.04-15.56,15.66C0,33.18,0,62,0,62c0,0,0,28.82,3.68,42.64,2.02,7.62,7.99,13.62,15.56,15.66,13.73,3.7,68.76,3.7,68.76,3.7,0,0,55.04,0,68.76-3.7,7.57-2.04,13.54-8.04,15.56-15.66,3.68-13.81,3.68-42.64,3.68-42.64,0,0,0-28.82-3.68-42.64Z'/><polygon class='cls-1' points='70 88.17 116 62 70 35.83 70 88.17'/></svg>");
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  border-radius: 0.6rem;
-  bottom: 1.8rem;
-  filter: drop-shadow(1px 1px 3px black);
-  height: 2.5rem;
-  left: 1.8rem;
-  position: absolute;
-  width: 3.5rem;
-  z-index: 5;
-  transition: opacity 0.6s ease-in;
-}
-*/
 @media (hover: hover) {
   .control-button:hover {
     background: var(--youtube-player-button-base-hover-background, #333);
