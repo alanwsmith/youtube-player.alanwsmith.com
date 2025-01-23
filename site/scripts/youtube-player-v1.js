@@ -683,7 +683,7 @@ class YouTubePlayer extends HTMLElement {
 
   hideFader() {
     this.parts.fader.classList.add('hidden')
-    this.parts.buttons.classList.remove('button-fader')
+    this.parts.buttonsRow.classList.remove('button-fader')
   }
 
   hidePlayer() {
@@ -710,7 +710,7 @@ class YouTubePlayer extends HTMLElement {
 
   showFader() {
     this.parts.fader.classList.remove('hidden')
-    this.parts.buttons.classList.add('button-fader')
+    this.parts.buttonsRow.classList.add('button-fader')
     this.showFadedBorder()
   }
 
