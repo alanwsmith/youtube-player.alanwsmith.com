@@ -181,14 +181,17 @@ class YouTubePlayer extends HTMLElement {
   <div class="yt-logo"></div>
   -->
 </div>
-<div class="buttons hidden">
-  <button aria-label="Restart" class="restart-button control-button"></button>
-  <button aria-label="Rewind" class="rewind-button control-button"></button>
-  ${previousChapterButton}
-  <button aria-label="Play" class="play-button control-button"></button>
-  ${nextChapterButton}
-  <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
-  <button aria-label="Mute" class="mute-button control-button"></button>
+<div class="buttons">
+  <div class="buttons-row hidden button-base-foreground">
+    <button aria-label="Restart" class="restart-button control-button"></button>
+    <button aria-label="Rewind" class="rewind-button control-button"></button>
+    ${previousChapterButton}
+    <button aria-label="Play" class="play-button control-button"></button>
+    ${nextChapterButton}
+    <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
+    <button aria-label="Mute" class="mute-button control-button"></button>
+  </div>
+  <div class="buttons-message">Initializing Video Player</div>
 </div>
 `
     const contents = 
@@ -198,6 +201,8 @@ class YouTubePlayer extends HTMLElement {
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
     this.parts.buttons = this.shadowRoot.querySelector('.buttons')
+    this.parts.buttonsMessage = this.shadowRoot.querySelector('.buttons-message')
+    this.parts.buttonsRow = this.shadowRoot.querySelector('.buttons-row')
     this.parts.contentWarning = this.shadowRoot.querySelector('.content-warning')
     this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
@@ -648,7 +653,9 @@ class YouTubePlayer extends HTMLElement {
     })
     this.cueVideo()
     this.parts.player = this.shadowRoot.querySelector('#player')
-    this.parts.buttons.classList.remove('hidden')
+    this.parts.buttonsMessage.classList.add('hidden')
+    this.parts.buttonsMessage.innerHTML = ""
+    this.parts.buttonsRow.classList.remove('hidden')
   }
 
   loadApi() {
@@ -772,6 +779,15 @@ class YouTubePlayer extends HTMLElement {
   gap: 0.3rem;
   justify-content: right;
 }
+.buttons-message {
+  color: var(--youtube-player-button-base-background, #999);
+}
+.buttons-row {
+  display: flex;
+  gap: 0.3rem;
+  justify-content: right;
+}
+
 .control-button {
   background: var(--youtube-player-button-base-background, #999);
   border: 1px solid var(--youtube-player-button-base-foreground, #333);
