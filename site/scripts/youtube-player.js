@@ -27,6 +27,7 @@ class YouTubePlayer extends HTMLElement {
       if (uuid === instance.uuid) {
         this.instances[uuid].hidePlayer()
         this.instances[uuid].showPlayButton()
+        this.instances[uuid].cueVideo()
       } else {
         this.instances[uuid].hideFader()
       }
@@ -238,6 +239,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       "fast-forward-time": 7,
       "rewind-time": 10,
       "start": 0,
+      "end": null, 
       "restart": "on",
     }
 
@@ -401,7 +403,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
           this.getAttribute(attr)
       }
     })
-    const ints = ['fast-forward-time', 'rewind-time', 'start']
+    const ints = ['fast-forward-time', 'rewind-time', 'start', 'end']
     ints.forEach((int) => {
       this.attrs[int] = parseInt(this.attrs[int], 10)
     })
@@ -523,10 +525,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       let player = new YT.Player(videoEl, {
         width: '560',
         height: '315',
-        // videoId: this.attrs.video,
         playerVars: {
           playsinline: 1,
-          // start: parseInt(this.attrs['start'], 10),
         },
         events: {
           onReady: (event) => {
@@ -542,17 +542,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       })
     }).then((value) => {
       return value
+      // TODO: Figure out how to handle errors here.
     })
-    // TODO: Figure out how to handle errors here.
-    //
-    // The player can be added now that it's
-    // been switched to the iframe
-    this.player.cueVideoById(this.attrs.video, this.attrs['start'])
-    // this.player.seekTo(this.attrs['start'])
+    this.cueVideo()
     this.parts.player = this.shadowRoot.querySelector('#player')
-    // window.addEventListener('click', () => {
-    //   console.log("asdf")
-    // })
   }
 
   loadApi() {
@@ -631,15 +624,28 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   stopPlaying() {
     const state = this.player.getPlayerState()
-    const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
     if (state === 1 || state === 2) {
       this.player.stopVideo()
-      if (this.restart === true) {
-        this.player.cueVideoById(this.attrs.video, this.attrs['start'])
-      } else {
-        this.player.cueVideoById(this.attrs.video, currentTime)
-      }
+      this.cueVideo()
     }
+  }
+
+  cueVideo() {
+    let options = {
+      'videoId': this.attrs.video,
+    }
+    if (this.restart === true) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.ENDED) {
+      options['startSeconds'] = this.attrs['start']
+    } else {
+      const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
+      options['startSeconds'] = currentTime
+    }
+    if (this.attrs['end'] !== null) {
+      options['endSeconds'] = this.attrs['end']
+    }
+    this.player.cueVideoById(options)
   }
 
   addStyles() {
