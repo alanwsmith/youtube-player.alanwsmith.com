@@ -43,6 +43,11 @@ class YouTubePlayer extends HTMLElement {
   static handlePaused(instance) {
     document.body.dataset.youtubePlayerState = 'paused'
 
+    for (const uuid in this.instances) {
+      this.instances[uuid].hideFader()
+    }
+
+
     // // console.log(`handlePause: ${instance.uuid}`)
     // if (instance.uuid == this.activeInstance) {
     //   // This is in a timeout because fast 
@@ -88,6 +93,13 @@ class YouTubePlayer extends HTMLElement {
     document.body.dataset.youtubePlayerState = 'playing'
     instance.showPlayer()
     instance.hideLoading()
+
+    for (const uuid in this.instances) {
+      if (uuid !== instance.uuid) {
+        this.instances[uuid].showFader()
+      }
+    }
+
 
     // for (const uuid in this.instances) {
     //   if (this.activeInstance === uuid) {
@@ -171,6 +183,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     // NOTE: player isn't added here since the element
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
+    this.parts.buttons = this.shadowRoot.querySelector('.buttons')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
     this.parts.loading = this.shadowRoot.querySelector('.loading')
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
@@ -183,9 +196,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   addEventListeners() {
-    this.parts.background.addEventListener('click', (event) => {
-      this.handleWrapperClick.call(this, event)
-    })
+
+    // this.parts.background.addEventListener('click', (event) => {
+    //   this.handleWrapperClick.call(this, event)
+    // })
+
     this.parts.playButton.addEventListener('click', (event) => {
       this.handlePlayButtonClick.call(this, event)
     })
@@ -221,12 +236,14 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       "start": 0,
     }
     this.colors = {
-      "base-background": "var(--youtube-player-base-background, #aaa)",
-      "base-foreground": "var(--youtube-player-base-background, black)",
-      "base-border": "var(--youtube-player-base-background, black)",
-      "hover-background": "var(--youtube-player-hover-background, black)",
-      "hover-foreground": "var(--youtube-player-hover-background, #aaa)",
-      "hover-border": "var(--youtube-player-hover-background, #aaa)",
+      "button-base-foreground": "var(--youtube-player-button-base-background, black)",
+      "button-base-background": "var(--youtube-player-button-base-foreground, #aaa)",
+      "button-base-hover-foreground": "var(--youtube-player-button-base-background, black)",
+      "button-base-hover-background": "var(--youtube-player-button-base-foreground, #aaa)",
+      "button-faded-foreground": "var(--youtube-player-button-faded-background, black)",
+      "button-faded-background": "var(--youtube-player-button-faded-foreground, #aaa)",
+      "button-faded-hover-foreground": "var(--youtube-player-button-faded-background, black)",
+      "button-faded-hover-background": "var(--youtube-player-button-faded-foreground, #aaa)",
     }
     this.parts = {}
     this.backgroundImageSizes = [
@@ -545,6 +562,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   hideFader() {
     this.parts.fader.classList.add('hidden')
+    this.parts.buttons.classList.remove('button-fader')
   }
 
   hidePlayer() {
@@ -553,6 +571,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   showFader() {
     this.parts.fader.classList.remove('hidden')
+    this.parts.buttons.classList.add('button-fader')
   }
 
   showLoading() {
@@ -585,11 +604,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
-
 :root {
   --transition-time: 0.5s;
 }
-
 .background {
   background-color: black;
   position: relative;
@@ -601,8 +618,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   justify-content: right;
 }
 .control-button {
-  background: ${this.colors["base-background"]};
-  border: 1px solid ${this.colors["base-border"]};
+  background: ${this.colors["button-base-foreground"]};
+  border: 1px solid ${this.colors["button-base-background"]};
   border-radius: 0.6rem;
   margin: 0;
   position: relative;
@@ -610,7 +627,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   height: 2rem;
 }
 .control-button:after {
-  background: ${this.colors["base-foreground"]};
+  background: ${this.colors["button-base-background"]};
   content: "";
   height: 100%;
   left: 0;
@@ -618,6 +635,13 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   position: absolute;
   top: 0;
   width: 100%;
+}
+.button-fader > .control-button {
+  background: ${this.colors["button-faded-foreground"]};
+  border: 1px solid ${this.colors["button-faded-background"]};
+}
+.button-fader > .control-button:after {
+  background: ${this.colors["button-faded-background"]};
 }
 .hidden {
   opacity: 0;
@@ -645,7 +669,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   transition: all 0.5s ease-in;
   */
 }
-
 
 .loading.hidden {
   /*
@@ -722,7 +745,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   z-index: 2;
 }
 .title {
-  background: rgb(0 0 0 / 0.3);
+  background: var(--youtube-player-text-background-color, #aaa);
   border-top-left-radius: 0.6rem;
   color: var(--youtube-player-text-color);
   filter: drop-shadow(1px 1px 1px black);
@@ -735,6 +758,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   padding-left: 1rem;
   padding-right: 1rem;
 }
+/*
 .dark {
   opacity: 0.35;
 }
@@ -744,6 +768,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 .dark-fader-over-background {
   opacity: 0.7;
 }
+*/
 /*
 .wrapper.paused #player {
   border-radius: 0.6rem;
@@ -756,7 +781,6 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 */
 .background {
   border-radius: 0.6rem;
-  cursor: pointer;
   height: 0;
   padding-bottom: 56.25%;
 }
@@ -823,18 +847,19 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 }
 */
 @media (hover: hover) {
-  .background:hover .title {
-    color: white;
-  }
-  .background:hover .yt-logo{
-    filter: drop-shadow(0px 0px 1px white);
-  }
   .control-button:hover {
-    background: ${this.colors['hover-background']};
-    border: 1px solid ${this.colors['hover-foreground']};
+    background: ${this.colors['button-base-hover-background']};
+    border: 1px solid ${this.colors['button-base-hover-foreground']};
   }
   .control-button:hover:after {
-    background: ${this.colors['hover-foreground']};
+    background: ${this.colors['button-base-hover-foreground']};
+  }
+  .button-fader > .control-button:hover {
+    background: ${this.colors['button-faded-hover-background']};
+    border: 1px solid ${this.colors['button-faded-hover-foreground']};
+  }
+  .button-fader > .control-button:hover:after {
+    background: ${this.colors['button-faded-hover-foreground']};
   }
 }`
     );
