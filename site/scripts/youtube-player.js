@@ -149,7 +149,6 @@ class YouTubePlayer extends HTMLElement {
     this.activePlayer = instance.uuid
   }
 
-
   addContent() {
     const template = 
       this.ownerDocument.createElement('template')
@@ -159,9 +158,6 @@ class YouTubePlayer extends HTMLElement {
   <div class="thumbnail">
     <object type="image/jpg" data="https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg" aria-label="Video thumbnail image">
       <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
-      <!--
-https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
-      -->
     </object>
   </div>
   <div class="wrapper hidden">
@@ -627,6 +623,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       'videoId': this.attrs.video,
     }
     if (this.restart === true) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === -1) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.CUED) {
       options['startSeconds'] = this.attrs['start']
     } else if (this.player.getPlayerState() === YT.PlayerState.ENDED) {
       options['startSeconds'] = this.attrs['start']
