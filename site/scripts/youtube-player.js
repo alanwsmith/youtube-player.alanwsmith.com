@@ -104,7 +104,6 @@ class YouTubePlayer extends HTMLElement {
       }
     }
 
-
     // for (const uuid in this.instances) {
     //   if (this.activeInstance === uuid) {
     //     this.instances[uuid].showPlayer()
@@ -152,7 +151,7 @@ class YouTubePlayer extends HTMLElement {
   addContent() {
     let previousChapterButton = ""
     let nextChapterButton = ""
-    if (this.attrs.chapters !== null) {
+    if (this.chapters.length > 0) {
       previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
       nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
     }
@@ -206,6 +205,10 @@ class YouTubePlayer extends HTMLElement {
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton = this.shadowRoot.querySelector('.previous-chapter-button')
+      this.parts.nextChapterButton = this.shadowRoot.querySelector('.next-chapter-button')
+    }
   }
 
   addEventListeners() {
@@ -224,6 +227,14 @@ class YouTubePlayer extends HTMLElement {
     this.parts.rewindButton.addEventListener('click', (event) => {
       this.handleRewindButtonClick.call(this, event)
     })
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton.addEventListener('click', (event) => {
+        this.handlePreviousChapterButtonClick.call(this, event)
+      })
+      this.parts.nextChapterButton.addEventListener('click', (event) => {
+        this.handleNextChapterButtonClick.call(this, event)
+      })
+     }
   }
 
   connectedCallback() {
@@ -239,6 +250,7 @@ class YouTubePlayer extends HTMLElement {
   constructor() {
     super()
     this.uuid = self.crypto.randomUUID()
+    this.chapters = []
     this.loadingTimeout = null
     this.loadingTimeoutTime = 400
     this.timeouts = {}
@@ -250,7 +262,6 @@ class YouTubePlayer extends HTMLElement {
       "rewind-time": 10,
       "start": 0,
       "title": null,
-      "chapters": null,
     }
 
     // this.colors = {
@@ -405,6 +416,20 @@ class YouTubePlayer extends HTMLElement {
 
   }
 
+  flashMessage(text) {
+    this.parts.scrubDisplay.innerHTML = text
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
+    }
+    this.timeouts.scrubDisplay = setTimeout(
+      () => {
+        this.parts.scrubDisplay.classList.add('hidden')
+      },
+      500
+    )
+  }
+
   getAttributes() {
     const attrs = this.getAttributeNames()
     attrs.forEach((attr) => {
@@ -419,6 +444,12 @@ class YouTubePlayer extends HTMLElement {
     })
     if (this.attrs['restart'].toLowerCase() === 'on') {
       this.restart = true
+    }
+    if (this.attrs['chapters']) {
+      let chapterTimes = this.attrs['chapters'].split(',')
+      chapterTimes.forEach((chapterTime) => {
+        this.chapters.push(parseInt(chapterTime, 10))
+      })
     }
   }
 
@@ -470,6 +501,18 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
+  handleNextChapterButtonClick(event) {
+    const currentTime = this.player.getCurrentTime()
+    // for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
+    for (let checkIndex = 0; checkIndex < this.chapters.length; checkIndex += 1) {
+      if (currentTime < this.chapters[checkIndex]) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 2}`)
+        break
+      }
+    }
+  }
+
   handlePlayButtonClick(event) {
     const state = this.player.getPlayerState()
     if (state === 1) {
@@ -485,6 +528,10 @@ class YouTubePlayer extends HTMLElement {
       this.player.playVideo()
       this.showPauseButton()
     }
+  }
+
+  handlePreviousChapterButtonClick(event) {
+    console.log("previous chapter")
   }
 
   handleRestartButtonClick(event) {
