@@ -176,8 +176,9 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 </div>
 <div class="buttons">
   <button aria-label="Rewind" class="rewind-button control-button"></button>
+  <button aria-label="Restart" class="restart-button control-button"></button>
   <button aria-label="Play" class="play-button control-button"></button>
-  <button aria-label="Fast" class="fast-forward-button control-button"></button>
+  <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
   <button aria-label="Mute" class="mute-button control-button"></button>
 </div>
 `
@@ -192,6 +193,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.parts.loading = this.shadowRoot.querySelector('.loading')
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
+    this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
     this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
@@ -200,22 +202,20 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   addEventListeners() {
-
-    // this.parts.background.addEventListener('click', (event) => {
-    //   this.handleWrapperClick.call(this, event)
-    // })
-
-    this.parts.playButton.addEventListener('click', (event) => {
-      this.handlePlayButtonClick.call(this, event)
+    this.parts.fastForwardButton.addEventListener('click', (event) => {
+      this.handleFastForwardButtonClick.call(this, event)
     })
     this.parts.muteButton.addEventListener('click', (event) => {
       this.handleMuteButtonClick.call(this, event)
     })
+    this.parts.playButton.addEventListener('click', (event) => {
+      this.handlePlayButtonClick.call(this, event)
+    })
+    this.parts.restartButton.addEventListener('click', (event) => {
+      this.handleRestartButtonClick.call(this, event)
+    })
     this.parts.rewindButton.addEventListener('click', (event) => {
       this.handleRewindButtonClick.call(this, event)
-    })
-    this.parts.fastForwardButton.addEventListener('click', (event) => {
-      this.handleFastForwardButtonClick.call(this, event)
     })
   }
 
@@ -457,24 +457,16 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.showLoading()
       this.constructor.stopOtherVideos(this)
       this.constructor.fadeOtherVideos(this)
-
-      // if (state !== 2) {
-      //   this.player.seekTo(this.attrs['start'])
-      // }
-
       this.player.playVideo()
       this.showPauseButton()
     }
+  }
 
-    // if (this.player.getPlayerState() === 1) {
-    //   this.player.pauseVideo()
-    // } else {
-    //   this.loadingTimeout = setTimeout(() => {
-    //     this.parts.loading.classList.remove('hidden')
-    //   }, this.loadingTimeoutTime)
-    //   this.player.playVideo()
-    // }
-
+  handleRestartButtonClick(event) {
+    const playerState = this.player.getPlayerState()
+    if (playerState === 1 || playerState === 2) {
+      this.player.seekTo(this.attrs['start'])
+    }
   }
 
   handlePlayerStateChange(event) {
@@ -856,6 +848,13 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   mask-repeat: no-repeat;
   mask-size: contain;
 }
+.restart-button:after {
+  mask-image: url("data:image/svg+xml;utf8,%3Csvg%20width%3D%22800%22%20height%3D%22800%22%20viewBox%3D%22-7.5%200%2032%2032%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M15.88%2013.84c-1.68-3.48-5.44-5.24-9.04-4.6l.96-1.8a.8.8%200%200%200-.32-1.12.8.8%200%200%200-1.12.32L4.4%2010.28s-.44.72.24%201.04l3.64%201.96c.12.08.28.12.4.12.28%200%20.6-.16.72-.44a.8.8%200%200%200-.32-1.12L7.2%2010.8c2.84-.48%205.8.96%207.12%203.68%201.6%203.32.2%207.32-3.12%208.88-1.6.76-3.4.88-5.08.28s-3.04-1.8-3.8-3.4c-.76-1.6-.88-3.4-.28-5.08a.848.848%200%200%200-.52-1.08c-.4-.08-.88.16-1.04.6-.72%202.12-.6%204.36.36%206.36s2.64%203.52%204.76%204.28c.92.32%201.84.48%202.76.48%201.24%200%202.48-.28%203.6-.84%204.16-2%205.92-7%203.92-11.12z%22%2F%3E%3C%2Fsvg%3E");
+  mask-position: center;
+  mask-repeat: no-repeat;
+  mask-size: contain;
+}
+
 /*
 #player {
   transition: all 0.6s ease-out;
