@@ -164,6 +164,8 @@ class YouTubePlayer extends HTMLElement {
     <div id="player"></div>
   </div>
   <div class="title"></div>
+  <div class="rewind-display"></div>
+  <div class="fast-forward-display">Fast Forward</div>
   <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
@@ -186,11 +188,13 @@ class YouTubePlayer extends HTMLElement {
     this.parts.background = this.shadowRoot.querySelector('.background')
     this.parts.buttons = this.shadowRoot.querySelector('.buttons')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
+    this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
     this.parts.loading = this.shadowRoot.querySelector('.loading')
     this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
     this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
+    this.parts.rewindDisplay = this.shadowRoot.querySelector('.rewind-display')
     this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
@@ -230,6 +234,7 @@ class YouTubePlayer extends HTMLElement {
     this.uuid = self.crypto.randomUUID()
     this.loadingTimeout = null
     this.loadingTimeoutTime = 400
+    this.timeouts = {}
     this.restart = false
     this.attrs = {
       "end": null, 
@@ -428,7 +433,7 @@ class YouTubePlayer extends HTMLElement {
   handleFastForwardButtonClick(event) {
     this.player.seekTo(
       Math.min(
-        this.player.getCurrentTime() + parseInt(this.attrs['fast-forward-time'], 10),
+        this.player.getCurrentTime() + this.attrs['fast-forward-time'],
         this.player.getDuration() 
       )
     )
@@ -501,6 +506,18 @@ class YouTubePlayer extends HTMLElement {
         0, this.player.getCurrentTime() - this.attrs['rewind-time']
       )
     )
+    this.parts.rewindDisplay.innerHTML = `-${this.attrs['rewind-time']}`
+    this.parts.rewindDisplay.classList.remove('hidden')
+    if (this.timeouts.rewindDisplay) {
+      clearTimeout(this.timeouts.rewindDisplay)
+    }
+    this.timeouts.rewindDisplay = setTimeout(
+      () => {
+        this.parts.rewindDisplay.classList.add('hidden')
+      },
+      500
+    )
+//     this.parts.rewindDisplay.classList.add('hidden')
   }
 
   handleWrapperClick(event) {
@@ -748,6 +765,20 @@ class YouTubePlayer extends HTMLElement {
   mask-repeat: no-repeat;
   mask-size: contain;
 }
+
+.rewind-display {
+  font-size: 4rem;
+  border-radius: 0.6rem;
+  position: absolute;
+  top: 2rem;
+  left: 1rem;
+  z-index: 10;
+  transition: opacity 0s;
+}
+.rewind-display.hidden {
+  transition: opacity 0.7s ease-in;
+}
+
 .stopped {
   border: var(--youtube-player-stopped-border, 1px solid #aaa);
 }
