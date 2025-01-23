@@ -164,8 +164,7 @@ class YouTubePlayer extends HTMLElement {
     <div id="player"></div>
   </div>
   <div class="title"></div>
-  <div class="rewind-display"></div>
-  <div class="fast-forward-display">Fast Forward</div>
+  <div class="scrub-display"></div>
   <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
@@ -187,6 +186,7 @@ class YouTubePlayer extends HTMLElement {
     // is changed when the iframe loads
     this.parts.background = this.shadowRoot.querySelector('.background')
     this.parts.buttons = this.shadowRoot.querySelector('.buttons')
+    this.parts.fader = this.shadowRoot.querySelector('.fader')
     this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
     this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
     this.parts.loading = this.shadowRoot.querySelector('.loading')
@@ -194,8 +194,7 @@ class YouTubePlayer extends HTMLElement {
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
     this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.rewindDisplay = this.shadowRoot.querySelector('.rewind-display')
-    this.parts.fader = this.shadowRoot.querySelector('.fader')
+    this.parts.scrubDisplay = this.shadowRoot.querySelector('.scrub-display')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
@@ -506,18 +505,17 @@ class YouTubePlayer extends HTMLElement {
         0, this.player.getCurrentTime() - this.attrs['rewind-time']
       )
     )
-    this.parts.rewindDisplay.innerHTML = `-${this.attrs['rewind-time']}`
-    this.parts.rewindDisplay.classList.remove('hidden')
-    if (this.timeouts.rewindDisplay) {
-      clearTimeout(this.timeouts.rewindDisplay)
+    this.parts.scrubDisplay.innerHTML = `-${this.attrs['rewind-time']}sec.`
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
     }
-    this.timeouts.rewindDisplay = setTimeout(
+    this.timeouts.scrubDisplay = setTimeout(
       () => {
-        this.parts.rewindDisplay.classList.add('hidden')
+        this.parts.scrubDisplay.classList.add('hidden')
       },
       500
     )
-//     this.parts.rewindDisplay.classList.add('hidden')
   }
 
   handleWrapperClick(event) {
@@ -766,16 +764,19 @@ class YouTubePlayer extends HTMLElement {
   mask-size: contain;
 }
 
-.rewind-display {
-  font-size: 4rem;
+.scrub-display {
+  font-size: 2rem;
   border-radius: 0.6rem;
   position: absolute;
   top: 2rem;
-  left: 1rem;
+  left: 2rem;
   z-index: 10;
   transition: opacity 0s;
+  text-align: right;
+  background: var(--youtube-player-text-background-color, rgb(0 0 0 / 0.5));
+  padding: 0.5rem;
 }
-.rewind-display.hidden {
+.scrub-display.hidden {
   transition: opacity 0.7s ease-in;
 }
 
