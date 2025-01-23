@@ -22,6 +22,7 @@ body {
 body[data-youtube-player-state="playing"] {
   --background-color: black;
   --primary-color: #444;
+  --secondary-color: #444;
   transition: background-color 0.9s ease-in, color 0.9s ease-in;
 }
 

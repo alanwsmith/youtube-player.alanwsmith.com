@@ -37,38 +37,24 @@
       <div class="warning flow">
         <h2>WORK-IN-PROGRESS</h2>
         <p>
-          I'm still working on this component. It may or
-          may not do much when you see it. 
+          I'm still working on this component. 
+          There's still stuff todo and things may 
+          break, but it's mostly working.
         </p>
       </div>
 
-      <div class="warning flow">
-        <h2>Temporary Note On Component Use Case</h2>
-        <p>
-          I'm using static variables on the youtube-player class
-          as described in <a href="https://web-component-techniques.alanwsmith.com/pages/inter-component-communication/">
-            Inter-Component Communication</a>. The reason I'm doing
-          this over having a parent component is for ease of use
-          when adding components to the page. Specifically, 
-          you can just drop this anywhere on the page to 
-          add a video:
-        </p>
-        <pre><code>
-&lt;youtube-player :video="REPPgPcw4hk"&gt;&lt;/youtube-player&gt;
-        </code></pre>
-        <p>
-          The static methods on the class act as a type of controller for
-          the players on the page. Starting on player pauses 
-          any others that are playing. 
-        </p>
-      </div>
 
       <h2>Examples</h2>
-
 
       <h3>Default Player</h3>
       <!-- David Bowie -->
       <youtube-player :video="LT3cERVRoQo">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+
+      <h3>Chapters</h3>
+      <!-- Doechii -->
+      <youtube-player :video="-91vymvIH0c" :chapters="18, 84, 176, 276, 407, 577, 733, 1038, 1418">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
@@ -98,10 +84,20 @@
       </youtube-player>
 
       <h3>Custom Title</h3>
-      <!-- Star Wars - One Vision -->
-      <youtube-player :video="8bOtuoNFzB0" :start="18" :title="One Star Wars Vision">
+      <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
+
+      <!--
+      <h3>Content Warnings</h3>
+      TKTKTKTK
+      <youtube-player :video="tRwHpyOq4P4" :cw="Warning: contains flashing lights">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+      
+
+
 
       <h3>Restarting From The Beginning</h3>
       <!-- Muppets -->
@@ -110,38 +106,52 @@
       </youtube-player>
 
 
-      <!-- Summer Girl -->
-      <!--
-      <youtube-player :video="yPQfcG-eimk" :restart="on">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
-       -->
+
+
 
       <h3>Custom Skip Forward Time</h3>
+      <p>TKTKTK</p>
 
 
       <h3>Custom Rewind Time</h3>
+      <p>TKTKTK</p>
 
 
-      <h3>Chapter Markers</h3>
-      <!-- Victor Wooten -->
-      <youtube-player :video="PHdo1qWNWI4" :chapters="55, 112, 202, 302, 357, 445, 480, 543, 626, 740, 788, 836, 869">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+
 
 
       <h3>Updating the &lt;body&gt; tag</h3>
 
+      <!-- Victor Wooten
+      <youtube-player :video="PHdo1qWNWI4" :chapters="55, 112, 202, 302, 357, 445, 480, 543, 626, 740, 788, 836, 869">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
 
-
-
-      <!--
+      <!-- Summer Girl 
+      <youtube-player :video="yPQfcG-eimk" :restart="on">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
 -->
 
 
-      <!-- Lawrence -->
-      <!--
+      <!-- Star Wars - One Vision 
+      <youtube-player :video="8bOtuoNFzB0" :title="One Star Wars Vision">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+
+      <!-- Lawrence
       <youtube-player :video="JSkn4zaUh78" :start="10">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+
+
+      <!-- Chicago 
+      <youtube-player :video="z5EZNPUJYXc" :title="We Both Reached For The Gun from Chicago">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 -->
