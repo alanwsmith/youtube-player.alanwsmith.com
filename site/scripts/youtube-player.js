@@ -164,7 +164,7 @@ class YouTubePlayer extends HTMLElement {
     <div id="player"></div>
   </div>
   <div class="title"></div>
-  <div class="scrub-display"></div>
+  <div class="scrub-display hidden"></div>
   <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
@@ -435,6 +435,17 @@ class YouTubePlayer extends HTMLElement {
         this.player.getCurrentTime() + this.attrs['fast-forward-time'],
         this.player.getDuration() 
       )
+    )
+    this.parts.scrubDisplay.innerHTML = `+${this.attrs['fast-forward-time']}sec.`
+    this.parts.scrubDisplay.classList.remove('hidden')
+    if (this.timeouts.scrubDisplay) {
+      clearTimeout(this.timeouts.scrubDisplay)
+    }
+    this.timeouts.scrubDisplay = setTimeout(
+      () => {
+        this.parts.scrubDisplay.classList.add('hidden')
+      },
+      500
     )
   }
 
@@ -765,12 +776,13 @@ class YouTubePlayer extends HTMLElement {
 }
 
 .scrub-display {
-  font-size: 2rem;
+  font-size: 1.6rem;
+  color: var(--youtube-player-button-base-background, blue);
   border-radius: 0.6rem;
   position: absolute;
-  top: 2rem;
+  bottom: 2rem;
   left: 2rem;
-  z-index: 10;
+  z-index: 30;
   transition: opacity 0s;
   text-align: right;
   background: var(--youtube-player-text-background-color, rgb(0 0 0 / 0.5));
