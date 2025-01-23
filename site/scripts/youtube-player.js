@@ -233,10 +233,12 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.uuid = self.crypto.randomUUID()
     this.loadingTimeout = null
     this.loadingTimeoutTime = 400
+    this.restart = true
     this.attrs = {
       "fast-forward-time": 7,
       "rewind-time": 10,
       "start": 0,
+      "restart": "on",
     }
 
     // this.colors = {
@@ -399,6 +401,13 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
           this.getAttribute(attr)
       }
     })
+    const ints = ['fast-forward-time', 'rewind-time', 'start']
+    ints.forEach((int) => {
+      this.attrs[int] = parseInt(this.attrs[int], 10)
+    })
+    if (this.attrs['restart'].toLowerCase() === 'off') {
+      this.restart = false
+    }
   }
 
   async getTitle() {
@@ -446,9 +455,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.showLoading()
       this.constructor.stopOtherVideos(this)
       this.constructor.fadeOtherVideos(this)
-      if (state !== 2) {
-        this.player.seekTo(parseInt(this.attrs['start'], 10))
-      }
+
+      // if (state !== 2) {
+      //   this.player.seekTo(this.attrs['start'])
+      // }
+
       this.player.playVideo()
       this.showPauseButton()
     }
@@ -492,7 +503,7 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   handleRewindButtonClick(event) {
     this.player.seekTo(
       Math.max(
-        0, this.player.getCurrentTime() - parseInt(this.attrs['rewind-time'], 10)
+        0, this.player.getCurrentTime() - this.attrs['rewind-time']
       )
     )
   }
@@ -536,8 +547,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     //
     // The player can be added now that it's
     // been switched to the iframe
-    this.player.cueVideoById(this.attrs.video)
-    this.player.seekTo(parseInt(this.attrs.start, 10))
+    this.player.cueVideoById(this.attrs.video, this.attrs['start'])
+    // this.player.seekTo(this.attrs['start'])
     this.parts.player = this.shadowRoot.querySelector('#player')
     // window.addEventListener('click', () => {
     //   console.log("asdf")
@@ -620,12 +631,16 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
 
   stopPlaying() {
     const state = this.player.getPlayerState()
+    const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
     if (state === 1 || state === 2) {
       this.player.stopVideo()
-      this.player.cueVideoById(this.attrs.video, parseInt(this.attrs.start, 10))
+      if (this.restart === true) {
+        this.player.cueVideoById(this.attrs.video, this.attrs['start'])
+      } else {
+        this.player.cueVideoById(this.attrs.video, currentTime)
+      }
     }
   }
-
 
   addStyles() {
     const styles = new CSSStyleSheet();

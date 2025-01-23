@@ -65,7 +65,7 @@
 
 
       <!-- Star Wars - One Vision -->
-      <youtube-player :video="8bOtuoNFzB0" :start="18">
+      <youtube-player :video="8bOtuoNFzB0" :start="18" :restart="off">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
@@ -165,6 +165,10 @@
           (e.g. dim the rest of the content). (Note: I'm punting
           on issues that will arise if there are multiple players
           on the page that you try to play at the same time)
+        </li>
+        <li>
+          TODO: When stopped, allow an option to restart at the
+          same place set via an attributes
         </li>
         <li>
           TODO: Save playhead location when stopping the player or reloading
