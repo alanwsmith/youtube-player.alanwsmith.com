@@ -219,7 +219,7 @@ class YouTubePlayer extends HTMLElement {
 
   addEventListeners() {
     this.parts.fastForwardButton.addEventListener('click', (event) => {
-      this.handleFastForwardButtonClick.call(this, event)
+      this.handleSkipForwardButtonClick.call(this, event)
     })
     this.parts.muteButton.addEventListener('click', (event) => {
       this.handleMuteButtonClick.call(this, event)
@@ -231,7 +231,7 @@ class YouTubePlayer extends HTMLElement {
       this.handleRestartButtonClick.call(this, event)
     })
     this.parts.rewindButton.addEventListener('click', (event) => {
-      this.handleRewindButtonClick.call(this, event)
+      this.handleSkipBackButtonClick.call(this, event)
     })
     if (this.chapters.length > 0) {
       this.parts.previousChapterButton.addEventListener('click', (event) => {
@@ -264,9 +264,9 @@ class YouTubePlayer extends HTMLElement {
     this.attrs = {
       "cw": null,
       "end": null, 
-      "fast-forward-time": 7,
+      "skip-forward": 7,
       "restart": "off",
-      "rewind-time": 10,
+      "skip-back": 10,
       "start": 0,
       "title": null,
     }
@@ -445,7 +445,7 @@ class YouTubePlayer extends HTMLElement {
           this.getAttribute(attr)
       }
     })
-    const ints = ['fast-forward-time', 'rewind-time', 'start', 'end']
+    const ints = ['skip-forward', 'skip-back', 'start', 'end']
     ints.forEach((int) => {
       this.attrs[int] = parseInt(this.attrs[int], 10)
     })
@@ -481,14 +481,14 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
-  handleFastForwardButtonClick(event) {
+  handleSkipForwardButtonClick(event) {
     this.player.seekTo(
       Math.min(
-        this.player.getCurrentTime() + this.attrs['fast-forward-time'],
+        this.player.getCurrentTime() + this.attrs['skip-forward'],
         this.player.getDuration() 
       )
     )
-    this.parts.scrubDisplay.innerHTML = `+${this.attrs['fast-forward-time']}sec.`
+    this.parts.scrubDisplay.innerHTML = `+${this.attrs['skip-forward']}sec.`
     this.parts.scrubDisplay.classList.remove('hidden')
     if (this.timeouts.scrubDisplay) {
       clearTimeout(this.timeouts.scrubDisplay)
@@ -536,7 +536,8 @@ class YouTubePlayer extends HTMLElement {
       this.showPlayButton()
       this.player.pauseVideo()
       this.showStoppedBorder()
-      this.flashMessage(this.player.getCurrentTime())
+      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
+      // this.flashMessage(this.player.getCurrentTime())
     } else {
       this.showPlayingBorder()
       this.hideFader()
@@ -545,6 +546,7 @@ class YouTubePlayer extends HTMLElement {
       this.constructor.fadeOtherVideos(this)
       this.player.playVideo()
       this.showPauseButton()
+      console.log(`YouTube Player: Playing`)
     }
   }
 
@@ -591,13 +593,13 @@ class YouTubePlayer extends HTMLElement {
     }
   }
 
-  handleRewindButtonClick(event) {
+  handleSkipBackButtonClick(event) {
     this.player.seekTo(
       Math.max(
-        0, this.player.getCurrentTime() - this.attrs['rewind-time']
+        0, this.player.getCurrentTime() - this.attrs['skip-back']
       )
     )
-    this.parts.scrubDisplay.innerHTML = `-${this.attrs['rewind-time']}sec.`
+    this.parts.scrubDisplay.innerHTML = `-${this.attrs['skip-back']}sec.`
     this.parts.scrubDisplay.classList.remove('hidden')
     if (this.timeouts.scrubDisplay) {
       clearTimeout(this.timeouts.scrubDisplay)
