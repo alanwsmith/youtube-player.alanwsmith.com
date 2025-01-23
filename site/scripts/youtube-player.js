@@ -234,13 +234,13 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     this.uuid = self.crypto.randomUUID()
     this.loadingTimeout = null
     this.loadingTimeoutTime = 400
-    this.restart = true
+    this.restart = false
     this.attrs = {
       "fast-forward-time": 7,
       "rewind-time": 10,
       "start": 0,
       "end": null, 
-      "restart": "on",
+      "restart": "off",
     }
 
     // this.colors = {
@@ -407,8 +407,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     ints.forEach((int) => {
       this.attrs[int] = parseInt(this.attrs[int], 10)
     })
-    if (this.attrs['restart'].toLowerCase() === 'off') {
-      this.restart = false
+    if (this.attrs['restart'].toLowerCase() === 'on') {
+      this.restart = true
     }
   }
 
