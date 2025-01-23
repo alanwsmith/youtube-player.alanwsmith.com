@@ -121,7 +121,6 @@ class YouTubePlayer extends HTMLElement {
   }
 
 
-
   addContent() {
     const template = 
       this.ownerDocument.createElement('template')
@@ -407,6 +406,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       this.player.pauseVideo()
     } else {
       this.constructor.stopOtherVideos(this)
+      this.player.seekTo(parseInt(this.attrs['start'], 10))
+      // this.player.seekTo(100)
       this.player.playVideo()
     }
 
@@ -469,10 +470,10 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
       let player = new YT.Player(videoEl, {
         width: '560',
         height: '315',
-        videoId: this.attrs.video,
+        // videoId: this.attrs.video,
         playerVars: {
           playsinline: 1,
-          start: this.attrs["start"],
+          // start: parseInt(this.attrs['start'], 10),
         },
         events: {
           onReady: (event) => {
@@ -493,6 +494,8 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
     //
     // The player can be added now that it's
     // been switched to the iframe
+    this.player.cueVideoById(this.attrs.video)
+    this.player.seekTo(parseInt(this.attrs.start, 10))
     this.parts.player = this.shadowRoot.querySelector('#player')
     // window.addEventListener('click', () => {
     //   console.log("asdf")
@@ -527,7 +530,11 @@ https://i.ytimg.com/vi/Cz8cbwR_6ms/hqdefault.jpg
   }
 
   stopPlaying() {
-    this.player.stopVideo()
+    const state = this.player.getPlayerState()
+    if (state === 1 || state === 2) {
+      this.player.stopVideo()
+      this.player.cueVideoById(this.attrs.video, parseInt(this.attrs.start, 10))
+    }
   }
 
 
