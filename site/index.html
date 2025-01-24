@@ -21,8 +21,8 @@
     <meta property="og:description" content="My YouTube player web component" />
     <meta name="description" content="My YouTube player web component" />
     <link rel="stylesheet" href="/styles/main.css" />
-    <script type="module" src="/scripts/youtube-player.js"></script>
-    <link rel="stylesheet" href="/styles/youtube-player.css" />
+    <script type="module" src="/scripts/youtube-player-v1.js"></script>
+    <link rel="stylesheet" href="/styles/youtube-player-v1.css" />
   </head>
  
   <body>
@@ -46,21 +46,49 @@
       </div>
 
 
+
       <h2>Examples</h2>
 
       <h3>Default Player</h3>
+      <p>
+        This is the output from the basic player
+      </p>
+
+      <p>Code:</p>
+      <pre><code>&lt;youtube-player :video=&quot;LT3cERVRoQo&quot;&gt;&ltyoutube-player&gt;</code></pre>
+
       <!-- David Bowie -->
       <youtube-player :video="LT3cERVRoQo">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+      <p>For contrast, here's what the default YouTube embed looks like</p>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+      <p>
+        I find the component's thumbnail much nicer to look at. It also loads way faster.
+      </p>
+
+
       <h3>Chapters</h3>
+      <p>
+        The component provides for adding chapters to videos via a <code>:chapters</code>
+        attribute. If an instance of a component includes chapters the controls are
+        expended to provide buttons to jump between them
+      </p>
       <!-- Doechii -->
-      <youtube-player :video="-91vymvIH0c" :chapters="18, 84, 176, 276, 407, 577, 733, 1038, 1418">
+      <youtube-player :video="-91vymvIH0c" :chapters="18, 32, 84, 176, 276, 407, 577, 733, 1038, 1418">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
+
       <h3>Fallback Quality Thumbnails</h3>
+      <p>
+        The component attempts to load YouTube's high quality thumbnails. 
+        Not ever video has them. The component falls back to a lower 
+        quality version if that's the case.
+      </p>
+
       <!-- mmmmmm bop -->
       <!-- this one doesn't have a maxres thumbnail -->
       <youtube-player :video="fiShsfvbFUA">
@@ -68,37 +96,64 @@
       </youtube-player>
 
       <h3>Custom Thumbnails</h3>
+      <p>
+        YouTube thumbnails can be replace with custom images
+      </p>
       <!-- Rage Against The Machine -->
       <youtube-player :video="Rm1nCYOZB-s" :thumbnail="/images/rage-against-thumbnail.jpg">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
       <h3>Custom Start Time</h3>
+      <p>
+        The component accepts custom start times. For example, this videos
+        doesn't really get going until 54 seconds in. 
+      </p>
       <!-- Kenzo World -->
       <youtube-player :video="NoMqvniiEkk" :start="54">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
       <h3>Custom End Time</h3>
+      <p>
+        An end time can be set as well. For example, this one only 
+        plays the first 11 seconds of the video.
+      </p>
       <!-- Somebody That I Used To Know -->
       <youtube-player :video="REPPgPcw4hk" :end="11">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
       <h3>Custom Title</h3>
+      <p>
+        YouTube titles are used by default. They can be overridden 
+        with a custom title. Makes it nice for removing &quot[Official Video]&quot;
+        type stuff which is what was done for this one.
+      </p>
+      <!-- Little Simz -->
       <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
-      <h3>Content Warnings</h3>
-      <youtube-player :video="tRwHpyOq4P4" :cw="Warning: contains flashing lights">
+      <h3>Content Advisory</h3>
+      <p>
+        The component provides for adding content advisories that can be used
+        for flashing lights, language, sensitive topics, etc...
+      </p>
+      <youtube-player :video="tRwHpyOq4P4" :ca="Warning: contains flashing lights">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
       
-
-
-
       <h3>Restarting From The Beginning</h3>
+      <p>
+        Switching between multiple videos on a page stops the one
+        that was left and returns it to the thumbnail. If you
+        go back to it, it picks up where it left off by default. 
+        The component also provides a <code>:restart</code>
+        attribute that sends it back to the beginning instead.
+        (Note that it doesn't go back just by pausing. You have to
+        switch to another video to see the behaviour)
+      </p>
       <!-- Muppets -->
       <youtube-player :video="Cz8cbwR_6ms" :restart="on">
         <noscript>No JavaScript available to load YouTube player</noscript>
@@ -106,14 +161,15 @@
 
 
       <h3>Custom Skip Times</h3>
+      <p>
+        The skip forward and back buttons default to +7sec. and -10sec.
+        respectively. Those times can be customized with <code>:skip-forward</code>
+        and <code>:skip-back</code> attributes.
+      </p>
       <youtube-player :video="dAwLMS8fgoA" :skip-forward="3" :skip-back="3">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
-
-      <h2>Features</h2>
-
-      <h3>Updating the &lt;body&gt; tag</h3>
 
       <!-- Victor Wooten
       <youtube-player :video="PHdo1qWNWI4" :chapters="55, 112, 202, 302, 357, 445, 480, 543, 626, 740, 788, 836, 869">
@@ -162,6 +218,24 @@ EDnIEWyVIlE
       </div>
 
       <ul>
+        <li>
+          Starting one video fades back the rest of the videos
+          on the page. (Right now, this is a hard transition. It'll 
+          be a gradual fade when dev is done)
+        </li>
+        <li>
+          Playing a video adds a <code>youtube-player-status</code>
+          data attribute to the document's body tag. This can be
+          used to do things like fading the background and fonts
+          when a video is playing (like I'm doing on this page)
+        </li>
+      </ul>
+
+      <h2>To Sort</h2>
+
+      <ul>
+
+
         <li>
           <p>
             Videos are embedded using a custom <code>youtube-player</code> element. It has
@@ -275,6 +349,24 @@ EDnIEWyVIlE
         <li>
           TODO: Don't show buttons until the video
           is loaded
+        </li>
+        <li>
+          TODO: Sometimes the videos don't seem 
+          to load on my phone. Not sure what's going
+          on, but see if there's a way to check and
+          restart after an interval (start with 
+          investigation network traffic)
+        </li>
+        <li>
+          TODO: Showing some type of loading message
+          while the iframe is loading.
+        </li>
+        <li>
+          TODO: Preload the video on network connections
+          that can handle it
+        </li>
+        <li>
+          TODO: Accept custom css to override variables
         </li>
       </ul>
 
