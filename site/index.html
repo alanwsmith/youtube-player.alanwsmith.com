@@ -478,21 +478,17 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </p>
 
       <h3>Text Styling</h3>
-
       <p>
         Text styles are controlled via:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--text-color
 --youtube-player--text-background-color
 --youtube-player--font-size</code></pre>
       </div>
-
       <p>
         They default to:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--text-color: #aaa
 --youtube-player--text-background-color: rgb(0 0 0 / 0.6);
@@ -500,56 +496,73 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </div>
 
       <h3>Border Styling</h3>
-
       <p>
         The border can be styled for three different states:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--faded-border
 --youtube-player--playing-border
 --youtube-player--stopped-border</code></pre>
       </div>
-
       <p>
         The defaults are:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--faded-border: 1px solid #222;
 --youtube-player--playing--border: 1px solid #aaa;
 --youtube-player--stopped--border: 1px solid #999;</code></pre>
       </div>
 
-
-      <h3>Button Styling</h3>
-
+      <h3>Button Color Styling</h3>
       <p>
         The colors for the buttons are set with:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--base-button-background
 --youtube-player--base-button-foreground
 --youtube-player--faded-button-background
 --youtube-player--faded-button-foreground</code></pre>
       </div>
-
       <p>
         They default to:
       </p>
-
       <div>
       <pre class="language-css"><code class="language-css">--youtube-player--base-button-background: rgb(255 255 255 / 0.4); 
 --youtube-player--base-button-foreground: rgb(0 0 0 / 0.8);
 --youtube-player--faded-button-background: rgb(255 255 255 / 0.2);
 --youtube-player--faded-button-foreground: rgb(0 0 0 / 0.3);</code></pre>
       </div>
-
       <p>
         Hovering over a button causes the foreground and
         background to reverse.
       </p>
+
+
+      <h3>Button Icons</h3>
+      <p>
+        The buttons use SVGs for their icons. 
+      </p>
+      <p>NOTE: The buttons use
+        <code class="language-html">mask-image</code> for
+        the SVGs. That allows them to be styled with
+        the custom CSS property variables. The masking is
+        done as an alpha channel. Colors aren't used.
+      </p>
+
+      <h3>Transition Time</h3>
+      <p>
+        The transition time for the fades can be updated with:
+      </p>
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--transition-time</code></pre>
+      </div>
+      <p>
+        It defaults to:
+      </p>
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--transition-time: 0.6s</code></pre>
+      </div>
+
 
 
       <h2>Page Styling</h2>
@@ -572,7 +585,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </p>
 
       <pre class="language-css"><code class="language-css">body {
-  transition: background-color 0.9s ease-in, color 0.9s ease-in;
+  transition: background-color 0.6s ease-in, color 0.6s ease-in;
 }
 
 body[data-youtube-player-state="playing"] {

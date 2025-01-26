@@ -1,6 +1,5 @@
-
 body {
-  transition: background-color 0.9s ease-in, color 0.9s ease-in;
+  transition: background-color 0.6s ease-in, color 0.6s ease-in;
 }
 
 body[data-youtube-player-state="playing"] {
@@ -8,37 +7,3 @@ body[data-youtube-player-state="playing"] {
   --primary-color: #444;
   --secondary-color: #444;
 }
-
-/*
-youtube-player {
-  margin-bottom: 2.5rem;
-}
-*/
-
-/* Testing overrides */
-
-/*
-:root {
-  --youtube-player--text-color: blue;
-  --youtube-player--text-background-color: red;
-  --youtube-player--font-size: 3rem;
-}
-*/
-
-/*
-:root {
-  --youtube-player--faded-border: 1px solid green;
-  --youtube-player--playing-border: 1px solid blue;
-  --youtube-player--stopped-border: 1px solid red;
-}
-*/
-
-
-/*
-:root {
-  --youtube-player--base-button-background: maroon; 
-  --youtube-player--base-button-foreground: purple;
-  --youtube-player--faded-button-background: goldenrod;
-  --youtube-player--faded-button-foreground: green;
-}
-*/
