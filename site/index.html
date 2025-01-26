@@ -70,6 +70,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
   <body>
     <header>
       <a href="https://www.alanwsmith.com/">alanwsmith.com</a> ~
+      <a href="https://github.com/alanwsmith/youtube-player.alanwsmith.com">source code</a> ~
       <a href="https://links.alanwsmith.com/">other projects</a> ~
       <a href="https://socials.alanwsmith.com/">socials</a>
     </header>
@@ -102,8 +103,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <a href="/components/youtube-player-v1.js">youtube-player-v1.js</a>
       </p>
 
-
       <h2>Features</h2>
+
       <h3>Video Player</h3>
       <ul>
         <li>
@@ -130,6 +131,12 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         </li>
         <li>
           Content advisories
+        </li>
+        <li>
+          Stylable controls 
+        </li>
+        <li>
+          Responsive sizing
         </li>
         <li>
           Page level styling
@@ -176,7 +183,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
           <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;LT3cERVRoQo&quot;
+  :video=&quot;LT3cERVRoQo&quot;
 &gt;&ltyoutube-player&gt;</code></pre>
         </div>
         <p class="example-heading">Output</p>
@@ -216,8 +223,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
           <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;-91vymvIH0c&quot;
-    :chapters=&quot;18, 32, 84, 176, 276, 407, 577&quot;
+  :video=&quot;-91vymvIH0c&quot;
+  :chapters=&quot;18, 32, 84, 176, 276, 407, 577&quot;
 &gt;&ltyoutube-player&gt;</code></pre>
         </div>
       <p class="example-heading">Output</p>
@@ -227,17 +234,16 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </youtube-player>
       </div>
 
-
       <h3>Custom Thumbnails</h3>
       <p>
-        YouTube thumbnails can be replace with custom images
+        YouTube thumbnails can be replaced with custom images
       </p>
       <div class="video-example flow">
         <p class="example-heading">HTML</p>
         <div class="html-sample">
           <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;fiShsfvbFUA&quot;
-    :thumbnail=&quot;/images/rage-against-thumbnail.jpg&quot;
+  :video=&quot;fiShsfvbFUA&quot;
+  :thumbnail=&quot;/images/rage-against-thumbnail.jpg&quot;
 &gt;&ltyoutube-player&gt;</code></pre>
         </div>
       <p class="example-heading">Output</p>
@@ -256,8 +262,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;NoMqvniiEkk&quot; 
-    :start=&quot;54&quot;
+  :video=&quot;NoMqvniiEkk&quot; 
+  :start=&quot;54&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <!-- Kenzo World -->
@@ -275,8 +281,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;REPPgPcw4hk&quot; 
-    :end=&quot;11&quot;
+  :video=&quot;REPPgPcw4hk&quot; 
+  :end=&quot;11&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <!-- Somebody That I Used To Know -->
@@ -295,9 +301,9 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-      :video=&quot;K7xzmkpwNoA&quot; 
-      :title=&quot;Little Simz - Gorilla&quot;
-  &gt;&ltyoutube-player&gt;</code></pre></div>
+  :video=&quot;K7xzmkpwNoA&quot; 
+  :title=&quot;Little Simz - Gorilla&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
           <!-- Little Simz -->
@@ -314,9 +320,9 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-      :video=&quot;tRwHpyOq4P4&quot; 
-      :advisory=&quot;Warning: contains flashing lights&quot;
-  &gt;&ltyoutube-player&gt;</code></pre></div>
+  :video=&quot;tRwHpyOq4P4&quot; 
+  :advisory=&quot;Warning: contains flashing lights&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <youtube-player :video="tRwHpyOq4P4" :advisory="Warning: contains flashing lights">
           <noscript>No JavaScript available to load YouTube player</noscript>
@@ -337,8 +343,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;Cz8cbwR_6ms&quot; 
-    :restart=&quot;on&quot;
+  :video=&quot;Cz8cbwR_6ms&quot; 
+  :restart=&quot;on&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <youtube-player :video="Cz8cbwR_6ms" :restart="on">
@@ -357,9 +363,9 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         <p class="example-heading">HTML</p>
         <div class="html-sample">
         <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;dAwLMS8fgoA&quot; 
-    :skip-forward=&quot;3&quot;
-    :skip-back=&quot;3&quot;
+  :video=&quot;dAwLMS8fgoA&quot; 
+  :skip-forward=&quot;3&quot;
+  :skip-back=&quot;3&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
         <youtube-player :video="dAwLMS8fgoA" :skip-forward="3" :skip-back="3">
@@ -440,8 +446,58 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       
       <h2>Styling</h2>
       <p>
-        TKTKTK
+        The player includes default styles
+        for the text, border, and buttons. They can be
+        adjusted with CSS custom property variables
+        on the parent page (either globally in something
+        like <code>:root</code> or via <code>.class</code>
+        or <code>#id</code> selectors).
       </p>
+
+      <h3>Text Styling</h3>
+
+      <p>
+        Text styles are controlled via:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--text-color
+--youtube-player--text-background-color
+--youtube-player--font-size</code></pre>
+      </div>
+
+      <p>
+        They default to:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--text-color: #aaa
+--youtube-player--text-background-color: rgb(0 0 0 / 0.6);
+--youtube-player--font-size: 0.9rem;</code></pre>
+      </div>
+
+      <h3>Border Styling</h3>
+
+      <p>
+        The border can be styled for three different states:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--faded-border
+--youtube-player--playing-border
+--youtube-player--stopped-border</code></pre>
+      </div>
+
+      <p>
+        The defaults are:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--faded-border: 1px solid #222;
+--youtube-player--playing--border: 1px solid #aaa;
+--youtube-player--stopped--border: 1px solid #999;</code></pre>
+      </div>
+
 
       <h2>Known Bugs</h2>
       <ul>
@@ -460,6 +516,9 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </div>
 
       <ul>
+        <li>
+          TODO: Add button sizes to global vars
+        </li>
         <li>
           Starting one video fades back the rest of the videos
           on the page. (Right now, this is a hard transition. It'll 

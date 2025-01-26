@@ -766,10 +766,37 @@ class YouTubePlayer extends HTMLElement {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
 :host{
+  display: block;
+  border-radius: 0.6rem;
+  position: relative;
+  --faded-border: var(
+    --youtube-player--faded-border,
+    1px solid #222
+  );
+  --font-size: var(
+    --youtube-player--font-size,
+    0.9rem
+  );
+  --playing-border: var(
+    --youtube-player--playing-border,
+    1px solid #aaa
+  );
+  --stopped-border: var(
+    --youtube-player--stopped-border,
+    1px solid #999
+  );
   --transition-time: 0.5s;
+  --text-background-color: var(
+    --youtube-player--text-background-color, 
+    rgb(0 0 0 / 0.6)
+  );
+  --text-color: var(
+    --youtube-player--text-color, 
+    #aaa
+  );
 }
 .background {
-  font-size: var(--youtube-player-font-size, 0.9rem);
+  font-size: var(--font-size);
   background-color: black;
   position: relative;
 }
@@ -820,16 +847,11 @@ class YouTubePlayer extends HTMLElement {
 .hidden {
   opacity: 0;
 }
-:host {
-  display: block;
-  border-radius: 0.6rem;
-  position: relative;
-}
 .loading {
-  background: var(--youtube-player-text-background-color, rbg(0 0 0 / 0.5));
+  background: var(--text-background-color);
   border-top-right-radius: 0.6rem;
   border-top-left-radius: 0.6rem;
-  color: var(--youtube-player-text-color, #aaa);
+  color: var(--text-color);
   filter: drop-shadow(1px 1px 1px black);
   left: calc(50vw - 10ch);
   position: absolute;
@@ -849,10 +871,10 @@ class YouTubePlayer extends HTMLElement {
   z-index: 10;
 }  
 .playing {
-  border: var(--youtube-player-playing-border, 1px solid #999);
+  border: var(--playing-border);
 }
 .faded {
-  border: var(--youtube-player-faded-border, 1px solid #444);
+  border: var(--faded-border);
 }
 .fast-forward-button:after {
   mask-image: url("data:image/svg+xml;utf8,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%3F%3E%3Csvg%20width%3D%2240px%22%20height%3D%2240px%22%20viewBox%3D%220%200%2024%2024%22%20stroke-width%3D%222%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20color%3D%22%23000000%22%3E%3Cpath%20d%3D%22M13%206L19%2012L13%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3Cpath%20d%3D%22M5%206L11%2012L5%2018%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3C%2Fpath%3E%3C%2Fsvg%3E");
@@ -895,7 +917,7 @@ class YouTubePlayer extends HTMLElement {
   transition: opacity 0.7s ease-in;
 }
 .stopped {
-  border: var(--youtube-player-stopped-border, 1px solid #aaa);
+  border: var(--stopped-border);
 }
 .fader {
   border-radius: 0.6rem;
@@ -935,9 +957,9 @@ class YouTubePlayer extends HTMLElement {
   z-index: 2;
 }
 .title {
-  background: var(--youtube-player-text-background-color, #aaa);
+  background: var(--text-background-color);
   border-top-left-radius: 0.6rem;
-  color: var(--youtube-player-text-color);
+  color: var(--text-color);
   filter: drop-shadow(1px 1px 1px black);
   left: 0rem;
   position: absolute;
