@@ -170,8 +170,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
     :video=&quot;LT3cERVRoQo&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
         <p class="example-heading">Output</p>
-        <!-- David Bowie -->
         <youtube-player :video="LT3cERVRoQo">
+          <!-- Bowie -->
           <noscript>JavaScript is not available to load the video</noscript>
         </youtube-player>
       </div>
@@ -184,48 +184,51 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
         &quot;Share&quot;, etc... elements based on how much 
         room is available. Here's an example:
       </p>
-      <div class="youtube-iframe-wrapper">
-        <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        <div class="youtube-iframe-wrapper-fader"></div>
+      <div class="video-example flow">
+        <div class="youtube-iframe-wrapper">
+          <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <div class="youtube-iframe-wrapper-fader"></div>
+        </div>
       </div>
       <p>
-        I find thumbnails look nicer without the play button covering them. 
+        Thumbnails look nicer without the play button covering them. 
         They also load much faster than the default YouTube embed 
         which pulls in the entire player before showing an image.
       </p>
-
 
       <h3>Chapters</h3>
       <p>
         Chapters can be added via the optional <code>:chapters</code>
         attribute. The player controls add buttons to skip
-        back and forth when chapters are added
+        back and forth when chapters are added:
       </p>
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;-91vymvIH0c&quot;
-    :chapters=&quot;18, 32, 84, 176, 276&quot;
+    :chapters=&quot;18, 32, 84, 176, 276, 407, 577&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
-
       <p class="example-heading">Output</p>
-      <!-- Doechii -->
       <youtube-player :video="-91vymvIH0c" :chapters="18, 32, 84, 176, 276, 407, 577, 733, 1038, 1418">
+      <!-- Doechii -->
+        <noscript>JavaScript is not available to load the video</noscript>
       </youtube-player>
-
+      </div>
 
 
       <h3>Custom Thumbnails</h3>
       <p>
         YouTube thumbnails can be replace with custom images
       </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;fiShsfvbFUA&quot;
     :thumbnail=&quot;/images/rage-against-thumbnail.jpg&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
+      </div>
 
       <p class="example-heading">Output</p>
       <!-- Rage Against The Machine -->
