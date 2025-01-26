@@ -948,9 +948,11 @@ class YouTubePlayer extends HTMLElement {
 }  
 .playing {
   border: var(--playing-border);
+  transition: border var(--transition-time) ease-in;
 }
 .faded {
   border: var(--faded-border);
+  transition: border var(--transition-time) ease-in;
 }
 .fast-forward-button:after {
   mask-image: var(--fast-forward-icon);
@@ -994,6 +996,7 @@ class YouTubePlayer extends HTMLElement {
 }
 .stopped {
   border: var(--stopped-border);
+  transition: border var(--transition-time) ease-in;
 }
 .fader {
   border-radius: 0.6rem;
