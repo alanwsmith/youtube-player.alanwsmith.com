@@ -191,7 +191,7 @@ class YouTubePlayer extends HTMLElement {
     <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
     <button aria-label="Mute" class="mute-button control-button"></button>
   </div>
-  <div class="buttons-message">Initializing Video Player</div>
+  <div class="buttons-message">Loading Video Player</div>
 </div>
 `
     const contents = 
