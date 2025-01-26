@@ -24,6 +24,46 @@
     <link rel="stylesheet" href="/styles/prism.css" />
     <link rel="stylesheet" href="/styles/youtube-player-v1.css" />
     <script type="module" src="/components/youtube-player-v1.js"></script>
+
+<style data-note="styles for default YouTube player">
+
+body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
+  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+  opacity: 0.6;
+}
+
+.youtube-iframe-wrapper-fader {
+  background: black;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+  opacity: 0;
+  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+}
+
+.youtube-iframe-wrapper {
+  border-radius: 0.7rem;
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+	overflow: hidden;
+	max-width: 100%;
+}
+.youtube-iframe-wrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.youtube-iframe {
+  width: 100%;
+}
+</style>
+
   </head>
  
   <body>
@@ -49,9 +89,9 @@
       <h2>Overview</h2>
 
       <p>
-        This component provides an alternate YouTube embed 
-        experience. It started as a way to clean up the 
-        thumbnail/preview images and evolved from there. 
+        An enhanced YouTube embed experience. It started as a 
+        way to clean up the preview thumbnail images and 
+        evolved from there. 
       </p>
 
       <h2>Features</h2>
@@ -62,62 +102,29 @@
           element
         </li>
         <li>
-          Primary controls for restart, skip back, play, skip forward, and
-          mute are always visible buttons below the video
+          Basic player controls are always visible
         </li>
         <li>
-          TODO: Style controls from global page
-          variables
+          Built-in aria labels
         </li>
         <li>
-          Aria labels are built into the player controls
+          Chapter markers (and corresponding chapter skip buttons)
         </li>
         <li>
-          Control buttons don't show up until the video player 
-          is ready to go
+          Fast loading thumbnails
         </li>
         <li>
-          Add chapter markers for skipping directly to different 
-          parts of the video. (Addition chapter skip buttons
-          show up when a video has chapters)
+          Custom thumbnails
         </li>
         <li>
-          Thumbnails load before the video player. They appear
-          significantly faster than the default 
-          YouTube player embed. 
+          Custom titles
         </li>
         <li>
-          The highest quality thumbnails are used for videos that
-          have them. They automatically fallback to base quality 
-          thumbnails if the higher quality ones don't exist. 
+          Content advisories
         </li>
         <li>
-          Custom thumbnail images can be used in place of
-          the defaults from YouTube
+          Page level styling
         </li>
-        <li>
-          Videos can be set to start and end at custom times
-        </li>
-        <li>
-          Custom titles can be used in place of the ones
-          that come from YouTube
-        </li>
-        <li>
-          Content advisories can be added below titles
-        </li>
-        <li>
-          The number of seconds to skip forward and backward
-          can be adjusted
-        </li>
-        <li>
-          Videos remember where they are by default. They can
-          also be set to restart from the beginning (of from 
-          their custom start time) 
-        </li>
-        <li>
-          When videos end (or another video is played)
-          they revert back to showing only the thumbnail
-          and title
       </ul>
 
       <h3>Multiple Players</h3>
@@ -136,14 +143,14 @@
         </li>
       </ul>
 
-      <h3>Page Level Styles</h3>
+      <h3>Page Level Styling</h3>
       <ul>
         <li>
-          A <code class="language-html">data-youtube-player</code>
+          A <code class="language-html">data-youtube-player-state</code>
           attribute is added to the page's <code class="langauge-html">body</code>
-          tag when a video is played. It can be used to 
+          tag when videos are played. It can be used to 
           change the styles on the page. For example, this 
-          page fades the background to black and darkens the
+          page fades the background to black and darkens
           text colors to make videos stand out more
         </li>
       </ul>
@@ -152,87 +159,47 @@
 
       <h3>Default Player</h3>
       <p>
-        The component uses a custom element named <code>youtube-player</code>. 
-        It uses a <code>:video</code> attribute with the ID
+        Videos are added via a custom <code class="language-html">youtube-player</code> 
+        element with a <code class="language-html">:video</code> attribute for the ID
         of the video to play. For example:
       </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;LT3cERVRoQo&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <noscript>No JavaScript available to load YouTube players</noscript>
-
-      <p class="example-heading">Output</p>
-      <!-- David Bowie -->
-      <youtube-player :video="LT3cERVRoQo"></youtube-player>
-
+        <p class="example-heading">Output</p>
+        <!-- David Bowie -->
+        <youtube-player :video="LT3cERVRoQo">
+          <noscript>JavaScript is not available to load the video</noscript>
+        </youtube-player>
+      </div>
       <p>
-        The component limits what it shows to the thumbnail, title, 
-        and controls. That's compared to the default YouTube
-        embed which puts the play button in the middle. And, 
-        depending on the size of the video, the YouTube player
-        adds other elements like &quot;Watch later&quot; and
-        &quot;Share&quot; buttons. 
+        The component limits what's shown to the thumbnail, title, 
+        and player controls. That's compared to the default YouTube
+        embed which puts the play button in the middle of the image.
+        The YouTube player
+        also adds &quot;Watch later&quot;, 
+        &quot;Share&quot;, etc... elements based on how much 
+        room is available. Here's an example:
       </p>
-      <p>
-        Here's an example of YouTube's default embed for comparison:
-      </p>
-<style>
-
-.youtube-iframe-wrapper-fader {
-  background: black;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-  opacity: 0;
-  transition: opacity 0.9s ease-in, color 0.9s ease-in;
-}
-
-body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
-  transition: opacity 0.9s ease-in, color 0.9s ease-in;
-  opacity: 0.6;
-}
-
-
-.youtube-iframe-wrapper {
-	position: relative;
-	padding-bottom: 56.25%; /* 16:9 */
-	padding-top: 25px;
-	height: 0;
-	overflow: hidden;
-	max-width: 100%;
-}
-.youtube-iframe-wrapper iframe {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-}
-.youtube-iframe {
-  width: 100%;
-}
-</style>
       <div class="youtube-iframe-wrapper">
         <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <div class="youtube-iframe-wrapper-fader"></div>
       </div>
-
       <p>
-        I find the component's thumbnail nicer to look at. It also loads way faster by
-        using an initial thumbnail image while the player itself is loading.
+        I find thumbnails look nicer without the play button covering them. 
+        They also load much faster than the default YouTube embed 
+        which pulls in the entire player before showing an image.
       </p>
+
 
       <h3>Chapters</h3>
       <p>
-        The component provides for adding chapters to videos via a <code>:chapters</code>
-        attribute. If an instance of a component includes chapters the controls are
-        expended to provide buttons to jump between them
+        Chapters can be added via the optional <code>:chapters</code>
+        attribute. The player controls add buttons to skip
+        back and forth when chapters are added
       </p>
       <p class="example-heading">HTML</p>
       <div class="html-sample">
@@ -247,28 +214,6 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       </youtube-player>
 
 
-      <h3>Fallback Quality Thumbnails</h3>
-      <p>
-        The component attempts to load YouTube's high quality thumbnails. 
-        Not ever video has them. The component falls back to a lower 
-        quality version if that's the case. This happens by default. 
-        For example, this video doesn't have the highest quality 
-        thumbnail and falls back to a smaller one:
-      </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;fiShsfvbFUA&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-
-
-      <p class="example-heading">Output</p>
-      <!-- mmmmmm bop -->
-      <!-- this one doesn't have a maxres thumbnail -->
-      <youtube-player :video="fiShsfvbFUA">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
 
       <h3>Custom Thumbnails</h3>
       <p>
@@ -349,6 +294,11 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       </youtube-player>
 
       <h3>Content Advisory</h3>
+
+      <p>
+        The component provides for adding content advisories that can be used
+        for flashing lights, language, sensitive topics, etc...
+      </p>
       
       <p class="example-heading">HTML</p>
       <div class="html-sample">
@@ -359,10 +309,6 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
 
       <p class="example-heading">Output</p>
 
-      <p>
-        The component provides for adding content advisories that can be used
-        for flashing lights, language, sensitive topics, etc...
-      </p>
       <youtube-player :video="tRwHpyOq4P4" :advisory="Warning: contains flashing lights">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
@@ -411,44 +357,41 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       </youtube-player>
 
 
-      <!-- Victor Wooten
-      <youtube-player :video="PHdo1qWNWI4" :chapters="55, 112, 202, 302, 357, 445, 480, 543, 626, 740, 788, 836, 869">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
+      <h2>Details</h2>
 
-      <!-- Summer Girl 
-      <youtube-player :video="yPQfcG-eimk" :restart="on">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
-
-
-      <!-- Star Wars - One Vision 
-      <youtube-player :video="8bOtuoNFzB0" :title="One Star Wars Vision">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
-
-
-      <!-- Lawrence
-      <youtube-player :video="JSkn4zaUh78" :start="10">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
-
-
-      <!-- BABYMETAL
-EDnIEWyVIlE
--->
-
-
-      <!-- Chicago 
-      <youtube-player :video="z5EZNPUJYXc" :title="We Both Reached For The Gun from Chicago">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
--->
-
+      <ul>
+        <li>
+          Control buttons don't show up until the video player 
+          is ready to go
+        </li>
+        <li>
+          The highest quality thumbnails are used for videos that
+          have them. They automatically fallback to base quality 
+          thumbnails if the higher quality ones don't exist
+        </li>
+        <li>
+          Videos can be set to start and end at custom times
+        </li>
+        <li>
+          The number of seconds to skip forward and backward
+          can be adjusted
+        </li>
+        <li>
+          Videos remember where they are by default. They can
+          also be set to restart from the beginning (of from 
+          their custom start time) 
+        </li>
+        <li>
+          A &quot;Loading&quot; badge overlays the thumbnail
+          while the video is buffering instead of showing
+          a spinner on a black canvas
+        </li>
+        <li>
+          When videos end (or another video is played)
+          they revert back to showing only the thumbnail
+          and title
+        </li>
+      </ul>
 
       <h2>Features And TODOs</h2>
       <div class="warning">
@@ -474,6 +417,10 @@ EDnIEWyVIlE
       <h2>To Sort</h2>
 
       <ul>
+        <li>
+          TODO: Style controls from global page
+          variables
+        </li>
         <li>
           <p>
             Videos are embedded using a custom <code>youtube-player</code> element. It has
@@ -606,6 +553,14 @@ EDnIEWyVIlE
         <li>
           TODO: Accept custom css to override variables
         </li>
+        <li>
+          TODO: Show the length of the video
+        </li>
+        <li>
+          TODO: Add a short delay (e.g. 300ms) before showing the
+          loading badge so it doesn't show up if the video
+          starts quickly. 
+        </li>
       </ul>
 
       <h2>Someday/Maybe</h2>
@@ -689,6 +644,15 @@ EDnIEWyVIlE
         </li>
       </ul>
 
+      <h2>References</h2>
+      <ul>
+        <li><a href="https://developers.google.com/youtube/iframe_api_reference">YouTube IFrame Player API Docs</a></li>
+        <li><a href="https://github.com/paulirish/lite-youtube-embed">Paul Irish's Lite YouTube Embed</a></li>
+        <li><a href="https://css-tricks.com/fluid-width-video/">Fluid Width Video from CSS Tricks</a></li>
+        <li><a href="https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md">Lo, the youtube placeholder image! from Paul Irish</a></li>
+      </ul>
+
+
       <h2>Test Cases</h2>
       <pre>
 - [] Start video from start
@@ -729,13 +693,6 @@ EDnIEWyVIlE
       </pre>
       
 
-      <h2>References</h2>
-      <ul>
-        <li><a href="https://developers.google.com/youtube/iframe_api_reference">YouTube IFrame Player API Docs</a></li>
-        <li><a href="https://github.com/paulirish/lite-youtube-embed">Paul Irish's Lite YouTube Embed</a></li>
-        <li><a href="https://css-tricks.com/fluid-width-video/">Fluid Width Video from CSS Tricks</a></li>
-        <li><a href="https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md">Lo, the youtube placeholder image! from Paul Irish</a></li>
-      </ul>
     </main>
     <footer>
       <div>
@@ -750,4 +707,70 @@ EDnIEWyVIlE
 
     <script type="module" src="/scripts/prism.js"></script>
   </body>
+
+
+
+      <!-- Victor Wooten
+      <youtube-player :video="PHdo1qWNWI4" :chapters="55, 112, 202, 302, 357, 445, 480, 543, 626, 740, 788, 836, 869">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+      <!-- Summer Girl 
+      <youtube-player :video="yPQfcG-eimk" :restart="on">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+
+      <!-- Star Wars - One Vision 
+      <youtube-player :video="8bOtuoNFzB0" :title="One Star Wars Vision">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+      <!-- Lawrence
+      <youtube-player :video="JSkn4zaUh78" :start="10">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+
+      <!-- BABYMETAL
+EDnIEWyVIlE
+-->
+
+
+      <!-- Chicago 
+      <youtube-player :video="z5EZNPUJYXc" :title="We Both Reached For The Gun from Chicago">
+        <noscript>No JavaScript available to load YouTube player</noscript>
+      </youtube-player>
+-->
+
+  <!--
+
+
+      <h3>Fallback Quality Thumbnails</h3>
+      <p>
+        The component attempts to load YouTube's high quality thumbnails. 
+        Not ever video has them. The component falls back to a lower 
+        quality version if that's the case. This happens by default. 
+        For example, this video doesn't have the highest quality 
+        thumbnail and falls back to a smaller one:
+      </p>
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
+      :video=&quot;fiShsfvbFUA&quot;
+  &gt;&ltyoutube-player&gt;</code></pre></div>
+        <p class="example-heading">Output</p>
+        mmmmmm bop 
+        this one doesn't have a maxres thumbnail
+        <youtube-player :video="fiShsfvbFUA">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
+  -->
+
 </html>

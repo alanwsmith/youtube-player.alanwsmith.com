@@ -944,8 +944,8 @@ class YouTubePlayer extends HTMLElement {
   position: absolute;
   top: 0rem;
   z-index: 5;
-  padding-top: 1rem;
-  padding-bottom: 0.5rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.3rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }

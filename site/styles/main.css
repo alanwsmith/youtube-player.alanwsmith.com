@@ -201,6 +201,12 @@ ul > :where(:not(:first-child)) {
   margin-top: 1em;
 }
 
+.video-example {
+  border: 1px solid rgb(128 128 128 /0.3);
+  border-radius: var(--large-border-radius);
+  padding: 1rem;
+}
+
 .warning {
   margin: var(--large-margin);
   padding: var(--large-padding);
