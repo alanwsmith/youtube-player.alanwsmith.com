@@ -1,3 +1,10 @@
+/*
+* DEPRECATED: this file (prism.css) is deprecated.
+* The styles have been moved into main.css. The 
+* file can be deleted once main.css is finished
+* tweaking.
+*/
+
 /* 
 * NOTE: These are the styles from the html-example
 * component. The goal was to use it here, but the
@@ -15,7 +22,7 @@
   border-radius: 0.7rem;
 }
 
-:root {
+body {
   /* light */
   --mono-1: var(--html-example--mono-1, #fdf6e3);
   --mono-2: var(--html-example--mono-2, #eee8d5);
@@ -51,6 +58,8 @@
   --title-font-size: var(--html-example--title-font-size, 1.4rem);
   --title-font-weight: var(--html-example--title-font-weight, 700);
 }
+
+
 
 :host {
   background: var(--mono-1);

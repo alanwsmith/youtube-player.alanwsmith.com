@@ -214,3 +214,177 @@ ul > :where(:not(:first-child)) {
   border-radius: var(--medium-border-radius);
 }
 
+
+/* 
+* NOTE: These are the styles from the html-example
+* component. The goal was to use it here, but the
+* way the script injects itself makes it show up
+* in a confusing way. The HTML samples are hand
+* coded as a result. Lots of stuff here isn't
+* used because of that
+*/
+
+
+body {
+  /* light */
+  --mono-1: var(--html-example--mono-1, #fdf6e3);
+  --mono-2: var(--html-example--mono-2, #eee8d5);
+  --mono-3: var(--html-example--mono-3, #93a1a1);
+  --mono-4: var(--html-example--mono-4, #839496);
+  --mono-5: var(--html-example--mono-5, #657b83);
+  --mono-6: var(--html-example--mono-6, #586e75);
+  --mono-7: var(--html-example--mono-7, #073642);
+  --mono-8: var(--html-example--mono-8, #002b36);
+
+  /* dark */
+  --mono-1: var(--html-example--mono-1, #002b36);
+  --mono-2: var(--html-example--mono-2, #073642);
+  --mono-3: var(--html-example--mono-3, #586e75);
+  --mono-4: var(--html-example--mono-4, #657b83);
+  --mono-5: var(--html-example--mono-5, #839496);
+  --mono-6: var(--html-example--mono-6, #93a1a1);
+  --mono-7: var(--html-example--mono-7, #eee8d5);
+  --mono-8: var(--html-example--mono-8, #fdf6e3);
+
+  --color-1: var(--html-example--color-1, #b58900);
+  --color-2: var(--html-example--color-2, #cb4b16);
+  --color-3: var(--html-example--color-3, #268bd2);
+  --color-4: var(--html-example--color-4, #2aa198);
+  --color-5: var(--html-example--color-5, #859900);
+
+  --output-background: var(--html-example--output-background, var(--mono-1));
+  --output-padding: var(--html-exampe--output-padding, 1rem);
+  --outter-border: var(--html-example--outer-border, 1px solid var(--mono-3));
+  --inner-border: var(--html-example--inner-border, 1px solid var(--mono-3)); 
+
+  --title-color: var(--html-example--title-color, var(--mono-7));
+  --title-font-size: var(--html-example--title-font-size, 1.4rem);
+  --title-font-weight: var(--html-example--title-font-weight, 700);
+}
+
+
+body[data-youtube-player-state="playing"] {
+  /* light */
+  --mono-1: var(--html-example--mono-1, #111);
+  --mono-2: var(--html-example--mono-2, #333);
+  --mono-3: var(--html-example--mono-3, #333);
+  --mono-4: var(--html-example--mono-4, #333);
+  --mono-5: var(--html-example--mono-5, #333);
+  --mono-6: var(--html-example--mono-6, #333);
+  --mono-7: var(--html-example--mono-7, #333);
+  --mono-8: var(--html-example--mono-8, #333);
+
+  --color-1: var(--html-example--color-1, #444);
+  --color-2: var(--html-example--color-2, #444);
+  --color-3: var(--html-example--color-3, #444);
+  --color-4: var(--html-example--color-4, #444);
+  --color-5: var(--html-example--color-5, #444);
+}
+
+
+code[class*='language-'],
+code[class*='language-'] span,
+pre[class*='language-'] {
+  transition: color 0.9s ease-in, background 0.9s ease-in;
+}
+
+code[class*='language-'],
+pre[class*='language-'] {
+  color: var(--mono-5);
+  font-family: ui-monospace, 'Cascadia Code', 'Source Code Pro', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 1em;
+  text-align: left;
+  white-space: pre-wrap;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.5;
+  -moz-tab-size: 4;
+  -o-tab-size: 4;
+  tab-size: 4;
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+code[class*='language-'] ::-moz-selection,
+code[class*='language-']::-moz-selection,
+pre[class*='language-'] ::-moz-selection,
+pre[class*='language-']::-moz-selection {
+  background: var(--mono-7);
+}
+code[class*='language-'] ::selection,
+code[class*='language-']::selection,
+pre[class*='language-'] ::selection,
+pre[class*='language-']::selection {
+  background: var(--mono-7);
+}
+pre[class*='language-'] {
+  margin: 0.5em 0;
+  overflow: auto;
+  border-radius: 0.3em;
+}
+:not(pre) > code[class*='language-'],
+pre[class*='language-'] {
+  background: var(--mono-1);
+}
+:not(pre) > code[class*='language-'] {
+  border-radius: 0.3em;
+}
+.token.cdata,
+.token.comment,
+.token.doctype,
+.token.prolog {
+  color: var(--mono-3);
+}
+.token.punctuation {
+  color: var(--mono-6);
+}
+.token.namespace {
+  opacity: 0.7;
+}
+.token.boolean,
+.token.constant,
+.token.deleted,
+.token.number,
+.token.property,
+.token.symbol,
+.token.tag {
+  color: var(--color-3);
+}
+.token.attr-name,
+.token.builtin,
+.token.char,
+.token.inserted,
+.token.selector,
+.token.string,
+.token.url {
+  color: var(--color-4);
+}
+.token.entity {
+  color: var(--mono-5);
+}
+.token.atrule,
+.token.attr-value,
+.token.keyword {
+  color: var(--color-5);
+}
+.token.class-name,
+.token.function {
+  color: var(--color-1);
+}
+.token.important,
+.token.regex,
+.token.variable {
+  color: var(--color-2);
+}
+.token.bold,
+.token.important {
+  font-weight: 700;
+}
+.token.italic {
+  font-style: italic;
+}
+.token.entity {
+  cursor: help;
+}
