@@ -985,7 +985,7 @@ class YouTubePlayer extends HTMLElement {
   position: absolute;
   bottom: 2rem;
   left: 2rem;
-  z-index: 30;
+  z-index: 90;
   transition: opacity 0s;
   text-align: right;
   background: var(--text-background-color);
