@@ -4,7 +4,13 @@ class YouTubePlayer extends HTMLElement {
   static instances = {}
   // static timeout = null
 
+  static pauseTimeout = null
+
   static handleBuffering(instance) {
+    if (this.pauseTimeout !== null) {
+      clearTimeout(this.pauseTimeout)
+      this.pauseTimeout = null
+    }
 
     // // this is here to help prevent the
     // // pause from flowing through and triggering
@@ -40,15 +46,19 @@ class YouTubePlayer extends HTMLElement {
     //   instance.doEnded()
     // }
 
-
   }
 
   static handlePaused(instance) {
-    document.body.dataset.youtubePlayerState = 'paused'
-    for (const uuid in this.instances) {
-      this.instances[uuid].hideFader()
-      this.instances[uuid].showStoppedBorder()
-    }
+    this.pauseTimeout = setTimeout(
+      () => {
+        document.body.dataset.youtubePlayerState = 'paused'
+        for (const uuid in this.instances) {
+          this.instances[uuid].hideFader()
+          this.instances[uuid].showStoppedBorder()
+        }
+      }, 250
+    )
+
 
 
     // // console.log(`handlePause: ${instance.uuid}`)
