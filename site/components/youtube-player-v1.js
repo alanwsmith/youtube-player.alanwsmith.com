@@ -765,7 +765,7 @@ class YouTubePlayer extends HTMLElement {
   addStyles() {
     const styles = new CSSStyleSheet();
     styles.replaceSync(`
-:root {
+:host{
   --transition-time: 0.5s;
 }
 .background {
@@ -836,7 +836,6 @@ class YouTubePlayer extends HTMLElement {
   bottom: 0rem;
   z-index: 5;
   padding-top: 1rem;
-  padding-bottom: 0.5rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }
