@@ -48,7 +48,19 @@ class YouTubePlayer extends HTMLElement {
 
   }
 
+  // this is for the button click
+  static handlePauseClicked(instance) {
+    document.body.dataset.youtubePlayerState = 'paused'
+    for (const uuid in this.instances) {
+      this.instances[uuid].hideFader()
+      this.instances[uuid].showStoppedBorder()
+    }
+  }
+
+  // this is for if the video is paused from inside
+  // the iframe
   static handlePaused(instance) {
+
     this.pauseTimeout = setTimeout(
       () => {
         document.body.dataset.youtubePlayerState = 'paused'
@@ -548,13 +560,13 @@ class YouTubePlayer extends HTMLElement {
   handlePlayButtonClick(event) {
     const state = this.player.getPlayerState()
     if (state === 1) {
+      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
       this.showPlayButton()
       this.player.pauseVideo()
       this.showStoppedBorder()
-      document.body.dataset.youtubePlayerState = 'paused'
-      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
-      // this.flashMessage(this.player.getCurrentTime())
+      this.constructor.handlePauseClicked(this)
     } else {
+      console.log(`YouTube Player: Playing`)
       document.body.dataset.youtubePlayerState = 'playing'
       this.showPlayingBorder()
       this.hideFader()
@@ -563,7 +575,6 @@ class YouTubePlayer extends HTMLElement {
       this.constructor.fadeOtherVideos(this)
       this.player.playVideo()
       this.showPauseButton()
-      console.log(`YouTube Player: Playing`)
     }
   }
 

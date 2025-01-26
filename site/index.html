@@ -468,6 +468,16 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           Flash messages display when moving between
           chapters or skipping forward and back.
         </li>
+        <li>
+          There's a brief delays in the style changes
+          when the video is paused to accommodate for
+          the player sending a pause signal when 
+          scrubbing to a different part of the video.
+          It prevents fading in and out if a new 
+          location is clicked on the video timeline. 
+          The fade will generally occur if when 
+          dragging back and forth on the timeline.
+        </li>
       </ul>
       
       <h2>Player Styling</h2>
