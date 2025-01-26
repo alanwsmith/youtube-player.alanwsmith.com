@@ -174,7 +174,7 @@ class YouTubePlayer extends HTMLElement {
     <div id="player"></div>
   </div>
   <div class="title"></div>
-  <div class="scrub-display hidden"></div>
+  <div class="flash-message hidden"></div>
   <div class="loading hidden">Loading...</div>
   <!--
   <div class="click-catcher"></div>
@@ -212,7 +212,7 @@ class YouTubePlayer extends HTMLElement {
     this.parts.playButton = this.shadowRoot.querySelector('.play-button')
     this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
     this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.scrubDisplay = this.shadowRoot.querySelector('.scrub-display')
+    this.parts.flashMessage = this.shadowRoot.querySelector('.flash-message')
     this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
     this.parts.title = this.shadowRoot.querySelector('.title')
     this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
@@ -429,14 +429,14 @@ class YouTubePlayer extends HTMLElement {
   }
 
   flashMessage(text) {
-    this.parts.scrubDisplay.innerHTML = text
-    this.parts.scrubDisplay.classList.remove('hidden')
-    if (this.timeouts.scrubDisplay) {
-      clearTimeout(this.timeouts.scrubDisplay)
+    this.parts.flashMessage.innerHTML = text
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
     }
-    this.timeouts.scrubDisplay = setTimeout(
+    this.timeouts.flashMessage = setTimeout(
       () => {
-        this.parts.scrubDisplay.classList.add('hidden')
+        this.parts.flashMessage.classList.add('hidden')
       },
       500
     )
@@ -493,14 +493,14 @@ class YouTubePlayer extends HTMLElement {
         this.player.getDuration() 
       )
     )
-    this.parts.scrubDisplay.innerHTML = `+${this.attrs['skip-forward']}sec.`
-    this.parts.scrubDisplay.classList.remove('hidden')
-    if (this.timeouts.scrubDisplay) {
-      clearTimeout(this.timeouts.scrubDisplay)
+    this.parts.flashMessage.innerHTML = `+${this.attrs['skip-forward']}sec.`
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
     }
-    this.timeouts.scrubDisplay = setTimeout(
+    this.timeouts.flashMessage = setTimeout(
       () => {
-        this.parts.scrubDisplay.classList.add('hidden')
+        this.parts.flashMessage.classList.add('hidden')
       },
       500
     )
@@ -604,14 +604,14 @@ class YouTubePlayer extends HTMLElement {
         0, this.player.getCurrentTime() - this.attrs['skip-back']
       )
     )
-    this.parts.scrubDisplay.innerHTML = `-${this.attrs['skip-back']}sec.`
-    this.parts.scrubDisplay.classList.remove('hidden')
-    if (this.timeouts.scrubDisplay) {
-      clearTimeout(this.timeouts.scrubDisplay)
+    this.parts.flashMessage.innerHTML = `-${this.attrs['skip-back']}sec.`
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
     }
-    this.timeouts.scrubDisplay = setTimeout(
+    this.timeouts.flashMessage = setTimeout(
       () => {
-        this.parts.scrubDisplay.classList.add('hidden')
+        this.parts.flashMessage.classList.add('hidden')
       },
       500
     )
@@ -953,7 +953,7 @@ class YouTubePlayer extends HTMLElement {
   mask-repeat: no-repeat;
   mask-size: contain;
 }
-.scrub-display {
+.flash-message {
   font-size: 1.6rem;
   color: var(--text-color);
   border-radius: 0.6rem;
@@ -966,7 +966,7 @@ class YouTubePlayer extends HTMLElement {
   background: var(--text-background-color);
   padding: 0.5rem;
 }
-.scrub-display.hidden {
+.flash-message.hidden {
   transition: opacity var(--transition-time) ease-in;
 }
 .stopped {
