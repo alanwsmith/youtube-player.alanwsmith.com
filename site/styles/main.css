@@ -162,6 +162,12 @@ header {
   width: var(--large-width);
 }
 
+pre.language-html {
+  border: 1px solid rgb(128 128 128 /0.3);
+  border-radius: var(--large-border-radius);
+  padding: 1rem;
+}
+
 img {
   max-width: 100%;
   display: block;

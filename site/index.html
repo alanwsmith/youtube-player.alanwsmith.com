@@ -97,6 +97,11 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         way to clean up the preview thumbnail images and 
         evolved from there. 
       </p>
+      <p>
+        You can grab the component file here:
+        <a href="/components/youtube-player-v1.js">youtube-player-v1.js</a>
+      </p>
+
 
       <h2>Features</h2>
       <h3>Video Player</h3>
@@ -363,7 +368,6 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </div>
 
       <h2>Details</h2>
-
       <ul>
         <li>
           Control buttons don't show up until the video player 
@@ -404,8 +408,40 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           the page when it was the touch target. I don't
           mind this since the Play button is always visible
         </li>
+        <li>
+          Paused videos continue to show the contents of
+          the YouTube iframe. This allows for jumping
+          to different parts of the video, changing the
+          closed captions, altering the settings, etc...
+        </li>
+        <li>
+          When one video is paused and another one is
+          started the first video reverts to just the
+          thumbnail and title to provided a cleaner
+          look and feel
+        </li>
+        <li>
+          Videos that are played all the way to the
+          end revert to just the thumbnail and title
+          display
+        </li>
+        <li>
+          Videos that are played all the way to the
+          end and are played again will use their
+          custom start time if one was set
+        </li>
+        <li>
+          The SVGs for the player control buttons are 
+          built into the component's CSS. Check the 
+          <em>Styling</em> section below for how to style
+          them.
+        </li>
       </ul>
       
+      <h2>Styling</h2>
+      <p>
+        TKTKTK
+      </p>
 
       <h2>Known Bugs</h2>
       <ul>
