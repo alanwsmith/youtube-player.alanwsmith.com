@@ -442,9 +442,13 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           <em>Styling</em> section below for how to style
           them.
         </li>
+        <li>
+          Hover state fix in place for mobile devices
+          to prevent them from getting stuck in a hover state
+        </li>
       </ul>
       
-      <h2>Styling</h2>
+      <h2>Player Styling</h2>
       <p>
         The player includes default styles
         for the text, border, and buttons. They can be
@@ -497,6 +501,40 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
 --youtube-player--playing--border: 1px solid #aaa;
 --youtube-player--stopped--border: 1px solid #999;</code></pre>
       </div>
+
+
+      <h3>Button Styling</h3>
+
+      <p>
+        The colors for the buttons are set with:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--base-button-background
+--youtube-player--base-button-foreground
+--youtube-player--faded-button-background
+--youtube-player--faded-button-foreground</code></pre>
+      </div>
+
+      <p>
+        They default to:
+      </p>
+
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--base-button-background: rgb(255 255 255 / 0.4); 
+--youtube-player--base-button-foreground: rgb(0 0 0 / 0.8);
+--youtube-player--faded-button-background: rgb(255 255 255 / 0.2);
+--youtube-player--faded-button-foreground: rgb(0 0 0 / 0.3);</code></pre>
+      </div>
+
+      <p>
+        Hovering over a button causes the foreground and
+        background to reverse.
+      </p>
+
+
+
+      <h2>Page Styling</h2>
 
 
       <h2>Known Bugs</h2>
@@ -806,10 +844,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
 
             - [] Pause videos
 
-
-
       </pre>
-      
 
     </main>
     <footer>
@@ -818,7 +853,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </div>
       <div>
         <a href="https://github.com/alanwsmith/youtube-player.alanwsmith.com">source code</a> ~
-        <a href="https://links.alanwsmith.com">other sites</a> ~
+        <a href="https://links.alanwsmith.com">other projects</a> ~
         <a href="https://socials.alanwsmith.com">socials</a>
       </div>
     </footer>

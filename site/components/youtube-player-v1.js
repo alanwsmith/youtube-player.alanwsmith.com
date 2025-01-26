@@ -769,6 +769,23 @@ class YouTubePlayer extends HTMLElement {
   display: block;
   border-radius: 0.6rem;
   position: relative;
+
+  --base-button-background: var(
+    --youtube-player--base-button-background, 
+    rgb(255 255 255 / 0.4)
+  );
+  --base-button-foreground: var(
+    --youtube-player--base-button-foreground, 
+    rgb(0 0 0 / 0.8)
+  );
+  --faded-button-background: var(
+    --youtube-player--faded-button-background, 
+    rgb(255 255 255 / 0.2)
+  );
+  --faded-button-foreground: var(
+    --youtube-player--faded-button-foreground, 
+    rgb(0 0 0 / 0.3)
+  );
   --faded-border: var(
     --youtube-player--faded-border,
     1px solid #222
@@ -807,7 +824,7 @@ class YouTubePlayer extends HTMLElement {
   justify-content: right;
 }
 .buttons-message {
-  color: var(--youtube-player-button-base-background, #999);
+  color: var(--base-button-background);
 }
 .buttons-row {
   display: flex;
@@ -815,8 +832,8 @@ class YouTubePlayer extends HTMLElement {
   justify-content: right;
 }
 .control-button {
-  background: var(--youtube-player-button-base-background, #999);
-  border: 1px solid var(--youtube-player-button-base-foreground, #333);
+  background: var(--base-button-background);
+  border: 1px solid var(--base-button-foreground);
   border-radius: 0.6rem;
   margin: 0;
   position: relative;
@@ -824,7 +841,7 @@ class YouTubePlayer extends HTMLElement {
   height: 2rem;
 }
 .control-button:after {
-  background: var(--youtube-player-button-base-foreground, #333);
+  background: var(--base-button-foreground);
   content: "";
   height: 100%;
   left: 0;
@@ -838,11 +855,11 @@ class YouTubePlayer extends HTMLElement {
   font-weight: 900;
 }
 .button-fader > .control-button {
-  background: var(--youtube-player-button-faded-background, #333);
-  border: 1px solid var(--youtube-player-button-faded-foreground, #111);
+  background: var(--faded-button-background);
+  border: 1px solid var(--faded-button-foreground);
 }
 .button-fader > .control-button:after {
-  background: var(--youtube-player-button-faded-foreground, #111);
+  background: var(--faded-button-foreground);
 }
 .hidden {
   opacity: 0;
@@ -1007,18 +1024,18 @@ class YouTubePlayer extends HTMLElement {
 }
 @media (hover: hover) {
   .control-button:hover {
-    background: var(--youtube-player-button-base-hover-background, #333);
-    border: 1px solid var(--youtube-player-button-base-hover-foreground, #999);
+    background: var(--base-button-foreground);
+    border: 1px solid var(--base-button-background);
   }
   .control-button:hover:after {
-    background: var(--youtube-player-button-base-hover-foreground, #999);
+    background: var(--base-button-background);
   }
   .button-fader > .control-button:hover {
-    background: var(--youtube-player-button-faded-hover-background, #111);
-    border: 1px solid var(--youtube-player-button-faded-hover-foreground, #333);
+    background: var(--faded-button-foreground);
+    border: 1px solid var(--faded-button-background);
   }
   .button-fader > .control-button:hover:after {
-    background: var(--youtube-player-button-faded-hover-foreground, #333);
+    background: var(--faded-button-background);
   }
 }`
     );

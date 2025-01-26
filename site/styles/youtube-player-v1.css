@@ -47,4 +47,11 @@ youtube-player {
 */
 
 
-
+/*
+:root {
+  --youtube-player--base-button-background: maroon; 
+  --youtube-player--base-button-foreground: purple;
+  --youtube-player--faded-button-background: goldenrod;
+  --youtube-player--faded-button-foreground: green;
+}
+*/
