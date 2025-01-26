@@ -7,3 +7,14 @@ body[data-youtube-player-state="playing"] {
   --primary-color: #444;
   --secondary-color: #444;
 }
+
+
+
+/* Player override testing */
+
+
+/*
+:root {
+  --youtube-player--play-icon: url("data:image/svg+xml;utf8,%3Csvg%0A%20%20viewBox%3D%220%200%20100%20100%22%0A%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20stroke%3D%22red%22%0A%20%20fill%3D%22grey%22%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2240%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");
+}
+*/

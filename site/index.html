@@ -537,16 +537,41 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         background to reverse.
       </p>
 
-
       <h3>Button Icons</h3>
       <p>
-        The buttons use SVGs for their icons. 
+        The buttons use SVGs for their icons. The varialbes
+        are:
       </p>
-      <p>NOTE: The buttons use
+      <div>
+      <pre class="language-css"><code class="language-css">--youtube-player--fast-forward-icon
+--youtube-player--mute-icon
+--youtube-player--next-chapter-icon
+--youtube-player--pause-icon
+--youtube-player--play-icon
+--youtube-player--previous-chapter-icon
+--youtube-player--restart-icon
+--youtube-player--rewind-icon
+--youtube-player--unmute-icon</code></pre>
+      </div>
+      <p>
+        They can be updated with an embedded URL for
+        another SVG. For example:
+      </p>
+
+      <pre class="language-css"><code class="language-css">--youtube-player--play-icon: url("data:image/svg+xml;utf8,%3Csvg%0A%20%20viewBox%3D%220%200%20100%20100%22%0A%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20stroke%3D%22red%22%0A%20%20fill%3D%22grey%22%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2240%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");</code></pre>
+
+
+      <p>The buttons use
         <code class="language-html">mask-image</code> for
         the SVGs. That allows them to be styled with
         the custom CSS property variables. The masking is
         done as an alpha channel. Colors aren't used.
+      </p>
+      <p>
+        Note that you'll need to properly escape the 
+        SVG string for things to work. See: 
+        <a href="https://codepen.io/tigt/post/optimizing-svgs-in-data-uris">
+          Optimizing SVGs in data URIs</a> for guidance.
       </p>
 
       <h3>Transition Time</h3>
