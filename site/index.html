@@ -243,91 +243,80 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       <h3>Custom Start Time</h3>
       <p>
         The component accepts custom start times. For example, this videos
-        doesn't really get going until 54 seconds in. 
+        doesn't really get going until 54 seconds in:
       </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;NoMqvniiEkk&quot; 
     :start=&quot;54&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
-      <!-- Kenzo World -->
-      <youtube-player :video="NoMqvniiEkk" :start="54">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+        <p class="example-heading">Output</p>
+        <!-- Kenzo World -->
+        <youtube-player :video="NoMqvniiEkk" :start="54">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
 
       <h3>Custom End Time</h3>
       <p>
         An end time can be set as well. For example, this one only 
-        plays the first 11 seconds of the video.
+        plays the first 11 seconds of the video:
       </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;REPPgPcw4hk&quot; 
     :end=&quot;11&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
-      <!-- Somebody That I Used To Know -->
-      <youtube-player :video="REPPgPcw4hk" :end="11">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+        <p class="example-heading">Output</p>
+        <!-- Somebody That I Used To Know -->
+        <youtube-player :video="REPPgPcw4hk" :end="11">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
 
       <h3>Custom Title</h3>
       <p>
         YouTube titles are used by default. They can be overridden 
         with a custom title. Makes it nice for removing &quot[Official Video]&quot;
-        type stuff which is what was done for this one.
+        type stuff which is what was done for this one:
       </p>
-
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;K7xzmkpwNoA&quot; 
-    :title=&quot;Little Simz - Gorilla&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
-
-      <!-- Little Simz -->
-      <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
+      :video=&quot;K7xzmkpwNoA&quot; 
+      :title=&quot;Little Simz - Gorilla&quot;
+  &gt;&ltyoutube-player&gt;</code></pre></div>
+        <p class="example-heading">Output</p>
+        <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
+          <!-- Little Simz -->
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
 
       <h3>Content Advisory</h3>
-
       <p>
         The component provides for adding content advisories that can be used
         for flashing lights, language, sensitive topics, etc...
       </p>
-      
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;tRwHpyOq4P4&quot; 
-    :advisory=&quot;Warning: contains flashing lights&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
-
-      <youtube-player :video="tRwHpyOq4P4" :advisory="Warning: contains flashing lights">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
+      :video=&quot;tRwHpyOq4P4&quot; 
+      :advisory=&quot;Warning: contains flashing lights&quot;
+  &gt;&ltyoutube-player&gt;</code></pre></div>
+        <p class="example-heading">Output</p>
+        <youtube-player :video="tRwHpyOq4P4" :advisory="Warning: contains flashing lights">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
       
       <h3>Restarting From The Beginning</h3>
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;Cz8cbwR_6ms&quot; 
-    :restart=&quot;on&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
       <p>
         Switching between multiple videos on a page stops the one
         that was left and returns it to the thumbnail. If you
@@ -337,30 +326,39 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         (Note that it doesn't go back just by pausing. You have to
         switch to another video to see the behaviour)
       </p>
-      <!-- Muppets -->
-      <youtube-player :video="Cz8cbwR_6ms" :restart="on">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
-
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;Cz8cbwR_6ms&quot; 
+    :restart=&quot;on&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+        <p class="example-heading">Output</p>
+        <youtube-player :video="Cz8cbwR_6ms" :restart="on">
+          <!-- Muppets -->
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
 
       <h3>Custom Skip Times</h3>
-      <p class="example-heading">HTML</p>
-      <div class="html-sample">
-      <pre class="language-html"><code class="language-html">&lt;youtube-player
-    :video=&quot;dAwLMS8fgoA&quot; 
-    :skip-forward=&quot;3&quot;
-    :skip-back=&quot;3&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-
-      <p class="example-heading">Output</p>
       <p>
         The skip forward and back buttons default to +7sec. and -10sec.
         respectively. Those times can be customized with <code>:skip-forward</code>
         and <code>:skip-back</code> attributes.
       </p>
-      <youtube-player :video="dAwLMS8fgoA" :skip-forward="3" :skip-back="3">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+      <div class="video-example flow">
+        <p class="example-heading">HTML</p>
+        <div class="html-sample">
+        <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;dAwLMS8fgoA&quot; 
+    :skip-forward=&quot;3&quot;
+    :skip-back=&quot;3&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+        <p class="example-heading">Output</p>
+        <youtube-player :video="dAwLMS8fgoA" :skip-forward="3" :skip-back="3">
+          <noscript>No JavaScript available to load YouTube player</noscript>
+        </youtube-player>
+      </div>
 
 
       <h2>Details</h2>
@@ -396,6 +394,14 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           When videos end (or another video is played)
           they revert back to showing only the thumbnail
           and title
+        </li>
+        <li>
+          Clicking directly on a thumbnail doesn't start
+          the video. I set that up originally but it 
+          made things harder to use on mobile. It was
+          too easy to play a video instead of scrolling
+          the page when it was the touch target. I don't
+          mind this since the Play button is always visible
         </li>
       </ul>
       
