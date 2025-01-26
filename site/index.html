@@ -27,41 +27,43 @@
 
 <style data-note="styles for default YouTube player">
 
-body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
+body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
   transition: opacity 0.9s ease-in, color 0.9s ease-in;
-  opacity: 0.6;
+  opacity: 0.3;
 }
 
 .youtube-iframe-wrapper-fader {
   background: black;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-  opacity: 0;
-  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .youtube-iframe-wrapper {
   border-radius: 0.7rem;
-	position: relative;
-	padding-bottom: 56.25%; /* 16:9 */
-	padding-top: 25px;
-	height: 0;
-	overflow: hidden;
-	max-width: 100%;
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  padding-top: 25px;
+  height: 0;
+  overflow: hidden;
+  max-width: 100%;
 }
+
 .youtube-iframe-wrapper iframe {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.9s ease-in, color 0.9s ease-in;
 }
+
 .youtube-iframe {
   width: 100%;
 }
+
 </style>
 
   </head>
@@ -166,9 +168,10 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       <div class="video-example flow">
         <p class="example-heading">HTML</p>
         <div class="html-sample">
-        <pre class="language-html"><code class="language-html">&lt;youtube-player
+          <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;LT3cERVRoQo&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
+&gt;&ltyoutube-player&gt;</code></pre>
+        </div>
         <p class="example-heading">Output</p>
         <youtube-player :video="LT3cERVRoQo">
           <!-- Bowie -->
@@ -186,8 +189,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       </p>
       <div class="video-example flow">
         <div class="youtube-iframe-wrapper">
-          <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
           <div class="youtube-iframe-wrapper-fader"></div>
+          <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </div>
       <p>
@@ -199,16 +202,17 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       <h3>Chapters</h3>
       <p>
         Chapters can be added via the optional <code>:chapters</code>
-        attribute. The player controls add buttons to skip
-        back and forth when chapters are added:
+        attribute. Chapter skip buttons slot into
+        the player controls to move between them:
       </p>
       <div class="video-example flow">
         <p class="example-heading">HTML</p>
         <div class="html-sample">
-        <pre class="language-html"><code class="language-html">&lt;youtube-player
+          <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;-91vymvIH0c&quot;
     :chapters=&quot;18, 32, 84, 176, 276, 407, 577&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
+&gt;&ltyoutube-player&gt;</code></pre>
+        </div>
       <p class="example-heading">Output</p>
       <youtube-player :video="-91vymvIH0c" :chapters="18, 32, 84, 176, 276, 407, 577, 733, 1038, 1418">
       <!-- Doechii -->
@@ -224,17 +228,17 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
       <div class="video-example flow">
         <p class="example-heading">HTML</p>
         <div class="html-sample">
-        <pre class="language-html"><code class="language-html">&lt;youtube-player
+          <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;fiShsfvbFUA&quot;
     :thumbnail=&quot;/images/rage-against-thumbnail.jpg&quot;
-&gt;&ltyoutube-player&gt;</code></pre></div>
-      </div>
-
+&gt;&ltyoutube-player&gt;</code></pre>
+        </div>
       <p class="example-heading">Output</p>
-      <!-- Rage Against The Machine -->
       <youtube-player :video="Rm1nCYOZB-s" :thumbnail="/images/rage-against-thumbnail.jpg">
+        <!-- Rage Against The Machine -->
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
+      </div>
 
       <h3>Custom Start Time</h3>
       <p>
@@ -248,7 +252,6 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
     :video=&quot;NoMqvniiEkk&quot; 
     :start=&quot;54&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
-
 
       <p class="example-heading">Output</p>
       <!-- Kenzo World -->
@@ -393,6 +396,16 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
           When videos end (or another video is played)
           they revert back to showing only the thumbnail
           and title
+        </li>
+      </ul>
+      
+
+      <h2>Known Bugs</h2>
+      <ul>
+        <li>
+          The 'Play' button doesn't switch to the 'Pause'
+          display if the video is started by pressing
+          the chapter skip button
         </li>
       </ul>
 
