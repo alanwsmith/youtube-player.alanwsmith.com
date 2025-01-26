@@ -98,10 +98,29 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         way to clean up the preview thumbnail images and 
         evolved from there. 
       </p>
-      <p>
-        You can grab the component file here:
-        <a href="/components/youtube-player-v1.js">youtube-player-v1.js</a>
-      </p>
+
+      <h2>Usage</h2>
+      <ol class="flow">
+        <li>
+          Grab the component file here:
+          <a href="/components/youtube-player-v1.js">youtube-player-v1.js</a>
+        </li>
+        <li>
+          Including on your page with:
+          <div>
+          <pre><code class="language-html">&lt;script 
+  type=&quot;module&quot; 
+  src=&quot;/path/to/youtube-player-v1.js&quot;
+&gt;&lt;/script&gt;</code></pre>
+          </div>
+        </li>
+        <li>
+          Use it with the ID from a YouTube video with:
+          <div>
+          <pre><code class="language-html">&lt;youtube-player :video=&quot;dQw4w9WgXcQ&quot;&gt;&lt;youtube-player&gt;</code></pre>
+          </div>
+        </li>
+      </ol>
 
       <h2>Features</h2>
 
@@ -533,8 +552,34 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
       </p>
 
 
-
       <h2>Page Styling</h2>
+
+      <p>
+        The player adds a <code class="language-html">data-youtube-player-state</code>
+        attribute to the <code class="language-html">&lt;body&gt;</code> tag
+        of the page the first time a video is played. 
+        The value is <code>playing</code> whenever a
+        video is playing. This attribute can be used to 
+        adjust styles on the page outside the player's
+        custom element. 
+      </p>
+
+      <p>
+        For example, this page has the following styles
+        which fade the background to black and the text
+        colors to gray via my custom CSS properties 
+        when the video is playing:
+      </p>
+
+      <pre class="language-css"><code class="language-css">body {
+  transition: background-color 0.9s ease-in, color 0.9s ease-in;
+}
+
+body[data-youtube-player-state="playing"] {
+  --background-color: black;
+  --primary-color: #444;
+  --secondary-color: #444;
+}</code></pre>
 
 
       <h2>Known Bugs</h2>

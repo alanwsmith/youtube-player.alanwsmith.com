@@ -1,17 +1,3 @@
-:root {
-  --youtube-player-button-base-foreground: #333;
-  --youtube-player-button-base-background: #999;
-  --youtube-player-button-base-hover-foreground: var(--youtube-player-button-base-background);
-  --youtube-player-button-base-hover-background: var(--youtube-player-button-base-foreground);
-  --youtube-player-button-faded-foreground: #111;
-  --youtube-player-button-faded-background: #333;
-  --youtube-player-button-faded-hover-foreground: var(--youtube-player-button-faded-background);
-  --youtube-player-button-faded-hover-background: var(--youtube-player-button-faded-foreground);
-
-}
-
-
-
 
 body {
   transition: background-color 0.9s ease-in, color 0.9s ease-in;
@@ -21,12 +7,13 @@ body[data-youtube-player-state="playing"] {
   --background-color: black;
   --primary-color: #444;
   --secondary-color: #444;
-  transition: background-color 0.9s ease-in, color 0.9s ease-in;
 }
 
+/*
 youtube-player {
   margin-bottom: 2.5rem;
 }
+*/
 
 /* Testing overrides */
 
