@@ -21,8 +21,9 @@
     <meta property="og:description" content="My YouTube player web component" />
     <meta name="description" content="My YouTube player web component" />
     <link rel="stylesheet" href="/styles/main.css" />
-    <script type="module" src="/scripts/youtube-player-v1.js"></script>
+    <link rel="stylesheet" href="/styles/prism.css" />
     <link rel="stylesheet" href="/styles/youtube-player-v1.css" />
+    <script type="module" src="/components/youtube-player-v1.js"></script>
   </head>
  
   <body>
@@ -46,29 +47,57 @@
       </div>
 
 
-
       <h2>Examples</h2>
 
       <h3>Default Player</h3>
       <p>
-        This is the output from the basic player
+        The component uses a custom element named <code>youtube-player</code>. 
+        It requires a <code>:video</code> attribute with the ID
+        of the video to display. For example:
       </p>
 
-      <p>Code:</p>
-      <pre><code>&lt;youtube-player :video=&quot;LT3cERVRoQo&quot;&gt;&ltyoutube-player&gt;</code></pre>
+      <p>HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;LT3cERVRoQo&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+      <noscript>No JavaScript available to load YouTube players</noscript>
 
+      <p>Output</p>
       <!-- David Bowie -->
-      <youtube-player :video="LT3cERVRoQo">
-        <noscript>No JavaScript available to load YouTube player</noscript>
-      </youtube-player>
+      <youtube-player :video="LT3cERVRoQo"></youtube-player>
 
       <p>For contrast, here's what the default YouTube embed looks like</p>
-<iframe width="560" height="315" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<style>
+
+.youtube-iframe-wrapper {
+	position: relative;
+	padding-bottom: 56.25%; /* 16:9 */
+	padding-top: 25px;
+	height: 0;
+	overflow: hidden;
+	max-width: 100%;
+}
+.youtube-iframe-wrapper iframe {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+.youtube-iframe {
+  width: 100%;
+}
+</style>
+      <div class="youtube-iframe-wrapper">
+<iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+
 
       <p>
-        I find the component's thumbnail much nicer to look at. It also loads way faster.
+        I find the component's thumbnail nicer to look at. It also loads way faster by
+        using an initial thumbnail image while the player itself is loading.
       </p>
-
 
       <h3>Chapters</h3>
       <p>
@@ -77,8 +106,15 @@
         expended to provide buttons to jump between them
       </p>
       <!-- Doechii -->
+      <p>HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;-91vymvIH0c&quot;
+    :chapters=&quot;18, 32, 84, 176, 276&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p>Output</p>
       <youtube-player :video="-91vymvIH0c" :chapters="18, 32, 84, 176, 276, 407, 577, 733, 1038, 1418">
-        <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
 
@@ -234,8 +270,6 @@ EDnIEWyVIlE
       <h2>To Sort</h2>
 
       <ul>
-
-
         <li>
           <p>
             Videos are embedded using a custom <code>youtube-player</code> element. It has
@@ -488,9 +522,6 @@ EDnIEWyVIlE
 
 
 
-
-
-
       </pre>
       
 
@@ -512,5 +543,7 @@ EDnIEWyVIlE
         <a href="https://socials.alanwsmith.com">socials</a>
       </div>
     </footer>
+
+    <script type="module" src="/scripts/prism.js"></script>
   </body>
 </html>
