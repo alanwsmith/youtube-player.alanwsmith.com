@@ -267,7 +267,7 @@ class YouTubePlayer extends HTMLElement {
     this.timeouts = {}
     this.restart = false
     this.attrs = {
-      "ca": null,
+      "advisory": null,
       "end": null, 
       "skip-forward": 7,
       "restart": "off",
@@ -467,12 +467,12 @@ class YouTubePlayer extends HTMLElement {
   }
 
   async getTitle() {
-    let contentWarning = ""
-    if (this.attrs['ca'] !== null) {
-      contentWarning = `<div class="content-warning">${this.attrs['ca']}</div>`
+    let contentAdvisory = ""
+    if (this.attrs['advisory'] !== null) {
+      contentAdvisory = `<div class="content-advisory">${this.attrs['advisory']}</div>`
     }
     if (this.attrs['title'] !== null) {
-      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentWarning}`
+      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentAdvisory}`
     } else {
       const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
       let response = await fetch(url)
@@ -481,7 +481,7 @@ class YouTubePlayer extends HTMLElement {
       } else {
         let json = await response.json()
         // TODO: Figure out error handling here
-        this.parts.title.innerHTML = `<div>${json.title}</div>${contentWarning}`
+        this.parts.title.innerHTML = `<div>${json.title}</div>${contentAdvisory}`
       }
     }
   }
@@ -806,7 +806,7 @@ class YouTubePlayer extends HTMLElement {
   top: 0;
   width: 100%;
 }
-.content-warning {
+.content-advisory {
   padding-top: 1rem;
   font-weight: 900;
 }
