@@ -46,29 +46,158 @@
         </p>
       </div>
 
+      <h2>Overview</h2>
+
+      <p>
+        This component provides an alternate YouTube embed 
+        experience. It started as a way to clean up the 
+        thumbnail/preview images and evolved from there. 
+      </p>
+
+      <h2>Features</h2>
+      <h3>Video Player</h3>
+      <ul>
+        <li>
+          Embed videos with a custom <code class="language-html">&ltyoutube-player&gt;</code>
+          element
+        </li>
+        <li>
+          Primary controls for restart, skip back, play, skip forward, and
+          mute are always visible buttons below the video
+        </li>
+        <li>
+          TODO: Style controls from global page
+          variables
+        </li>
+        <li>
+          Aria labels are built into the player controls
+        </li>
+        <li>
+          Control buttons don't show up until the video player 
+          is ready to go
+        </li>
+        <li>
+          Add chapter markers for skipping directly to different 
+          parts of the video. (Addition chapter skip buttons
+          show up when a video has chapters)
+        </li>
+        <li>
+          Thumbnails load before the video player. They appear
+          significantly faster than the default 
+          YouTube player embed. 
+        </li>
+        <li>
+          The highest quality thumbnails are used for videos that
+          have them. They automatically fallback to base quality 
+          thumbnails if the higher quality ones don't exist. 
+        </li>
+        <li>
+          Custom thumbnail images can be used in place of
+          the defaults from YouTube
+        </li>
+        <li>
+          Videos can be set to start and end at custom times
+        </li>
+        <li>
+          Custom titles can be used in place of the ones
+          that come from YouTube
+        </li>
+        <li>
+          Content advisories can be added below titles
+        </li>
+        <li>
+          The number of seconds to skip forward and backward
+          can be adjusted
+        </li>
+        <li>
+          Videos remember where they are by default. They can
+          also be set to restart from the beginning (of from 
+          their custom start time) 
+        </li>
+        <li>
+          When videos end (or another video is played)
+          they revert back to showing only the thumbnail
+          and title
+      </ul>
+
+      <h3>Multiple Players</h3>
+      <p>
+        The component is designed to accommodate multiple video
+        players on a page.
+      </p>
+      <ul>
+        <li>
+          Starting one video stops other videos
+          on the page
+        </li>
+        <li>
+          Playing a video dims the other videos
+          on the page
+        </li>
+      </ul>
+
+      <h3>Page Level Styles</h3>
+      <ul>
+        <li>
+          A <code class="language-html">data-youtube-player</code>
+          attribute is added to the page's <code class="langauge-html">body</code>
+          tag when a video is played. It can be used to 
+          change the styles on the page. For example, this 
+          page fades the background to black and darkens the
+          text colors to make videos stand out more
+        </li>
+      </ul>
 
       <h2>Examples</h2>
 
       <h3>Default Player</h3>
       <p>
         The component uses a custom element named <code>youtube-player</code>. 
-        It requires a <code>:video</code> attribute with the ID
-        of the video to display. For example:
+        It uses a <code>:video</code> attribute with the ID
+        of the video to play. For example:
       </p>
 
-      <p>HTML</p>
+      <p class="example-heading">HTML</p>
       <div class="html-sample">
       <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;LT3cERVRoQo&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
+
       <noscript>No JavaScript available to load YouTube players</noscript>
 
-      <p>Output</p>
+      <p class="example-heading">Output</p>
       <!-- David Bowie -->
       <youtube-player :video="LT3cERVRoQo"></youtube-player>
 
-      <p>For contrast, here's what the default YouTube embed looks like</p>
+      <p>
+        The component limits what it shows to the thumbnail, title, 
+        and controls. That's compared to the default YouTube
+        embed which puts the play button in the middle. And, 
+        depending on the size of the video, the YouTube player
+        adds other elements like &quot;Watch later&quot; and
+        &quot;Share&quot; buttons. 
+      </p>
+      <p>
+        Here's an example of YouTube's default embed for comparison:
+      </p>
 <style>
+
+.youtube-iframe-wrapper-fader {
+  background: black;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+  opacity: 0;
+  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+}
+
+body[data-youtube-player-state="playing"] .youtube-iframe-wrapper-fader {
+  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+  opacity: 0.6;
+}
+
 
 .youtube-iframe-wrapper {
 	position: relative;
@@ -90,9 +219,9 @@
 }
 </style>
       <div class="youtube-iframe-wrapper">
-<iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-
+        <iframe class="youtube-iframe" width="420" height="236" src="https://www.youtube.com/embed/LT3cERVRoQo?si=14a1L6v0aSynHAIn" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <div class="youtube-iframe-wrapper-fader"></div>
+      </div>
 
       <p>
         I find the component's thumbnail nicer to look at. It also loads way faster by
@@ -105,15 +234,15 @@
         attribute. If an instance of a component includes chapters the controls are
         expended to provide buttons to jump between them
       </p>
-      <!-- Doechii -->
-      <p>HTML</p>
+      <p class="example-heading">HTML</p>
       <div class="html-sample">
       <pre class="language-html"><code class="language-html">&lt;youtube-player
     :video=&quot;-91vymvIH0c&quot;
     :chapters=&quot;18, 32, 84, 176, 276&quot;
 &gt;&ltyoutube-player&gt;</code></pre></div>
 
-      <p>Output</p>
+      <p class="example-heading">Output</p>
+      <!-- Doechii -->
       <youtube-player :video="-91vymvIH0c" :chapters="18, 32, 84, 176, 276, 407, 577, 733, 1038, 1418">
       </youtube-player>
 
@@ -122,9 +251,19 @@
       <p>
         The component attempts to load YouTube's high quality thumbnails. 
         Not ever video has them. The component falls back to a lower 
-        quality version if that's the case.
+        quality version if that's the case. This happens by default. 
+        For example, this video doesn't have the highest quality 
+        thumbnail and falls back to a smaller one:
       </p>
 
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;fiShsfvbFUA&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+
+      <p class="example-heading">Output</p>
       <!-- mmmmmm bop -->
       <!-- this one doesn't have a maxres thumbnail -->
       <youtube-player :video="fiShsfvbFUA">
@@ -135,6 +274,15 @@
       <p>
         YouTube thumbnails can be replace with custom images
       </p>
+
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;fiShsfvbFUA&quot;
+    :thumbnail=&quot;/images/rage-against-thumbnail.jpg&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
       <!-- Rage Against The Machine -->
       <youtube-player :video="Rm1nCYOZB-s" :thumbnail="/images/rage-against-thumbnail.jpg">
         <noscript>No JavaScript available to load YouTube player</noscript>
@@ -145,6 +293,16 @@
         The component accepts custom start times. For example, this videos
         doesn't really get going until 54 seconds in. 
       </p>
+
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;NoMqvniiEkk&quot; 
+    :start=&quot;54&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+
+      <p class="example-heading">Output</p>
       <!-- Kenzo World -->
       <youtube-player :video="NoMqvniiEkk" :start="54">
         <noscript>No JavaScript available to load YouTube player</noscript>
@@ -155,6 +313,15 @@
         An end time can be set as well. For example, this one only 
         plays the first 11 seconds of the video.
       </p>
+
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;REPPgPcw4hk&quot; 
+    :end=&quot;11&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
       <!-- Somebody That I Used To Know -->
       <youtube-player :video="REPPgPcw4hk" :end="11">
         <noscript>No JavaScript available to load YouTube player</noscript>
@@ -166,21 +333,49 @@
         with a custom title. Makes it nice for removing &quot[Official Video]&quot;
         type stuff which is what was done for this one.
       </p>
+
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;K7xzmkpwNoA&quot; 
+    :title=&quot;Little Simz - Gorilla&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
+
       <!-- Little Simz -->
       <youtube-player :video="K7xzmkpwNoA" :title="Little Simz - Gorilla">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
 
       <h3>Content Advisory</h3>
+      
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;tRwHpyOq4P4&quot; 
+    :advisory=&quot;Warning: contains flashing lights&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
+
       <p>
         The component provides for adding content advisories that can be used
         for flashing lights, language, sensitive topics, etc...
       </p>
-      <youtube-player :video="tRwHpyOq4P4" :ca="Warning: contains flashing lights">
+      <youtube-player :video="tRwHpyOq4P4" :advisory="Warning: contains flashing lights">
         <noscript>No JavaScript available to load YouTube player</noscript>
       </youtube-player>
       
       <h3>Restarting From The Beginning</h3>
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;Cz8cbwR_6ms&quot; 
+    :restart=&quot;on&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
       <p>
         Switching between multiple videos on a page stops the one
         that was left and returns it to the thumbnail. If you
@@ -197,6 +392,15 @@
 
 
       <h3>Custom Skip Times</h3>
+      <p class="example-heading">HTML</p>
+      <div class="html-sample">
+      <pre class="language-html"><code class="language-html">&lt;youtube-player
+    :video=&quot;dAwLMS8fgoA&quot; 
+    :skip-forward=&quot;3&quot;
+    :skip-back=&quot;3&quot;
+&gt;&ltyoutube-player&gt;</code></pre></div>
+
+      <p class="example-heading">Output</p>
       <p>
         The skip forward and back buttons default to +7sec. and -10sec.
         respectively. Those times can be customized with <code>:skip-forward</code>
