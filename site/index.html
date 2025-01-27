@@ -26,7 +26,7 @@
 <style data-note="styles for default YouTube player">
 
 body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
-  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+  transition: opacity 0.3s ease-in, color 0.3s ease-in;
   opacity: 0.3;
 }
 
@@ -55,7 +55,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
   left: 0;
   width: 100%;
   height: 100%;
-  transition: opacity 0.9s ease-in, color 0.9s ease-in;
+  transition: opacity 0.3s ease-in, color 0.3s ease-in;
 }
 
 .youtube-iframe {
@@ -77,18 +77,12 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
     <main class="flow"> 
       <hgroup>
         <h1>Alan's YouTube Player Web Component</h1>
+        <div class="right">
+          <github-stars>
+            <a href="https://www.github.com/alanwsmith/youtube-player.alanwsmith.com">github repo</a>
+          </github-stars>
+        </div>
       </hgroup>
-
-      <div class="warning flow">
-        <h2>WORK-IN-PROGRESS</h2>
-        <p>
-          This component is still under development. 
-          Some features are missing, there are 
-          bugs, and the documentation is out of date.
-          That said, it's working enough to give 
-          you an idea of how it'll function when it's done.
-        </p>
-      </div>
 
       <h2>Overview</h2>
 
@@ -120,6 +114,8 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           </div>
         </li>
       </ol>
+
+
 
       <h2>Features</h2>
 
@@ -479,7 +475,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
           dragging back and forth on the timeline.
         </li>
       </ul>
-      
+
       <h2>Player Styling</h2>
       <p>
         The player includes default styles
@@ -570,10 +566,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         They can be updated with an embedded URL for
         another SVG. For example:
       </p>
-
       <pre class="language-css"><code class="language-css">--youtube-player--play-icon: url("data:image/svg+xml;utf8,%3Csvg%0A%20%20viewBox%3D%220%200%20100%20100%22%0A%20%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%0A%20%20stroke%3D%22red%22%0A%20%20fill%3D%22grey%22%3E%0A%20%20%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2240%22%20%2F%3E%0A%3C%2Fsvg%3E%0A");</code></pre>
-
-
       <p>The buttons use
         <code class="language-html">mask-image</code> for
         the SVGs. That allows them to be styled with
@@ -598,7 +591,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         It defaults to:
       </p>
       <div>
-      <pre class="language-css"><code class="language-css">--youtube-player--transition-time: 0.6s</code></pre>
+      <pre class="language-css"><code class="language-css">--youtube-player--transition-time: 0.3s</code></pre>
       </div>
 
 
@@ -621,6 +614,7 @@ body[data-youtube-player-state="playing"] .youtube-iframe-wrapper iframe {
         when the video is playing:
       </p>
 
+      <div>
       <pre class="language-css"><code class="language-css">body {
   transition: background-color 0.6s ease-in, color 0.6s ease-in;
 }
@@ -630,7 +624,7 @@ body[data-youtube-player-state="playing"] {
   --primary-color: #444;
   --secondary-color: #444;
 }</code></pre>
-
+      </div>
 
       <h2>Known Bugs</h2>
       <ul>
@@ -641,257 +635,80 @@ body[data-youtube-player-state="playing"] {
         </li>
       </ul>
 
-      <h2>Features And TODOs</h2>
-      <div class="warning">
-        NOTE: I don't keep this list up to date during development. 
-        Somethings may have changed. They'll be made current once
-        development is complete. 
-      </div>
+      <h2>Someday/Maybe TODOs</h2>
 
       <ul>
         <li>
-          TODO: Add button sizes to global vars
+          Write up how to use the default YouTube
+          embed for progressive enhancement
         </li>
         <li>
-          Starting one video fades back the rest of the videos
-          on the page. (Right now, this is a hard transition. It'll 
-          be a gradual fade when dev is done)
+          Add button sizes to global vars
         </li>
         <li>
-          Playing a video adds a <code>youtube-player-status</code>
-          data attribute to the document's body tag. This can be
-          used to do things like fading the background and fonts
-          when a video is playing (like I'm doing on this page)
-        </li>
-      </ul>
-
-      <h2>To Sort</h2>
-
-      <ul>
-        <li>
-          TODO: Style controls from global page
-          variables
+          Show the length of the video
         </li>
         <li>
-          <p>
-            Videos are embedded using a custom <code>youtube-player</code> element. It has
-            one required <code>video</code> attribute which is the YouTube ID of the 
-            video to play. For example:
-          </p>
-          <pre><code>&lt;youtube-player video="REPPgPcw4hk"&gt;
-  &lt;noscript&gt;
-    JavaScript is not available to load the video player
-  &lt;/noscript&gt;
-&lt;/youtube-player&gt;
-          </pre></code>
-        </li>
-        <li>
-          <p>
-            An optional <code>start</code> attribute can be used to set
-            start the video some number of seconds in. (It has to be full seconds,
-            and may not be exactly what's used because of the way
-            some video encoding works)
-          </p>
-        </li>
-        <li>
-          Provide a Play/Pause button
-        </li>
-        <li>
-          Provide a Stop button
-        </li>
-        <li>
-          Allow multiple videos on a single page
-        </li>
-        <li>
-          Provide speed adjustment buttons
-        </li>
-        <li>
-          Allow styling from via parent page's CSS
-        </li>
-        <li>
-          Provide structure for responsive design 
-        </li>
-        <li>
-          Provide a mute/unmute button
-        </li>
-        <li>
-          Provide a data-state value for styling depending 
-          on the state of the player (e.g. playing, paused, stopped)
-        </li>
-        <li>
-          Show an image instead of the video to start with
-        </li>
-        <li>
-          Provide a data-yt-state attribute to body element
-          that can be used to adjust styling when videos are playing
-          (e.g. dim the rest of the content). (Note: I'm punting
-          on issues that will arise if there are multiple players
-          on the page that you try to play at the same time)
-        </li>
-        <li>
-          TODO: When stopped, allow an option to restart at the
-          same place set via an attributes
-        </li>
-        <li>
-          TODO: Save playhead location when stopping the player or reloading
-          the page. 
-        </li>
-        <li>
-          TODO: Set up the speed buttons so they start playing
-          at the specific speed if the video isn't already going
-        </li>
-        <li>
-          TODO: Provide skip forward and backwards buttons
-        </li>
-        <li>
-          TODO: Fallback to lower res images if the best quality
-          one fails (see note in reference from Paul Irish)
-        </li>
-        <li>
-          TODO: Show the length of the vidoe
-        </li>
-        <li>
-          TODO: Show the video's title
-        </li>
-        <li>
-          TODO: Look at using :not(:defined) to hide
-          the element but set its height 
-          before it's fully loaded
-        </li>
-        <li>
-          TODO: Add a spinner if to show loading for
-          when the network is slow
-        </li>
-        <li>
-          TODO: Set up so you can paste a full URL in
-          and have it parse (so you don't have to pull
-          the ID yourself)
-        </li>
-        <li>
-          TODO: Make an error message if there's
-          no video id available
-        </li>
-        <li>
-          TODO: Figure out if you can figure out
-          if a video won't play in a certain region
-          and provide a fallback of some sort.
-        </li>
-        <li>
-          TODO: Custom thumbnails
-        </li>
-        <li>
-          TODO: Make chapter markers
-        </li>
-        <li>
-          TODO: Don't show buttons until the video
-          is loaded
-        </li>
-        <li>
-          TODO: Sometimes the videos don't seem 
-          to load on my phone. Not sure what's going
-          on, but see if there's a way to check and
-          restart after an interval (start with 
-          investigation network traffic)
-        </li>
-        <li>
-          TODO: Showing some type of loading message
-          while the iframe is loading.
-        </li>
-        <li>
-          TODO: Preload the video on network connections
-          that can handle it
-        </li>
-        <li>
-          TODO: Accept custom css to override variables
-        </li>
-        <li>
-          TODO: Show the length of the video
-        </li>
-        <li>
-          TODO: Add a short delay (e.g. 300ms) before showing the
-          loading badge so it doesn't show up if the video
-          starts quickly. 
-        </li>
-      </ul>
-
-      <h2>Someday/Maybe</h2>
-      <ul>
-        <li>
-          PROBABLY: Set custom aspect ratio to avoid black bars
-        </li>
-        <li>
-          PROBABLY: Use page metrics to figure out if the
-          page loaded within a certain threshold and then
-          preload the videos if it does.
-        </li>
-        <li>
-          PROBABLY: Or, preload a video when it's in the
-          view
-        </li>
-        <li>
-          PROBABLY: when first launching the page the videos might
-          be mutted. When the first one is unmutted send a signal to
-          unmute the rest so you don't have to do that manually
-          for each video
-        </li>
-        <li>
-          MAYBE: Add ability to float the video player keeping
-          it in frame.
-        </li>
-        <li>
-          Or, maybe a button to drop it down into the 
-          side of the page
-        </li>
-        <li>
-          PROBABLY: Send focus to video player so keyboard commands work
-        </li>
-        <li>
-          PROBABLY: If there are multiple videos on the page only one
-          plays at a time (i.e. if one is playing and another one
-          gets started it stops the first one).
-        </li>
-        <li>
-          MAYBE: Support a fade-in/fade-out feature. Probably configurable. 
-        </li>
-        <li>
-          MAYBE: Add volume slider
-        </li>
-        <li>
-          MAYBE: Set up coordination to allow multiple videos
-          to play at the same time without clobbering each other
-          when updated the body level `data-youtube-player-state`
+          Take a full URL (instead of just an 
+          ID) for easier use of the <code>:video</code>
           attribute
         </li>
         <li>
-          MAYBE: Allow other scripts on the page to control the player
-          (this might already work, needs testing)
+           Make an error message if there's
+          no video id available
         </li>
         <li>
-          MAYBE: Provide an autoplay attribute that attempts to 
-          auto play the video
+          Figure out 
+          if a video won't play in a certain region
+          and provide a fallback
+        </li>
+        <li>
+          Preload videos on network connections
+          that can handle it
+        </li>
+        <li>
+          Add a short delay (e.g. 300ms) before showing the
+          loading badge so it doesn't show up if the video
+          starts quickly. 
+        </li>
+        <li>
+          Add ability to float the video player keeping
+          it in frame when scrolling. Or, maybe a button to 
+          drop it down into the side of the page
+        </li>
+        <li>
+          Add a volume slider
         </li>
       </ul>
 
       <h2>Notes</h2>
       <ul>
         <li>
-          The playback rates available for each video are
-          determined on the YouTube side. They are filtered
-          down to include: 0.5x, 1x, 1.5x, 2x, and 3x. This ignores
-          0.25x, 0.75x, 1.25x, and 1.75x. I'm making that trade off
-          to reduce the number of items in the UI. I'm not
-          sure if 3x rates exist. The numbers in the docs are generic
-          and the test videos I've used don't have the rate. 
-          TBD on that.
+          Need to get a better understanding of how 
+          focusing is working with keyboard events
         </li>
         <li>
-          I'd like to be able to add a closed caption button
-          but I'm not sure how to do that yet or if it's even 
-          possible through the api. TBD on that
+          This version of the component doesn't attempt
+          to auto-play the video. Might look at that
+          via an optional attribute in the future
         </li>
         <li>
-          I'm not trying to optimize loading. The base functionality
-          is provided directly by the YouTube API and default iFrame
+          I experimented with adding buttons to change the 
+          playback speed. It cluttered things up more that
+          I liked. Might play with that again in the 
+          future.
+        </li>
+        <li>
+          I thought about adding the ability to set a custom
+          ratio that would zoom the player in to avoid 
+          black bars. That won't work directly since
+          the zoom could potentially make the iframe
+          controls inaccessible
+        </li>
+        <li>
+          I'd like to be able to add a closed caption on/off button.
+          It doesn't look like that's possible with the ifram
+          API though
         </li>
       </ul>
 
@@ -902,6 +719,12 @@ body[data-youtube-player-state="playing"] {
         <li><a href="https://css-tricks.com/fluid-width-video/">Fluid Width Video from CSS Tricks</a></li>
         <li><a href="https://github.com/paulirish/lite-youtube-embed/blob/master/youtube-thumbnail-urls.md">Lo, the youtube placeholder image! from Paul Irish</a></li>
       </ul>
+
+        <div class="center">
+          <github-stars>
+            <a href="https://www.github.com/alanwsmith/youtube-player.alanwsmith.com">github repo</a>
+          </github-stars>
+        </div>
 
     </main>
 
@@ -917,5 +740,6 @@ body[data-youtube-player-state="playing"] {
     </footer>
 
     <script type="module" src="/scripts/prism.js"></script>
+    <script type="module" src="/components/github-stars-beta-1.js"></script>
   </body>
 

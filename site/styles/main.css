@@ -109,6 +109,10 @@ a:hover, a:focus {
   color: blue;
 }
 
+.center {
+  text-align: center;
+}
+
 .flow > :where(:not(:first-child)) {
   margin-top: var(--flow-space, 1.0em);
 }
@@ -198,6 +202,10 @@ pre {
 
 .red {
   color: red;
+}
+
+.right {
+  text-align: right;
 }
 
 section {
