@@ -90,6 +90,7 @@ sheet.replaceSync(`
 .buttons {
   margin-top: 0.6rem;
   display: flex;
+  flex-wrap: wrap;
   gap: 0.3rem;
   justify-content: right;
 }
@@ -100,6 +101,7 @@ sheet.replaceSync(`
   display: flex;
   gap: 0.3rem;
   justify-content: right;
+  flex-wrap: wrap;
 }
 .control-button {
   background: var(--base-button-background);

@@ -160,7 +160,7 @@ h4 {
 header {
   margin-block: var(--medium-margin);
   margin-inline: auto;
-  width: var(--large-width);
+  max-width: 100px;
 }
 
 pre.language-html,
@@ -181,11 +181,12 @@ main {
   grid-template-columns: 1fr;
   margin-inline: auto;
   padding-bottom: var(--xlarge-padding);
-  width: var(--large-width);
+  max-width: min(--large-width, 100vw - 6rem);
+  padding-inline: 1rem;
 }
 
 /* uncomment to center horizontally
-main {
+main 
   justify-items: center;
 }
 */
@@ -292,7 +293,6 @@ body[data-youtube-player-state="playing"] {
   --color-4: var(--html-example--color-4, #444);
   --color-5: var(--html-example--color-5, #444);
 }
-
 
 code[class*='language-'],
 code[class*='language-'] span,
