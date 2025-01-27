@@ -412,11 +412,6 @@ class YouTubePlayer extends HTMLElement {
     delete this.instances[instance.uuid]
   }
 
-  static setActivePlayer(instance) {
-    console.log(`Active player now: ${instance.uuid}`)
-    this.activePlayer = instance.uuid
-  }
-
   addContent() {
     let previousChapterButton = ""
     let nextChapterButton = ""
@@ -529,8 +524,6 @@ class YouTubePlayer extends HTMLElement {
     super()
     this.uuid = self.crypto.randomUUID()
     this.chapters = []
-    this.loadingTimeout = null
-    this.loadingTimeoutTime = 400
     this.timeouts = {}
     this.restart = false
     this.attrs = {
@@ -552,6 +545,10 @@ class YouTubePlayer extends HTMLElement {
     ]
     this.attachShadow({mode: 'open'})
     this.shadowRoot.adoptedStyleSheets = [ sheet ];
+  }
+
+  disconnectedCallback() {
+    this.constructor.removeInstance(this)
   }
 
   doEnded() {
@@ -760,12 +757,6 @@ class YouTubePlayer extends HTMLElement {
     )
   }
 
-  handleWrapperClick(event) {
-    this.loadingTimeout = setTimeout(() => {
-      this.parts.loading.classList.remove('hidden')
-    }, this.loadingTimeoutTime)
-    this.player.playVideo()
-  }
 
   async init() {
     this.loadApi()
