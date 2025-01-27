@@ -551,23 +551,6 @@ class YouTubePlayer extends HTMLElement {
     this.constructor.removeInstance(this)
   }
 
-  doEnded() {
-  }
-
-  doPlaying() {
-  }
-
-  // really stop and fade
-  doPauseAndFade() {
-    this.player.stopVideo()
-  }
-
-  doPauseOnActivePlayer() {
-  }
-
-  doRemoveFade() {
-  }
-
   flashMessage(text) {
     this.parts.flashMessage.innerHTML = text
     this.parts.flashMessage.classList.remove('hidden')
@@ -716,24 +699,16 @@ class YouTubePlayer extends HTMLElement {
   handlePlayerStateChange(event) {
     const playerState = event.target.getPlayerState()
     if (playerState == -1) {
-      // console.log("STATUS: UNSTARTED")
-      // N/A - here for reference
+      // N/A - unstarted - here for reference
     } else if (playerState == YT.PlayerState.BUFFERING) {
-      // console.log("STATUS: BUFFERING")
       this.constructor.handleBuffering(this)
     } else if (playerState == YT.PlayerState.CUED) {
-      // console.log("STATUS: CUED")
       // N/A - here for reference
     } else if (playerState == YT.PlayerState.ENDED) {
-      // console.log("STATUS: ENDED")
-      // TODO: Move the start time back to the original 
-      // start time.
       this.constructor.handleEnded(this)
     } else if (playerState == YT.PlayerState.PAUSED) {
-      // console.log("STATUS: PAUSED")
       this.constructor.handlePaused(this)
     } else if (playerState == YT.PlayerState.PLAYING) {
-      // console.log("STATUS: PLAYING")
       this.constructor.handlePlaying(this)
     }
   }
@@ -776,9 +751,6 @@ class YouTubePlayer extends HTMLElement {
           onStateChange: (event) => {
             this.handlePlayerStateChange.call(this, event)
           },
-          // onPlaybackRateChange: (event) => {
-          //   this.handlePlaybackRateChange.call(this, event)
-          // }
         },
       })
     }).then((value) => {
