@@ -118,6 +118,7 @@ a:hover, a:focus {
 }
 
 footer {
+  margin-inline: auto;
   margin-top: var(--xlarge-margin);
   margin-bottom: var(--large-margin);
   font-size: var(--small-font-size);
