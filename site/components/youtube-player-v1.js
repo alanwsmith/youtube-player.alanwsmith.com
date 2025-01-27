@@ -190,7 +190,7 @@ sheet.replaceSync(`
   mask-size: contain;
 }
 .flash-message {
-  font-size: 1.6rem;
+  font-size: 1.1rem;
   color: var(--text-color);
   border-radius: 0.6rem;
   position: absolute;
