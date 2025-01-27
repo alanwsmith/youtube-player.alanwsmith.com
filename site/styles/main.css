@@ -143,17 +143,14 @@ h1 {
 h2 {
   font-size: var(--xxlarge-font-size);
   --flow-space: 1.3em;
-}
-
-h3 {
-  font-size: var(--xlarge-font-size);
-  --flow-space: 1.3em;
+  border-bottom: 1px solid var(--secondary-color);
 }
 
 h3 {
   font-size: var(--large-font-size);
-  --flow-space: 1.0em;
+  --flow-space: 2.0em;
 }
+
 
 h4 {
   font-size: var(--medium-font-size);
