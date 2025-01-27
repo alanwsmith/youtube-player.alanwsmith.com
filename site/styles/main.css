@@ -122,6 +122,7 @@ footer {
   margin-bottom: var(--large-margin);
   font-size: var(--small-font-size);
   text-align: center;
+  max-width: min(var(--large-width), 100vw - 2rem);
 }
 
 .green {
@@ -160,7 +161,7 @@ h4 {
 header {
   margin-block: var(--medium-margin);
   margin-inline: auto;
-  max-width: 100px;
+  max-width: min(var(--large-width), 100vw - 2rem);
 }
 
 pre.language-html,
@@ -181,8 +182,7 @@ main {
   grid-template-columns: 1fr;
   margin-inline: auto;
   padding-bottom: var(--xlarge-padding);
-  max-width: min(--large-width, 100vw - 6rem);
-  padding-inline: 1rem;
+  max-width: min(var(--large-width), 100vw - 2rem);
 }
 
 /* uncomment to center horizontally
@@ -190,6 +190,9 @@ main
   justify-items: center;
 }
 */
+
+.page-wrapper {
+}
 
 pre {
   white-space: pre-wrap; 
