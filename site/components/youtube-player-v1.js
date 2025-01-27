@@ -70,11 +70,11 @@ sheet.replaceSync(`
   );
   --text-background-color: var(
     --youtube-player--text-background-color, 
-    rgb(0 0 0 / 0.6)
+    rgb(0 0 0 / 0.3)
   );
   --text-color: var(
     --youtube-player--text-color, 
-    #aaa
+    #ccc
   );
   --transition-time: var(--youtube-player--transition-time, 0.3s);
   --unmute-icon: var(
@@ -421,7 +421,7 @@ class YouTubePlayer extends HTMLElement {
       previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
       nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
     }
-    let defaultThumbnail = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
+    let defaultThumbnail = `https://i.ytimg.com/vi/${this.videoId}/maxresdefault.jpg`
     if (this.attrs.thumbnail) {
       defaultThumbnail = this.attrs.thumbnail 
     }
@@ -432,7 +432,7 @@ class YouTubePlayer extends HTMLElement {
   <div class="fader hidden"></div>
   <div class="thumbnail">
     <object type="image/jpg" data="${defaultThumbnail}" aria-label="Video thumbnail image">
-      <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
+      <img src="https://i.ytimg.com/vi/${this.videoId}/hqdefault.jpg" aria-label="Video thumbnail image" />
     </object>
   </div>
   <div class="wrapper hidden">
@@ -516,6 +516,7 @@ class YouTubePlayer extends HTMLElement {
   connectedCallback() {
     this.constructor.registerInstance(this)
     this.getAttributes()
+    this.getVideoId()
     this.addContent()
     this.getTitle()
     this.addEventListeners()
@@ -599,7 +600,7 @@ class YouTubePlayer extends HTMLElement {
     if (this.attrs['title'] !== null) {
       this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentAdvisory}`
     } else {
-      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
+      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.videoId}&format=json`
       let response = await fetch(url)
       if (!response.ok) {
         throw new Error('There was a problem getting the data')
@@ -608,6 +609,17 @@ class YouTubePlayer extends HTMLElement {
         // TODO: Figure out error handling here
         this.parts.title.innerHTML = `<div>${json.title}</div>${contentAdvisory}`
       }
+    }
+  }
+
+  getVideoId() {
+    if (this.attrs.video.startsWith("http") === true) {
+      const params = new URL(this.attrs.video).searchParams;
+      if (params.get('v')) {
+        this.videoId = params.get('v');
+      }
+    } else {
+      this.videoId = this.attrs.video;
     }
   }
 
@@ -734,7 +746,6 @@ class YouTubePlayer extends HTMLElement {
     )
   }
 
-
   async init() {
     this.loadApi()
     await this.apiLoader
@@ -850,7 +861,7 @@ class YouTubePlayer extends HTMLElement {
 
   cueVideo() {
     let options = {
-      'videoId': this.attrs.video,
+      'videoId': this.videoId,
     }
     if (this.restart === true) {
       options['startSeconds'] = this.attrs['start']
