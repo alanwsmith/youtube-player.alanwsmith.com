@@ -1,798 +1,9 @@
-class YouTubePlayer extends HTMLElement {
-
-  // static activeInstance = null
-  static instances = {}
-  // static timeout = null
-
-  static pauseTimeout = null
-
-  static handleBuffering(instance) {
-    if (this.pauseTimeout !== null) {
-      clearTimeout(this.pauseTimeout)
-      this.pauseTimeout = null
-    }
-
-    // // this is here to help prevent the
-    // // pause from flowing through and triggering
-    // // the style changes when scrolling
-    // this.activeInstance = instance.uuid
-    // if (instance.uuid == this.activeInstance) {
-    //   if (this.timeout !== null) {
-    //     clearTimeout(this.timeout)
-    //     this.timeout = null
-    //   }
-    //   document.body.dataset.youtubePlayerState = 'playing'
-    // }
-
-  }
-
-  static handleEnded(instance) {
-    document.body.dataset.youtubePlayerState = 'ended'
-    for (const uuid in this.instances) {
-      this.instances[uuid].showStoppedBorder()
-      if (uuid === instance.uuid) {
-        this.instances[uuid].hidePlayer()
-        this.instances[uuid].showPlayButton()
-        this.instances[uuid].cueVideo()
-      } else {
-        this.instances[uuid].hideFader()
-      }
-    }
-
-    // // console.log(`handleEnded: ${instance.uuid}`)
-    // this.activeInstance = instance.uuid
-    // if (instance.uuid == this.activeInstance) {
-    //   document.body.dataset.youtubePlayerState = 'ended'
-    //   instance.doEnded()
-    // }
-
-  }
-
-  // this is for the button click
-  static handlePauseClicked(instance) {
-    document.body.dataset.youtubePlayerState = 'paused'
-    for (const uuid in this.instances) {
-      this.instances[uuid].hideFader()
-      this.instances[uuid].showStoppedBorder()
-    }
-  }
-
-  // this is for if the video is paused from inside
-  // the iframe
-  static handlePaused(instance) {
-
-    this.pauseTimeout = setTimeout(
-      () => {
-        document.body.dataset.youtubePlayerState = 'paused'
-        for (const uuid in this.instances) {
-          this.instances[uuid].hideFader()
-          this.instances[uuid].showStoppedBorder()
-        }
-      }, 250
-    )
-
-
-
-    // // console.log(`handlePause: ${instance.uuid}`)
-    // if (instance.uuid == this.activeInstance) {
-    //   // This is in a timeout because fast 
-    //   // forwarding and rewinding videos sends
-    //   // a pause event before sending another play
-    //   // event. without this everything does
-    //   // a quick unfade and then fade back. The
-    //   // little delay before fading back in when
-    //   // it should is less distracting than the
-    //   // in/out when moving in the video
-    //   this.timeout = setTimeout(() => {
-    //     instance.doPauseOnActivePlayer()
-    //     document.body.dataset.youtubePlayerState = 'paused'
-    //     for (const uuid in this.instances) {
-    //       if (uuid !== instance.uuid) {
-    //         this.instances[uuid].doRemoveFade()
-    //       }
-    //     }
-    //   }, 200)
-    // }
-
-  }
-
-  static fadeOtherVideos(instance) {
-    for (const uuid in this.instances) {
-      if (instance.uuid !== uuid) {
-        this.instances[uuid].showFader()
-      }
-    }
-  }
-
-  static stopOtherVideos(instance) {
-    for (const uuid in this.instances) {
-      if (instance.uuid !== uuid) {
-        this.instances[uuid].stopPlaying()
-        this.instances[uuid].hidePlayer()
-        this.instances[uuid].showPlayButton()
-      }
-    }
-  }
-
-  static handlePlaying(instance) {
-    document.body.dataset.youtubePlayerState = 'playing'
-    instance.showPlayer()
-    instance.hideLoading()
-    instance.showPlayingBorder()
-
-    for (const uuid in this.instances) {
-      if (uuid !== instance.uuid) {
-        this.instances[uuid].showFader()
-      }
-    }
-
-    // for (const uuid in this.instances) {
-    //   if (this.activeInstance === uuid) {
-    //     this.instances[uuid].showPlayer()
-    //   } else {
-    //     this.instances[uuid].stopPlaying()
-    //     this.instances[uuid].hidePlayer()
-    //     this.instances[uuid].showThumbnail()
-    //   }
-    // }
-
-
-    // // console.log(`switchActivePlayer: ${instance.uuid}`)
-    // // This clears the pause timeout which
-    // // is necessary to prevent short changes
-    // // when fast forwarding and rewinding
-    // if (this.timeout !== null) {
-    //   clearTimeout(this.timeout)
-    //   this.timeout = null
-    // }
-    // this.activeInstance = instance.uuid
-    // document.body.dataset.youtubePlayerState = 'playing'
-    // for (const uuid in this.instances) {
-    //   if (uuid === instance.uuid) {
-    //     this.instances[uuid].doPlaying()
-    //   } else {
-    //     this.instances[uuid].doPauseAndFade()
-    //   }
-    // }
-
-  }
-
-  static registerInstance(instance) {
-    this.instances[instance.uuid] = instance
-  }
-
-  static removeInstance(instance) {
-    delete this.instances[instance.uuid]
-  }
-
-  static setActivePlayer(instance) {
-    console.log(`Active player now: ${instance.uuid}`)
-    this.activePlayer = instance.uuid
-  }
-
-
-  addContent() {
-    let previousChapterButton = ""
-    let nextChapterButton = ""
-    if (this.chapters.length > 0) {
-      previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
-      nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
-    }
-    let defaultThumbnail = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
-    if (this.attrs.thumbnail) {
-      defaultThumbnail = this.attrs.thumbnail 
-    }
-    const template = 
-      this.ownerDocument.createElement('template')
-    template.innerHTML = `
-<div class="background stopped">
-  <div class="fader hidden"></div>
-  <div class="thumbnail">
-    <object type="image/jpg" data="${defaultThumbnail}" aria-label="Video thumbnail image">
-      <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
-    </object>
-  </div>
-  <div class="wrapper hidden">
-    <div id="player"></div>
-  </div>
-  <div class="title"></div>
-  <div class="flash-message hidden"></div>
-  <div class="loading hidden">Loading...</div>
-  <!--
-  <div class="click-catcher"></div>
-  <div class="yt-logo"></div>
-  -->
-</div>
-<div class="buttons">
-  <div class="buttons-row hidden button-base-foreground">
-    <button aria-label="Restart" class="restart-button control-button"></button>
-    <button aria-label="Rewind" class="rewind-button control-button"></button>
-    ${previousChapterButton}
-    <button aria-label="Play" class="play-button control-button"></button>
-    ${nextChapterButton}
-    <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
-    <button aria-label="Mute" class="mute-button control-button"></button>
-  </div>
-  <div class="buttons-message">Loading Video Player</div>
-</div>
-`
-    const contents = 
-      template.content.cloneNode(true)
-    this.shadowRoot.append(contents)
-    // NOTE: player isn't added here since the element
-    // is changed when the iframe loads
-    this.parts.background = this.shadowRoot.querySelector('.background')
-    this.parts.buttons = this.shadowRoot.querySelector('.buttons')
-    this.parts.buttonsMessage = this.shadowRoot.querySelector('.buttons-message')
-    this.parts.buttonsRow = this.shadowRoot.querySelector('.buttons-row')
-    this.parts.contentWarning = this.shadowRoot.querySelector('.content-warning')
-    this.parts.fader = this.shadowRoot.querySelector('.fader')
-    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
-    this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
-    this.parts.loading = this.shadowRoot.querySelector('.loading')
-    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
-    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
-    this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
-    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
-    this.parts.flashMessage = this.shadowRoot.querySelector('.flash-message')
-    this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
-    this.parts.title = this.shadowRoot.querySelector('.title')
-    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
-    if (this.chapters.length > 0) {
-      this.parts.previousChapterButton = this.shadowRoot.querySelector('.previous-chapter-button')
-      this.parts.nextChapterButton = this.shadowRoot.querySelector('.next-chapter-button')
-    }
-  }
-
-  addEventListeners() {
-    this.parts.fastForwardButton.addEventListener('click', (event) => {
-      this.handleSkipForwardButtonClick.call(this, event)
-    })
-    this.parts.muteButton.addEventListener('click', (event) => {
-      this.handleMuteButtonClick.call(this, event)
-    })
-    this.parts.playButton.addEventListener('click', (event) => {
-      this.handlePlayButtonClick.call(this, event)
-    })
-    this.parts.restartButton.addEventListener('click', (event) => {
-      this.handleRestartButtonClick.call(this, event)
-    })
-    this.parts.rewindButton.addEventListener('click', (event) => {
-      this.handleSkipBackButtonClick.call(this, event)
-    })
-    if (this.chapters.length > 0) {
-      this.parts.previousChapterButton.addEventListener('click', (event) => {
-        this.handlePreviousChapterButtonClick.call(this, event)
-      })
-      this.parts.nextChapterButton.addEventListener('click', (event) => {
-        this.handleNextChapterButtonClick.call(this, event)
-      })
-     }
-  }
-
-  connectedCallback() {
-    this.constructor.registerInstance(this)
-    this.getAttributes()
-    this.addContent()
-    this.addStyles()
-    this.getTitle()
-    this.addEventListeners()
-    this.init()
-  }
-
-  constructor() {
-    super()
-    this.uuid = self.crypto.randomUUID()
-    this.chapters = []
-    this.loadingTimeout = null
-    this.loadingTimeoutTime = 400
-    this.timeouts = {}
-    this.restart = false
-    this.attrs = {
-      "advisory": null,
-      "end": null, 
-      "skip-forward": 7,
-      "restart": "off",
-      "skip-back": 10,
-      "start": 0,
-      "title": null,
-    }
-
-    // this.colors = {
-    //   "button-base-foreground": "var(--youtube-player-button-base-background, black)",
-    //   "button-base-background": "var(--youtube-player-button-base-foreground, #aaa)",
-    //   "button-base-hover-foreground": "var(--youtube-player-button-base-background, black)",
-    //   "button-base-hover-background": "var(--youtube-player-button-base-foreground, #aaa)",
-    //   "button-faded-foreground": "var(--youtube-player-button-faded-background, black)",
-    //   "button-faded-background": "var(--youtube-player-button-faded-foreground, #aaa)",
-    //   "button-faded-hover-foreground": "var(--youtube-player-button-faded-background, black)",
-    //   "button-faded-hover-background": "var(--youtube-player-button-faded-foreground, #aaa)",
-    // }
-
-    this.parts = {}
-    this.backgroundImageSizes = [
-      "default",
-      "mqdefault", 
-      "hqdefault", 
-      "sddefault", 
-      "maxresdefault",
-    ]
-    this.attachShadow({mode: 'open'})
-  }
-
-  doEnded() {
-
-    // this.parts.rewindButton.classList.remove('dark')
-    // this.parts.fastForwardButton.classList.remove('dark')
-    // this.parts.muteButton.classList.remove('dark')
-    // this.parts.playButton.classList.remove('dark')
-    // this.parts.rewindButton.classList.remove('darker')
-    // this.parts.fastForwardButton.classList.remove('darker')
-    // this.parts.muteButton.classList.remove('darker')
-    // this.parts.playButton.classList.remove('darker')
-    // this.parts.playButton.classList.add('play-button')
-    // this.parts.playButton.classList.remove('pause-button')
-    // this.parts.thumbnail.classList.remove('hidden')
-    // // this.parts.logo.classList.remove('hidden')
-    // this.parts.background.classList.remove('playing')
-    // this.parts.background.classList.add('stopped')
-    // this.parts.background.classList.remove('faded')
-    // this.parts.fader.classList.add('hidden')
-    // this.parts.wrapper.classList.add('hidden')
-
-  }
-
-  doPlaying() {
-
-    // if (this.loadingTimeout !== null) {
-    //   clearTimeout(this.loadingTimeout)
-    //   this.loadingTimeout = null
-    // }
-    // this.parts.player.classList.remove('hidden')
-    // this.parts.loading.classList.add('hidden')
-    // this.parts.rewindButton.classList.remove('darker')
-    // this.parts.fastForwardButton.classList.remove('darker')
-    // this.parts.muteButton.classList.remove('darker')
-    // this.parts.playButton.classList.remove('darker')
-    // this.parts.rewindButton.classList.add('dark')
-    // this.parts.fastForwardButton.classList.add('dark')
-    // this.parts.muteButton.classList.add('dark')
-    // this.parts.playButton.classList.add('dark')
-    // this.parts.playButton.classList.remove('play-button')
-    // this.parts.playButton.classList.add('pause-button')
-    // this.parts.thumbnail.classList.add('hidden')
-    // // this.parts.logo.classList.add('hidden')
-    // this.parts.background.classList.add('playing')
-    // this.parts.background.classList.remove('stopped')
-    // this.parts.background.classList.remove('faded')
-    // this.parts.wrapper.classList.remove('hidden')
-    // this.parts.player.classList.remove('dark')
-    // let faderUpdate = setTimeout(() => {
-    //   this.parts.fader.classList.remove('dark-fader-over-background')
-    //   this.parts.fader.classList.remove('hidden')
-    // }, 3000)
-
-  }
-
-  // really stop and fade
-  doPauseAndFade() {
-
-    // this.parts.thumbnail.classList.remove('hidden')
-    // // this.parts.fader.classList.remove('hidden')
-    // this.parts.wrapper.classList.remove('hidden')
-    // this.parts.player.classList.add('hidden')
-    // this.parts.rewindButton.classList.add('darker')
-    // this.parts.fastForwardButton.classList.add('darker')
-    // this.parts.muteButton.classList.add('darker')
-    // this.parts.playButton.classList.add('darker')
-    // this.parts.playButton.classList.add('play-button')
-    // this.parts.playButton.classList.remove('pause-button')
-
-    // this.parts.background.classList.add('faded')
-    // this.parts.background.classList.remove('playing')
-    // this.parts.background.classList.remove('stopped')
-
-    //this.parts.wrapper.classList.remove('hidden')
-
-    //if (this.player.getPlayerState() === 1 || this.player.getPlayerState() === 2) {
-    //  this.parts.fader.classList.remove('dark-fader-over-background')
-    //  this.parts.fader.classList.remove('hidden')
-    //  // this.parts.player.classList.add('dark')
-    //  this.parts.player.classList.add('hidden')
-    //} else {
-    //  this.parts.fader.classList.add('dark-fader-over-background')
-    //  this.parts.fader.classList.remove('hidden')
-    //  //
-    //  this.parts.player.classList.add('hidden')
-    //}
-    
-    // if (this.player.getPlayerState() === 1) {
-    //   this.player.pauseVideo()
-    // }
-
-    this.player.stopVideo()
-  }
-
-  doPauseOnActivePlayer() {
-
-    // this.blur()
-    // this.parts.rewindButton.classList.remove('dark')
-    // this.parts.fastForwardButton.classList.remove('dark')
-    // this.parts.muteButton.classList.remove('dark')
-    // this.parts.playButton.classList.remove('dark')
-    // this.parts.rewindButton.classList.remove('darker')
-    // this.parts.fastForwardButton.classList.remove('darker')
-    // this.parts.muteButton.classList.remove('darker')
-    // this.parts.playButton.classList.remove('darker')
-    // this.parts.playButton.classList.add('play-button')
-    // this.parts.playButton.classList.remove('pause-button')
-    // this.parts.background.classList.remove('faded')
-    // this.parts.background.classList.remove('playing')
-    // this.parts.background.classList.add('stopped')
-
-  }
-
-  doRemoveFade() {
-
-    // this.parts.rewindButton.classList.remove('darker')
-    // this.parts.fastForwardButton.classList.remove('darker')
-    // this.parts.muteButton.classList.remove('darker')
-    // this.parts.playButton.classList.remove('darker')
-    // this.parts.background.classList.remove('faded')
-    // this.parts.background.classList.remove('playing')
-    // this.parts.background.classList.add('stopped')
-    // if (this.player.getPlayerState() === 2) {
-    //   this.parts.player.classList.remove('dark')
-    // } else {
-    //   this.parts.fader.classList.add('hidden')
-    //   this.parts.fader.classList.remove('dark-fader-over-background')
-    // }
-
-  }
-
-  flashMessage(text) {
-    this.parts.flashMessage.innerHTML = text
-    this.parts.flashMessage.classList.remove('hidden')
-    if (this.timeouts.flashMessage) {
-      clearTimeout(this.timeouts.flashMessage)
-    }
-    this.timeouts.flashMessage = setTimeout(
-      () => {
-        this.parts.flashMessage.classList.add('hidden')
-      },
-      500
-    )
-  }
-
-  getAttributes() {
-    const attrs = this.getAttributeNames()
-    attrs.forEach((attr) => {
-      if (attr.startsWith(':') === true) {
-        this.attrs[attr.substring(1)] = 
-          this.getAttribute(attr)
-      }
-    })
-    const ints = ['skip-forward', 'skip-back', 'start', 'end']
-    ints.forEach((int) => {
-      this.attrs[int] = parseInt(this.attrs[int], 10)
-    })
-    if (this.attrs['restart'].toLowerCase() === 'on') {
-      this.restart = true
-    }
-    if (this.attrs['chapters']) {
-      let chapterTimes = this.attrs['chapters'].split(',')
-      this.chapters.push(0)
-      chapterTimes.forEach((chapterTime) => {
-        this.chapters.push(parseInt(chapterTime, 10))
-      })
-    }
-  }
-
-  async getTitle() {
-    let contentAdvisory = ""
-    if (this.attrs['advisory'] !== null) {
-      contentAdvisory = `<div class="content-advisory">${this.attrs['advisory']}</div>`
-    }
-    if (this.attrs['title'] !== null) {
-      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentAdvisory}`
-    } else {
-      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
-      let response = await fetch(url)
-      if (!response.ok) {
-        throw new Error('There was a problem getting the data')
-      } else {
-        let json = await response.json()
-        // TODO: Figure out error handling here
-        this.parts.title.innerHTML = `<div>${json.title}</div>${contentAdvisory}`
-      }
-    }
-  }
-
-  handleSkipForwardButtonClick(event) {
-    this.player.seekTo(
-      Math.min(
-        this.player.getCurrentTime() + this.attrs['skip-forward'],
-        this.player.getDuration() 
-      )
-    )
-    this.parts.flashMessage.innerHTML = `+${this.attrs['skip-forward']}sec.`
-    this.parts.flashMessage.classList.remove('hidden')
-    if (this.timeouts.flashMessage) {
-      clearTimeout(this.timeouts.flashMessage)
-    }
-    this.timeouts.flashMessage = setTimeout(
-      () => {
-        this.parts.flashMessage.classList.add('hidden')
-      },
-      500
-    )
-  }
-
-  handleMuteButtonClick(event) {
-    if (this.player.isMuted() === true) {
-      this.parts.muteButton.classList.add('mute-button')
-      this.parts.muteButton.classList.remove('unmute-button')
-      this.player.unMute()
-    } else {
-      this.parts.muteButton.classList.add('unmute-button')
-      this.parts.muteButton.classList.remove('mute-button')
-      this.player.mute()
-    }
-  }
-
-  handleNextChapterButtonClick(event) {
-    const currentTime = this.player.getCurrentTime()
-    let foundChapter = false
-    // for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
-    for (let checkIndex = 0; checkIndex < this.chapters.length; checkIndex += 1) {
-      if (currentTime < this.chapters[checkIndex]) {
-        this.player.seekTo(this.chapters[checkIndex])
-        this.flashMessage(`Chapter ${checkIndex + 1}`)
-        foundChapter = true
-        break
-      }
-    }
-    if (foundChapter === false) {
-      this.flashMessage(`No more chapters`)
-    }
-  }
-
-  handlePlayButtonClick(event) {
-    const state = this.player.getPlayerState()
-    if (state === 1) {
-      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
-      this.showPlayButton()
-      this.player.pauseVideo()
-      this.showStoppedBorder()
-      this.constructor.handlePauseClicked(this)
-    } else {
-      console.log(`YouTube Player: Playing`)
-      document.body.dataset.youtubePlayerState = 'playing'
-      this.showPlayingBorder()
-      this.hideFader()
-      this.showLoading()
-      this.constructor.stopOtherVideos(this)
-      this.constructor.fadeOtherVideos(this)
-      this.player.playVideo()
-      this.showPauseButton()
-    }
-  }
-
-  handlePreviousChapterButtonClick(event) {
-    const currentTime = this.player.getCurrentTime()
-    for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
-      if (currentTime > this.chapters[checkIndex] + 2) {
-        this.player.seekTo(this.chapters[checkIndex])
-        this.flashMessage(`Chapter ${checkIndex + 1}`)
-        break
-      }
-    }
-  }
-
-  handleRestartButtonClick(event) {
-    const playerState = this.player.getPlayerState()
-    if (playerState === 1 || playerState === 2) {
-      this.player.seekTo(this.attrs['start'])
-    }
-  }
-
-  handlePlayerStateChange(event) {
-    const playerState = event.target.getPlayerState()
-    if (playerState == -1) {
-      // console.log("STATUS: UNSTARTED")
-      // N/A - here for reference
-    } else if (playerState == YT.PlayerState.BUFFERING) {
-      // console.log("STATUS: BUFFERING")
-      this.constructor.handleBuffering(this)
-    } else if (playerState == YT.PlayerState.CUED) {
-      // console.log("STATUS: CUED")
-      // N/A - here for reference
-    } else if (playerState == YT.PlayerState.ENDED) {
-      // console.log("STATUS: ENDED")
-      // TODO: Move the start time back to the original 
-      // start time.
-      this.constructor.handleEnded(this)
-    } else if (playerState == YT.PlayerState.PAUSED) {
-      // console.log("STATUS: PAUSED")
-      this.constructor.handlePaused(this)
-    } else if (playerState == YT.PlayerState.PLAYING) {
-      // console.log("STATUS: PLAYING")
-      this.constructor.handlePlaying(this)
-    }
-  }
-
-  handleSkipBackButtonClick(event) {
-    this.player.seekTo(
-      Math.max(
-        0, this.player.getCurrentTime() - this.attrs['skip-back']
-      )
-    )
-    this.parts.flashMessage.innerHTML = `-${this.attrs['skip-back']}sec.`
-    this.parts.flashMessage.classList.remove('hidden')
-    if (this.timeouts.flashMessage) {
-      clearTimeout(this.timeouts.flashMessage)
-    }
-    this.timeouts.flashMessage = setTimeout(
-      () => {
-        this.parts.flashMessage.classList.add('hidden')
-      },
-      500
-    )
-  }
-
-  handleWrapperClick(event) {
-    this.loadingTimeout = setTimeout(() => {
-      this.parts.loading.classList.remove('hidden')
-    }, this.loadingTimeoutTime)
-    this.player.playVideo()
-  }
-
-  async init() {
-    this.loadApi()
-    await this.apiLoader
-    const videoEl = this.shadowRoot.querySelector("#player")
-    this.player = await new Promise((resolve) => {
-      let player = new YT.Player(videoEl, {
-        width: '560',
-        height: '315',
-        playerVars: {
-          playsinline: 1,
-        },
-        events: {
-          onReady: (event) => {
-            resolve(player)
-          },
-          onStateChange: (event) => {
-            this.handlePlayerStateChange.call(this, event)
-          },
-          // onPlaybackRateChange: (event) => {
-          //   this.handlePlaybackRateChange.call(this, event)
-          // }
-        },
-      })
-    }).then((value) => {
-      return value
-      // TODO: Figure out how to handle errors here.
-    })
-    this.cueVideo()
-    this.parts.player = this.shadowRoot.querySelector('#player')
-    this.parts.buttonsMessage.classList.add('hidden')
-    this.parts.buttonsMessage.innerHTML = ""
-    this.parts.buttonsRow.classList.remove('hidden')
-  }
-
-  loadApi() {
-    // this if is from Paul Irish's embed, not sure why
-    // the OR condition with window.YT.Player is there since
-    // it seems like the window.YT would always hit first
-    if (window.YT || (window.YT && window.YT.Player)) {
-      return
-    }
-    this.apiLoader = new Promise((res, rej) => {
-      var el = document.createElement('script')
-      el.src = 'https://www.youtube.com/iframe_api'
-      el.async = true
-      el.onload = (_) => {
-        YT.ready(res)
-      }
-      el.onerror = rej
-      this.append(el)
-    })
-  }
-  
-  hideLoading() {
-    this.parts.loading.classList.add('hidden')
-  }
-
-  hideFader() {
-    this.parts.fader.classList.add('hidden')
-    this.parts.buttonsRow.classList.remove('button-fader')
-  }
-
-  hidePlayer() {
-    this.parts.wrapper.classList.add('hidden')
-  }
-
-  showPlayingBorder() {
-    this.parts.background.classList.add('playing')
-    this.parts.background.classList.remove('stopped')
-    this.parts.background.classList.remove('faded')
-  }
-
-  showStoppedBorder() {
-    this.parts.background.classList.add('stopped')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.remove('faded')
-  }
-
-  showFadedBorder() {
-    this.parts.background.classList.add('faded')
-    this.parts.background.classList.remove('playing')
-    this.parts.background.classList.remove('stopped')
-  }
-
-  showFader() {
-    this.parts.fader.classList.remove('hidden')
-    this.parts.buttonsRow.classList.add('button-fader')
-    this.showFadedBorder()
-  }
-
-  showLoading() {
-    this.parts.loading.classList.remove('hidden')
-  }
-
-  showPlayButton() {
-    this.parts.playButton.classList.add('play-button')
-    this.parts.playButton.classList.remove('pause-button')
-  }
-
-  showPauseButton() {
-    this.parts.playButton.classList.add('pause-button')
-    this.parts.playButton.classList.remove('play-button')
-  }
-
-  showPlayer() {
-    this.parts.wrapper.classList.remove('hidden')
-  }
-
-  stopPlaying() {
-    const state = this.player.getPlayerState()
-    if (state === 1 || state === 2) {
-      this.player.stopVideo()
-      this.cueVideo()
-    }
-  }
-
-  cueVideo() {
-    let options = {
-      'videoId': this.attrs.video,
-    }
-    if (this.restart === true) {
-      options['startSeconds'] = this.attrs['start']
-    } else if (this.player.getPlayerState() === -1) {
-      options['startSeconds'] = this.attrs['start']
-    } else if (this.player.getPlayerState() === YT.PlayerState.CUED) {
-      options['startSeconds'] = this.attrs['start']
-    } else if (this.player.getPlayerState() === YT.PlayerState.ENDED) {
-      options['startSeconds'] = this.attrs['start']
-    } else {
-      const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
-      options['startSeconds'] = currentTime
-    }
-    if (this.attrs['end'] !== null) {
-      options['endSeconds'] = this.attrs['end']
-    }
-    this.player.cueVideoById(options)
-  }
-
-  addStyles() {
-    const styles = new CSSStyleSheet();
-    styles.replaceSync(`
+const sheet = new CSSStyleSheet();
+sheet.replaceSync(`
 :host{
   display: block;
   border-radius: 0.6rem;
   position: relative;
-
   --base-button-background: var(
     --youtube-player--base-button-background, 
     rgb(255 255 255 / 0.4)
@@ -1112,11 +323,587 @@ class YouTubePlayer extends HTMLElement {
   .button-fader > .control-button:hover:after {
     background: var(--faded-button-background);
   }
-}`
-    );
-    this.shadowRoot.adoptedStyleSheets.push(styles);
+}`);
+
+
+class YouTubePlayer extends HTMLElement {
+
+  static instances = {}
+  static pauseTimeout = null
+
+  static handleBuffering(instance) {
+    if (this.pauseTimeout !== null) {
+      clearTimeout(this.pauseTimeout)
+      this.pauseTimeout = null
+    }
+  }
+
+  static handleEnded(instance) {
+    document.body.dataset.youtubePlayerState = 'ended'
+    for (const uuid in this.instances) {
+      this.instances[uuid].showStoppedBorder()
+      if (uuid === instance.uuid) {
+        this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
+        this.instances[uuid].cueVideo()
+      } else {
+        this.instances[uuid].hideFader()
+      }
+    }
+  }
+
+  // this is for the button click
+  static handlePauseClicked(instance) {
+    document.body.dataset.youtubePlayerState = 'paused'
+    for (const uuid in this.instances) {
+      this.instances[uuid].hideFader()
+      this.instances[uuid].showStoppedBorder()
+    }
+  }
+
+  // this is for iframe pauses
+  static handlePaused(instance) {
+    this.pauseTimeout = setTimeout(
+      () => {
+        document.body.dataset.youtubePlayerState = 'paused'
+        for (const uuid in this.instances) {
+          this.instances[uuid].hideFader()
+          this.instances[uuid].showStoppedBorder()
+        }
+      }, 250
+    )
+  }
+
+  static fadeOtherVideos(instance) {
+    for (const uuid in this.instances) {
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].showFader()
+      }
+    }
+  }
+
+  static stopOtherVideos(instance) {
+    for (const uuid in this.instances) {
+      if (instance.uuid !== uuid) {
+        this.instances[uuid].stopPlaying()
+        this.instances[uuid].hidePlayer()
+        this.instances[uuid].showPlayButton()
+      }
+    }
+  }
+
+  static handlePlaying(instance) {
+    document.body.dataset.youtubePlayerState = 'playing'
+    instance.showPlayer()
+    instance.hideLoading()
+    instance.showPlayingBorder()
+    for (const uuid in this.instances) {
+      if (uuid !== instance.uuid) {
+        this.instances[uuid].showFader()
+      }
+    }
+  }
+
+  static registerInstance(instance) {
+    this.instances[instance.uuid] = instance
+  }
+
+  static removeInstance(instance) {
+    delete this.instances[instance.uuid]
+  }
+
+  static setActivePlayer(instance) {
+    console.log(`Active player now: ${instance.uuid}`)
+    this.activePlayer = instance.uuid
+  }
+
+  addContent() {
+    let previousChapterButton = ""
+    let nextChapterButton = ""
+    if (this.chapters.length > 0) {
+      previousChapterButton = `<button class="previous-chapter-button control-button" aria-label="Previous Chapter"></button>`
+      nextChapterButton = `<button class="next-chapter-button control-button" aria-label="Next Chapter"></button>`
+    }
+    let defaultThumbnail = `https://i.ytimg.com/vi/${this.attrs.video}/maxresdefault.jpg`
+    if (this.attrs.thumbnail) {
+      defaultThumbnail = this.attrs.thumbnail 
+    }
+    const template = 
+      this.ownerDocument.createElement('template')
+    template.innerHTML = `
+<div class="background stopped">
+  <div class="fader hidden"></div>
+  <div class="thumbnail">
+    <object type="image/jpg" data="${defaultThumbnail}" aria-label="Video thumbnail image">
+      <img src="https://i.ytimg.com/vi/${this.attrs.video}/hqdefault.jpg" aria-label="Video thumbnail image" />
+    </object>
+  </div>
+  <div class="wrapper hidden">
+    <div id="player"></div>
+  </div>
+  <div class="title"></div>
+  <div class="flash-message hidden"></div>
+  <div class="loading hidden">Loading...</div>
+  <!--
+  <div class="click-catcher"></div>
+  <div class="yt-logo"></div>
+  -->
+</div>
+<div class="buttons">
+  <div class="buttons-row hidden button-base-foreground">
+    <button aria-label="Restart" class="restart-button control-button"></button>
+    <button aria-label="Rewind" class="rewind-button control-button"></button>
+    ${previousChapterButton}
+    <button aria-label="Play" class="play-button control-button"></button>
+    ${nextChapterButton}
+    <button aria-label="Fast Forward" class="fast-forward-button control-button"></button>
+    <button aria-label="Mute" class="mute-button control-button"></button>
+  </div>
+  <div class="buttons-message">Loading Video Player</div>
+</div>
+`
+    const contents = 
+      template.content.cloneNode(true)
+    this.shadowRoot.append(contents)
+    // NOTE: player isn't added here since the element
+    // is changed when the iframe loads
+    this.parts.background = this.shadowRoot.querySelector('.background')
+    this.parts.buttons = this.shadowRoot.querySelector('.buttons')
+    this.parts.buttonsMessage = this.shadowRoot.querySelector('.buttons-message')
+    this.parts.buttonsRow = this.shadowRoot.querySelector('.buttons-row')
+    this.parts.contentWarning = this.shadowRoot.querySelector('.content-warning')
+    this.parts.fader = this.shadowRoot.querySelector('.fader')
+    this.parts.fastForwardButton = this.shadowRoot.querySelector('.fast-forward-button')
+    this.parts.fastForwardDisplay = this.shadowRoot.querySelector('.fast-forward-display')
+    this.parts.loading = this.shadowRoot.querySelector('.loading')
+    this.parts.muteButton = this.shadowRoot.querySelector('.mute-button')
+    this.parts.playButton = this.shadowRoot.querySelector('.play-button')
+    this.parts.restartButton = this.shadowRoot.querySelector('.restart-button')
+    this.parts.rewindButton = this.shadowRoot.querySelector('.rewind-button')
+    this.parts.flashMessage = this.shadowRoot.querySelector('.flash-message')
+    this.parts.thumbnail = this.shadowRoot.querySelector('.thumbnail')
+    this.parts.title = this.shadowRoot.querySelector('.title')
+    this.parts.wrapper = this.shadowRoot.querySelector('.wrapper')
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton = this.shadowRoot.querySelector('.previous-chapter-button')
+      this.parts.nextChapterButton = this.shadowRoot.querySelector('.next-chapter-button')
+    }
+  }
+
+  addEventListeners() {
+    this.parts.fastForwardButton.addEventListener('click', (event) => {
+      this.handleSkipForwardButtonClick.call(this, event)
+    })
+    this.parts.muteButton.addEventListener('click', (event) => {
+      this.handleMuteButtonClick.call(this, event)
+    })
+    this.parts.playButton.addEventListener('click', (event) => {
+      this.handlePlayButtonClick.call(this, event)
+    })
+    this.parts.restartButton.addEventListener('click', (event) => {
+      this.handleRestartButtonClick.call(this, event)
+    })
+    this.parts.rewindButton.addEventListener('click', (event) => {
+      this.handleSkipBackButtonClick.call(this, event)
+    })
+    if (this.chapters.length > 0) {
+      this.parts.previousChapterButton.addEventListener('click', (event) => {
+        this.handlePreviousChapterButtonClick.call(this, event)
+      })
+      this.parts.nextChapterButton.addEventListener('click', (event) => {
+        this.handleNextChapterButtonClick.call(this, event)
+      })
+     }
+  }
+
+  connectedCallback() {
+    this.constructor.registerInstance(this)
+    this.getAttributes()
+    this.addContent()
+    this.getTitle()
+    this.addEventListeners()
+    this.init()
+  }
+
+  constructor() {
+    super()
+    this.uuid = self.crypto.randomUUID()
+    this.chapters = []
+    this.loadingTimeout = null
+    this.loadingTimeoutTime = 400
+    this.timeouts = {}
+    this.restart = false
+    this.attrs = {
+      "advisory": null,
+      "end": null, 
+      "skip-forward": 7,
+      "restart": "off",
+      "skip-back": 10,
+      "start": 0,
+      "title": null,
+    }
+    this.parts = {}
+    this.backgroundImageSizes = [
+      "default",
+      "mqdefault", 
+      "hqdefault", 
+      "sddefault", 
+      "maxresdefault",
+    ]
+    this.attachShadow({mode: 'open'})
+    this.shadowRoot.adoptedStyleSheets = [ sheet ];
+  }
+
+  doEnded() {
+  }
+
+  doPlaying() {
+  }
+
+  // really stop and fade
+  doPauseAndFade() {
+    this.player.stopVideo()
+  }
+
+  doPauseOnActivePlayer() {
+  }
+
+  doRemoveFade() {
+  }
+
+  flashMessage(text) {
+    this.parts.flashMessage.innerHTML = text
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
+    }
+    this.timeouts.flashMessage = setTimeout(
+      () => {
+        this.parts.flashMessage.classList.add('hidden')
+      },
+      500
+    )
+  }
+
+  getAttributes() {
+    const attrs = this.getAttributeNames()
+    attrs.forEach((attr) => {
+      if (attr.startsWith(':') === true) {
+        this.attrs[attr.substring(1)] = 
+          this.getAttribute(attr)
+      }
+    })
+    const ints = ['skip-forward', 'skip-back', 'start', 'end']
+    ints.forEach((int) => {
+      this.attrs[int] = parseInt(this.attrs[int], 10)
+    })
+    if (this.attrs['restart'].toLowerCase() === 'on') {
+      this.restart = true
+    }
+    if (this.attrs['chapters']) {
+      let chapterTimes = this.attrs['chapters'].split(',')
+      this.chapters.push(0)
+      chapterTimes.forEach((chapterTime) => {
+        this.chapters.push(parseInt(chapterTime, 10))
+      })
+    }
+  }
+
+  async getTitle() {
+    let contentAdvisory = ""
+    if (this.attrs['advisory'] !== null) {
+      contentAdvisory = `<div class="content-advisory">${this.attrs['advisory']}</div>`
+    }
+    if (this.attrs['title'] !== null) {
+      this.parts.title.innerHTML = `<div>${this.attrs['title']}</div>${contentAdvisory}`
+    } else {
+      const url = `https://www.youtube.com/oembed?url=http://www.youtube.com/watch?v=${this.attrs.video}&format=json`
+      let response = await fetch(url)
+      if (!response.ok) {
+        throw new Error('There was a problem getting the data')
+      } else {
+        let json = await response.json()
+        // TODO: Figure out error handling here
+        this.parts.title.innerHTML = `<div>${json.title}</div>${contentAdvisory}`
+      }
+    }
+  }
+
+  handleSkipForwardButtonClick(event) {
+    this.player.seekTo(
+      Math.min(
+        this.player.getCurrentTime() + this.attrs['skip-forward'],
+        this.player.getDuration() 
+      )
+    )
+    this.parts.flashMessage.innerHTML = `+${this.attrs['skip-forward']}sec.`
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
+    }
+    this.timeouts.flashMessage = setTimeout(
+      () => {
+        this.parts.flashMessage.classList.add('hidden')
+      },
+      500
+    )
+  }
+
+  handleMuteButtonClick(event) {
+    if (this.player.isMuted() === true) {
+      this.parts.muteButton.classList.add('mute-button')
+      this.parts.muteButton.classList.remove('unmute-button')
+      this.player.unMute()
+    } else {
+      this.parts.muteButton.classList.add('unmute-button')
+      this.parts.muteButton.classList.remove('mute-button')
+      this.player.mute()
+    }
+  }
+
+  handleNextChapterButtonClick(event) {
+    const currentTime = this.player.getCurrentTime()
+    let foundChapter = false
+    for (let checkIndex = 0; checkIndex < this.chapters.length; checkIndex += 1) {
+      if (currentTime < this.chapters[checkIndex]) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        foundChapter = true
+        break
+      }
+    }
+    if (foundChapter === false) {
+      this.flashMessage(`No more chapters`)
+    }
+  }
+
+  handlePlayButtonClick(event) {
+    const state = this.player.getPlayerState()
+    if (state === 1) {
+      console.log(`YouTube Player: Paused at: ${this.player.getCurrentTime()}`)
+      this.showPlayButton()
+      this.player.pauseVideo()
+      this.showStoppedBorder()
+      this.constructor.handlePauseClicked(this)
+    } else {
+      console.log(`YouTube Player: Playing`)
+      document.body.dataset.youtubePlayerState = 'playing'
+      this.showPlayingBorder()
+      this.hideFader()
+      this.showLoading()
+      this.constructor.stopOtherVideos(this)
+      this.constructor.fadeOtherVideos(this)
+      this.player.playVideo()
+      this.showPauseButton()
+    }
+  }
+
+  handlePreviousChapterButtonClick(event) {
+    const currentTime = this.player.getCurrentTime()
+    for (let checkIndex = this.chapters.length - 1; checkIndex >= 0; checkIndex -= 1) {
+      if (currentTime > this.chapters[checkIndex] + 2) {
+        this.player.seekTo(this.chapters[checkIndex])
+        this.flashMessage(`Chapter ${checkIndex + 1}`)
+        break
+      }
+    }
+  }
+
+  handleRestartButtonClick(event) {
+    const playerState = this.player.getPlayerState()
+    if (playerState === 1 || playerState === 2) {
+      this.player.seekTo(this.attrs['start'])
+    }
+  }
+
+  handlePlayerStateChange(event) {
+    const playerState = event.target.getPlayerState()
+    if (playerState == -1) {
+      // console.log("STATUS: UNSTARTED")
+      // N/A - here for reference
+    } else if (playerState == YT.PlayerState.BUFFERING) {
+      // console.log("STATUS: BUFFERING")
+      this.constructor.handleBuffering(this)
+    } else if (playerState == YT.PlayerState.CUED) {
+      // console.log("STATUS: CUED")
+      // N/A - here for reference
+    } else if (playerState == YT.PlayerState.ENDED) {
+      // console.log("STATUS: ENDED")
+      // TODO: Move the start time back to the original 
+      // start time.
+      this.constructor.handleEnded(this)
+    } else if (playerState == YT.PlayerState.PAUSED) {
+      // console.log("STATUS: PAUSED")
+      this.constructor.handlePaused(this)
+    } else if (playerState == YT.PlayerState.PLAYING) {
+      // console.log("STATUS: PLAYING")
+      this.constructor.handlePlaying(this)
+    }
+  }
+
+  handleSkipBackButtonClick(event) {
+    this.player.seekTo(
+      Math.max(
+        0, this.player.getCurrentTime() - this.attrs['skip-back']
+      )
+    )
+    this.parts.flashMessage.innerHTML = `-${this.attrs['skip-back']}sec.`
+    this.parts.flashMessage.classList.remove('hidden')
+    if (this.timeouts.flashMessage) {
+      clearTimeout(this.timeouts.flashMessage)
+    }
+    this.timeouts.flashMessage = setTimeout(
+      () => {
+        this.parts.flashMessage.classList.add('hidden')
+      },
+      500
+    )
+  }
+
+  handleWrapperClick(event) {
+    this.loadingTimeout = setTimeout(() => {
+      this.parts.loading.classList.remove('hidden')
+    }, this.loadingTimeoutTime)
+    this.player.playVideo()
+  }
+
+  async init() {
+    this.loadApi()
+    await this.apiLoader
+    const videoEl = this.shadowRoot.querySelector("#player")
+    this.player = await new Promise((resolve) => {
+      let player = new YT.Player(videoEl, {
+        width: '560',
+        height: '315',
+        playerVars: {
+          playsinline: 1,
+        },
+        events: {
+          onReady: (event) => {
+            resolve(player)
+          },
+          onStateChange: (event) => {
+            this.handlePlayerStateChange.call(this, event)
+          },
+          // onPlaybackRateChange: (event) => {
+          //   this.handlePlaybackRateChange.call(this, event)
+          // }
+        },
+      })
+    }).then((value) => {
+      return value
+      // TODO: Figure out how to handle errors here.
+    })
+    this.cueVideo()
+    this.parts.player = this.shadowRoot.querySelector('#player')
+    this.parts.buttonsMessage.classList.add('hidden')
+    this.parts.buttonsMessage.innerHTML = ""
+    this.parts.buttonsRow.classList.remove('hidden')
+  }
+
+  loadApi() {
+    // this if is from Paul Irish's embed, not sure why
+    // the OR condition with window.YT.Player is there since
+    // it seems like the window.YT would always hit first
+    if (window.YT || (window.YT && window.YT.Player)) {
+      return
+    }
+    this.apiLoader = new Promise((res, rej) => {
+      var el = document.createElement('script')
+      el.src = 'https://www.youtube.com/iframe_api'
+      el.async = true
+      el.onload = (_) => {
+        YT.ready(res)
+      }
+      el.onerror = rej
+      this.append(el)
+    })
+  }
+  
+  hideLoading() {
+    this.parts.loading.classList.add('hidden')
+  }
+
+  hideFader() {
+    this.parts.fader.classList.add('hidden')
+    this.parts.buttonsRow.classList.remove('button-fader')
+  }
+
+  hidePlayer() {
+    this.parts.wrapper.classList.add('hidden')
+  }
+
+  showPlayingBorder() {
+    this.parts.background.classList.add('playing')
+    this.parts.background.classList.remove('stopped')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showStoppedBorder() {
+    this.parts.background.classList.add('stopped')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('faded')
+  }
+
+  showFadedBorder() {
+    this.parts.background.classList.add('faded')
+    this.parts.background.classList.remove('playing')
+    this.parts.background.classList.remove('stopped')
+  }
+
+  showFader() {
+    this.parts.fader.classList.remove('hidden')
+    this.parts.buttonsRow.classList.add('button-fader')
+    this.showFadedBorder()
+  }
+
+  showLoading() {
+    this.parts.loading.classList.remove('hidden')
+  }
+
+  showPlayButton() {
+    this.parts.playButton.classList.add('play-button')
+    this.parts.playButton.classList.remove('pause-button')
+  }
+
+  showPauseButton() {
+    this.parts.playButton.classList.add('pause-button')
+    this.parts.playButton.classList.remove('play-button')
+  }
+
+  showPlayer() {
+    this.parts.wrapper.classList.remove('hidden')
+  }
+
+  stopPlaying() {
+    const state = this.player.getPlayerState()
+    if (state === 1 || state === 2) {
+      this.player.stopVideo()
+      this.cueVideo()
+    }
+  }
+
+  cueVideo() {
+    let options = {
+      'videoId': this.attrs.video,
+    }
+    if (this.restart === true) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === -1) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.CUED) {
+      options['startSeconds'] = this.attrs['start']
+    } else if (this.player.getPlayerState() === YT.PlayerState.ENDED) {
+      options['startSeconds'] = this.attrs['start']
+    } else {
+      const currentTime = Math.max(this.player.getCurrentTime() - 1, 0)
+      options['startSeconds'] = currentTime
+    }
+    if (this.attrs['end'] !== null) {
+      options['endSeconds'] = this.attrs['end']
+    }
+    this.player.cueVideoById(options)
   }
 }
 
 customElements.define('youtube-player', YouTubePlayer)
-
